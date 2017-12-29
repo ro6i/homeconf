@@ -1,0 +1,22 @@
+#!/bin/bash
+
+val="$1"
+op="$2"
+len="$3"
+
+is_set=
+case "$op" in
+  eq) [[ "${#val}" -eq "$len" ]] && is_set=1; ;;
+  lt) [[ "${#val}" -lt "$len" ]] && is_set=1; ;;
+  gt) [[ "${#val}" -gt "$len" ]] && is_set=1; ;;
+  le) [[ "${#val}" -le "$len" ]] && is_set=1; ;;
+  ge) [[ "${#val}" -ge "$len" ]] && is_set=1; ;;
+  '') is_set=1; ;;
+esac
+if [[ ! -z "$is_set" ]]
+then
+  echo "$val"
+else
+  >&2 echo "[$val] out of range"
+  exit 1
+fi

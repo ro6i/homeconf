@@ -1,0 +1,22 @@
+#!/bin/bash
+
+case "$(uname -s)" in
+  Darwin)
+    ioreg -c AppleSmartBattery -w0 | \
+    grep -o '"[^"]*" = [^ ]*' | \
+    sed -e 's/= //g' -e 's/"//g' | \
+    sort |
+    {
+      while read key value; do
+          case "$key" in
+              'MaxCapacity') _MAX_CAP=$value; ;;
+              'CurrentCapacity') _CURR_CAP=$value; ;;
+              'ExternalConnected') if [ "$value" = 'Yes' ]; then _CONN_CHAR='▲'; else _CONN_CHAR='▼'; fi ;;
+          esac
+      done
+      echo "${_CONN_CHAR} $(( 100 * $_CURR_CAP / $_MAX_CAP ))%"
+    }
+    ;;
+  *)
+    ;;
+esac

@@ -1,0 +1,36 @@
+#!/bin/bash
+
+# 1) jump to second window's first pane (where usually project at focus is getting edited)
+# 2) in case the process is [nvim] parse the input (which is typical [sbt] error line)
+#    [error] /path/to/file:<line number>:<charactrer index>: <description>
+# 3) task [nvim] to
+#     (a) switch to "normal" mode
+#     (b) open the file
+#     (c) jump to the specific position denoted by error message
+read -r content
+error_or_warn="$(echo "$content" | sed -n 's/\[\(error\|warn\)\] \/home\/.*/\1/p')"
+if [[ -z "$error_or_warn" ]]
+then
+  tmux display-message '#[fg=brightwhite]Current line must start with #[fg=red][error] #[fg=white]or #[fg=yellow][warn] #[fg=white]'
+else
+  target_window="$1"
+  current_program=$(tmux display -p -t $target_window.1 '#{pane_current_command}')
+  if [[ "$current_program" == 'nvim' && ! -z "$target_window" ]]
+  then
+    full_path="$(echo "$content" | grep "^\\[$error_or_warn\\]" | sed "s/^\\[$error_or_warn\\][[:space:]]//; s/:.*$//")"
+    line_nr="$(echo "$content" | grep "^\\[$error_or_warn\\]" | sed 's/[^\:]\+://; s/:.*//')"
+    col_nr="$(echo "$content" | grep "^\\[$error_or_warn\\]" | sed 's/[^\:]\+:[^\:]\+://; s/:.\+//')"
+    tmux select-window -t :$target_window
+    tmux select-pane -t .1
+    tmux resize-pane -Z -t .1
+    tmux send-keys -t .1 Escape
+    sleep 0.2
+    tmux send-keys -t .1 ":drop $full_path"
+    sleep 0.2
+    tmux send-keys -t .1 Enter
+    sleep 0.1
+    tmux send-keys -t .1 "${line_nr}G${col_nr}|"
+  else
+    tmux display-message "#[fg=yellow]There must be [nvim] process running on pane [${target_window}.1]"
+  fi
+fi

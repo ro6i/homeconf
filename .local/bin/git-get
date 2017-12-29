@@ -1,0 +1,14 @@
+#!/bin/bash
+
+branch_name="$(git branch --show-current)"
+git pull
+echo
+case "$branch_name" in
+  master | main)
+    top_commit_tag="$(git describe --abbrev=0 --tags)"
+    top_version_tag="$(git tag | grep '^v[0-9]' | cut -c 2- | sort -t. -k 1,1nr -k 2,2nr -k 3,3nr -k 4,4nr | head -n 1)"
+    echo "v$top_version_tag"
+    if [[ "$top_commit_tag" != "v$top_version_tag" ]]; then
+      >&2 echo "$(tput setaf 3)(different from top commit tag: $top_commit_tag)$(tput sgr0)"
+    fi
+esac

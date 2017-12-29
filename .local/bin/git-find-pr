@@ -1,0 +1,59 @@
+#!/bin/bash
+
+if [[ -z $BITBUCKET_WORKSPACE || -z "$BITBUCKET_REPO_SLUG" || -z "$BITBUCKET_EMAIL" ]]
+then
+  >&2 echo 'workspace or repository not configured in the environment'
+  exit 1
+fi
+
+main() {
+  local commit="$(git rev-parse --verify HEAD)"
+  if [ $? -ne 0 ]
+  then
+    >&2 echo 'commit not found'
+    return 1
+  fi
+
+  local access_token="$(cat ~/.bb-token)"
+  if [ $? -ne 0 ]
+  then
+    >&2 echo 'token not found'
+    return 1
+  fi
+
+  local temp_file="$(mktemp)"
+  trap "rm -f \"$temp_file\"" EXIT
+
+  curl --request GET \
+    --url "https://api.bitbucket.org/2.0/repositories/$BITBUCKET_WORKSPACE/$BITBUCKET_REPO_SLUG/commit/$commit/pullrequests" \
+    --user "$BITBUCKET_EMAIL:$access_token" \
+    --header 'Accept: application/json' > "$temp_file"
+
+  # >&2 echo
+  # >&2 echo '==> PRs'
+  # >&2 cat "$temp_file"
+
+  local pr_count="$(cat "$temp_file" | jq '.values | length')"
+  if [ "$pr_count" -ne 1 ]
+  then
+    >&2 echo "top commit [$commit] must be associated with a single pull request"
+    return 1
+  fi
+
+  local pr_id="$(cat "$temp_file" | jq '.values[0].id')"
+
+  curl --request GET \
+    --url "https://api.bitbucket.org/2.0/repositories/$BITBUCKET_WORKSPACE/$BITBUCKET_REPO_SLUG/pullrequests/$pr_id" \
+    --user "$BITBUCKET_EMAIL:$access_token" \
+    --header 'Accept: application/json' > "$temp_file"
+
+  # >&2 echo
+  # >&2 cat "$temp_file"
+  # >&2 echo "==> PR $pr_id"
+
+  local pr_state="$(cat "$temp_file" | jq '.state')"
+
+  echo "{\"id\": $pr_id, \"state\": "$pr_state"}" > .pr.json
+}
+
+main

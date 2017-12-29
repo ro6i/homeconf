@@ -1,0 +1,24 @@
+set output_plugin=alsa
+set dsp.alsa.device=default
+set mixer.alsa.device=default
+set mixer.alsa.channel=Master
+
+set progress_bar=color
+
+set color_cmdline_fg=8
+set color_separator=8
+set color_statusline_bg=16
+set color_statusline_fg=7
+set color_statusline_progress_bg=19
+set color_titleline_bg=23
+set color_win_cur=7
+set color_win_cur_sel_bg=18
+set color_win_cur_sel_fg=7
+set color_win_fg=8
+set color_win_inactive_cur_sel_bg=16
+set color_win_inactive_cur_sel_fg=3
+set color_win_inactive_sel_bg=23
+set color_win_inactive_sel_fg=15
+set color_win_sel_bg=22
+set color_win_sel_fg=15
+set color_win_title_bg=16

@@ -1,0 +1,12 @@
+#!/bin/bash
+
+set -e
+
+if [[ -z "$1" ]]
+then
+  yt_id="$YT_URL"
+else
+  yt_id="$1"
+fi
+
+yt-dlp -x --audio-format=mp3 --split-chapters --extractor-args 'youtube:player_js_version=actual' "https://www.youtube.com/watch?v=$yt_id"

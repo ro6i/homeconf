@@ -1,0 +1,14 @@
+#!/bin/bash
+
+main() {
+  local aspect="$1"
+
+  case "$aspect" in
+    env|region|system)
+      export SILVER_ASSERTED=yes
+      run cloudflare/tunnel/which "$aspect"
+      ;;
+  esac
+}
+
+main $@

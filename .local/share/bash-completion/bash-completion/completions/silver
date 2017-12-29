@@ -1,0 +1,13 @@
+# silver completion
+
+if [[ $(type -t '_argwork_completion') != function ]]
+then
+  source "$(dirname ${BASH_SOURCE[0]})/../argwork-completion.bash"
+fi
+
+_silver_completion() {
+  export ARGWORK_CLI_DIR="$HOME/projects/endowus/silver"
+  _argwork_completion
+  unset ARGWORK_CLI_DIR
+} &&
+  complete -o nosort -F _silver_completion silver

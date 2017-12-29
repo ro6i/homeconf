@@ -1,0 +1,13 @@
+#!/bin/bash
+
+val="$1"
+date_result="$(date -d "$val" 2>&1)"
+date_exit_code="$?"
+if [[ $? -eq 0 ]]
+then
+  echo "$val"
+else
+  >&2 echo "[$val] not DATETIME"
+  exit 1
+fi
+

@@ -1,0 +1,9 @@
+#!/bin/bash
+
+tmux select-window -t :1 \; select-pane -t .2 \; send-keys -R \; clear-history
+sleep 0.2
+tmux send-keys Enter
+sleep 0.2
+tmux send-keys Enter
+sleep 0.2
+tmux send-keys Up Enter

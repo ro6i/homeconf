@@ -1,0 +1,10 @@
+#!/bin/bash
+
+set -e
+
+while read pr_name
+do
+  cd "$pr_name"
+  git diff --stat HEAD~$(git log1 | sed '/Merged in /Q' | wc -l) | tail -n 1
+  cd ..
+done

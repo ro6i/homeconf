@@ -1,0 +1,12 @@
+#!/bin/bash
+
+val="$1"
+date_result="$(date -d "$val" '+%Y-%m-%d' 2>&1)"
+date_exit_code="$?"
+if [[ "$?" == 0 && "$date_result" == "$val" ]]
+then
+  echo "$val"
+else
+  >&2 echo "[$val] not DATE"
+  exit 1
+fi

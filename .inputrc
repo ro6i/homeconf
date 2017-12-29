@@ -1,0 +1,30 @@
+set editing-mode vi
+
+# set vi-ins-mode-string $
+# set vi-cmd-mode-string :
+
+# set underscore cursor
+set vi-ins-mode-string \1\x1b[4 q\2\1\x1b[0;90m\2$\1\x1b[m\2
+# set block cursor
+set vi-cmd-mode-string \1\x1b[2 q\2\1\x1b[0;90m\2:\1\x1b[m\2
+
+set show-mode-in-prompt on
+
+
+# set vi-ins-mode-string "\001\e[0;34m\002_\001\e[m\002"
+# set vi-cmd-mode-string "\001\e[0;32m\002:\001\e[m\002"
+
+# arrow up
+"\e[A": history-search-backward
+# arrow down
+"\e[B": history-search-forward
+
+$if mode=vi
+set keymap vi-command
+"\\k": "^itime \e\e"
+$endif
+
+set keyseq-timeout 0
+
+set colored-completion-prefix on
+set colored-stats on

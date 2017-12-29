@@ -1,0 +1,3 @@
+#!/bin/bash
+
+lsblk -pJ | jq -r '.blockdevices.[] | select(.name | test("/dev/sd")) | select(.children.[].mountpoints | length == 0) | .children.[].name' | grep '^/dev/' | cut -c 6-

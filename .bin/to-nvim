@@ -1,0 +1,10 @@
+#!/bin/bash
+
+nvimSocketNamePrefix="/tmp/nvimsocket-"
+
+syntax=""
+if [ ! -z "$2" ]; then 
+  syntax="$2"
+fi
+
+nvr -cc 'setlocal buftype=nofile bufhidden=hide noswapfile syntax=none' -c "setlocal syntax=$syntax" --remote-send '<esc>G' - --servername "${nvimSocketNamePrefix}-$1"

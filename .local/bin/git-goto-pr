@@ -1,0 +1,17 @@
+#!/bin/bash
+
+if [[ -z $BITBUCKET_WORKSPACE || -z "$BITBUCKET_REPO_SLUG" || -z "$BITBUCKET_EMAIL" ]]
+then
+  >&2 echo 'workspace or repository not configured in the environment'
+  exit 1
+fi
+
+main() {
+  if [[ -f '.pr.json' ]]
+  then
+    pr_id="$(cat .pr.json | jq -r '.id')"
+    xdg-open "https://bitbucket.org/endowus-team/silver-server/pull-requests/$pr_id"
+  fi
+}
+
+main

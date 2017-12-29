@@ -1,0 +1,25 @@
+#!/bin/bash
+
+main() {
+  local time date title_value title lang_value lang
+  while true
+  do
+    time="<span foreground='#777777'>$(date +'%l:%M')</span>"
+
+    date="<span foreground='#777760'>$(date +'%a %d')</span>"
+
+    title_value="$(swaymsg -t get_tree 2>/dev/null | jq -r '..|try select(.focused == true).name' 2> /dev/null | sed 's/&/\&amp;/g; s/</\&lt;/g; s/>/\&gt;/g; s/"/\&quot;/g; s/'"'"'/\&#39;/g')"
+    title="<span foreground='#606060' font-family='sans'>${title_value}</span>"
+
+    lang_value="$(swaymsg -t get_inputs urgent enable | jq -r '[.[] | select(.xkb_active_layout_name != null) | .xkb_active_layout_name][0]' | cut -c 1,2 | tr '[:lower:]' '[:upper:]')"
+    case "$lang_value" in
+      EN) lang='    ' ;;
+      *)  lang="<span background='#848480' foreground='#000000'> ${lang_value} </span>";;
+    esac
+
+    echo "$title        $lang    $time  $date   "
+    sleep 2
+  done
+}
+
+main

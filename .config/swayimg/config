@@ -1,0 +1,12 @@
+[general]
+mode = viewer
+
+[keys.viewer]
+j = next_file
+l = next_file
+h = prev_file
+k = prev_file
+
+[font]
+color = #5a8769
+size = 10

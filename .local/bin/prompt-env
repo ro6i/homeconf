@@ -1,0 +1,51 @@
+#!/bin/bash
+
+__prompt_component() {
+  local value="$1"
+  if [[ ! -z "$value" ]]
+  then
+    echo "$value$(tput sgr0)"
+  fi
+}
+
+__prompt_env_by_tag() {
+  export __prompt_env_counter=0
+  env | grep 'PROMPT_ENV__' | grep ":$tag:" | sort -t ':' -k3 | sed 's/=.*//' | sed 's/^PROMPT_ENV__//' | while read -r env_var_id
+    do
+      local keyName="PROMPT_ENV__$env_var_id" separator
+      IFS=':' read -r _name _tag _sort _fg _bg <<<"${!keyName}"
+      local value="${!env_var_id}"
+      [[ "$value" =~ ^\{?[A-F0-9a-f]{8}-[A-F0-9a-f]{4}-[A-F0-9a-f]{4}-[A-F0-9a-f]{4}-[A-F0-9a-f]{12}\}?$ ]] && value="${value:0:8}" #..${value: -2}"
+
+      __prompt_env_counter="$((1 + $__prompt_env_counter))"
+      [[ "$__prompt_env_counter" -eq 1 ]] && printf '\n'
+      if [[ -z "$_name" ]]
+      then
+        local color_index bg_index
+        if [[ -z "$_fg" ]]
+        then
+          color_index="$(( 1 + $__prompt_env_counter ))"
+        else
+          color_index="$_fg"
+        fi
+        if [[ -z "$_bg" ]]
+        then
+          bg_index="$color_index"
+        else
+          bg_index="$_bg"
+        fi
+        printf "$(__prompt_component "$(tput sgr0)$(tput setaf 31)$(tput setab $((16 + $bg_index)))$(tput setaf $(( $color_index + 24 )) )$(tput setb 0) $value $(tput sgr0)")"
+      else
+        printf "$(__prompt_component "$(tput sgr0)$(tput setaf 31)$_name $(tput setab 16)$(tput setaf 31) $value $(tput sgr0)")  "
+      fi
+    done
+}
+
+main() {
+  env | grep 'PROMPT_ENV__' | awk -F':' '{print $2}' | sort | uniq | while read -r tag
+    do
+      __prompt_env_by_tag "$tag"
+    done
+}
+
+main

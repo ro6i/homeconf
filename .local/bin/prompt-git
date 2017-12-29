@@ -1,0 +1,120 @@
+#!/bin/bash
+
+__prompt_component() {
+  local value="$1"
+  if [[ ! -z "$value" ]]
+  then
+    echo "$value$(tput sgr0)"
+  fi
+}
+
+__prompt_parse_git_status() {
+  local _status=$(git status --short 2> /dev/null | head -n 1)
+  if [[ ! -z "$_status" ]]
+  then
+    local unstaged_count="$(git diff --numstat | wc -l)" #"$(git diff --exit-code)"
+    local untracked_count="$(git ls-files --other --exclude-standard --directory --no-empty-directory | wc -l)"
+    local staged_count="$(git diff --cached --numstat | wc -l)"
+    if [[ "$unstaged_count" -gt 0 || "$untracked_count" -gt 0 || "$staged_count" -gt 0 ]]
+    then
+      [[ "$staged_count"    -eq 0 ]] && staged='--'    || staged="$staged_count"
+      [[ "$unstaged_count"  -eq 0 ]] && unstaged='--'  || unstaged="$unstaged_count"
+      [[ "$untracked_count" -eq 0 ]] && untracked='--' || untracked="$untracked_count"
+      echo -e " $(tput setab 16)$(tput setaf 2) $staged $(tput setaf 1) $unstaged $(tput setaf 5) $untracked $(tput sgr0)"
+    fi
+  fi
+}
+
+__prompt_git_color_branch() {
+  local branch_name="$1"
+  [[ -z "$branch_name" ]] && return 0
+  local prefix_color branch status_color status scope scope_num
+  if [[ "${branch_name:0:1}" =~ [a-zA-Z0-9] ]]
+  then
+    if [[ ! "$branch_name" =~ / ]]
+    then
+      case "$branch_name" in
+        main|master) prefix_color=19 ;;
+        develop)     prefix_color=18 ;;
+        *)           prefix_color=20 ;;
+      esac
+      branch="$(tput setab "$prefix_color") $(tput setaf $(($prefix_color + 8 )))$branch_name $(tput sgr0)"
+    else
+      local prefix="${branch_name%%/*}"
+      branch_name="$(echo "$branch_name" | cut -c $(( ${#prefix} + 2))-)"
+      case "$prefix" in
+        fix | bugfix)    prefix_color=1 ;;
+        feat | feature)  prefix_color=6 ;;
+        release)         prefix_color=2 ;;
+        *)               prefix_color=7 ;;
+      esac
+      if [[ "$branch_name" =~ ^[A-Za-z]+[-][0-9]+ ]]
+      then
+        scope="${branch_name%%-*}-"
+        branch_name="$(echo "$branch_name" | cut -c $(( ${#scope} + 1))-)"
+      fi
+      if [[ "$branch_name" =~ ^[0-9]+[-] ]]
+      then
+        scope_num="${branch_name%%-*}"
+        branch_name="$(echo "$branch_name" | cut -c $(( ${#scope_num} + 1))-)"
+      fi
+
+      branch="$(tput setab $(( $prefix_color + 16 )) )$(tput setaf $(( "$prefix_color" + 24 )) )$prefix$(tput setaf 8)/$(tput setab 20)$(tput setaf 28)$scope$(tput setab 20)$(tput setaf 29)$scope_num$(tput sgr0)$(tput setab 23)$(tput setaf 31)$branch_name"
+    fi
+    status_color=7
+  else
+    branch="$branch_name"
+    status_color=5
+  fi
+  echo -e "$(tput setaf $status_color)$branch$(tput sgr0)"
+}
+
+__prompt_git_base_branch() {
+  local gitbase_path="$(git rev-parse --show-toplevel)/.gitbase"
+  if [[ -f "$gitbase_path" ]]
+  then
+    local base_branch_name="$(cat "$gitbase_path" | head -n 1)"
+    if [[ ! -z "$base_branch_name" ]]
+    then
+      echo "\n$(tput setab 16)$(tput dim)$(tput setaf 7)\u25ce $(tput sgr0)$(__prompt_git_color_branch "$base_branch_name")$(tput sgr0)"
+    fi
+  fi
+}
+
+_prompt_git_pr() {
+  local pr_path="$(git rev-parse --show-toplevel)/.pr.json"
+  if [[ -f "$pr_path" ]]
+  then
+    local pr_id="$(cat "$pr_path" | jq '.id')"
+    local pr_state="$(cat "$pr_path" | jq -r '.state')"
+    local pr_html="$(cat "$pr_path" | jq -r '.html')"
+    local state_color
+    case "${pr_state^^}" in
+      OPEN) state_color=2 ;;
+      *) state_color=0 ;;
+    esac
+    if [[ ! -z "$pr_id" ]]
+    then
+      echo "  $(tput setab 16)$(tput setaf 8)\ue726 $(tput setaf 15)$pr_id $(tput setab $(( $state_color + 16 )))$(tput setaf $(( $state_color + 24 ))) $pr_state $(tput sgr0)"
+    fi
+  fi
+}
+
+main() {
+  local branch_name="$(git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ \1/' -e 's/^[ ]*//' -e 's/[ ]*$//')"
+  if [[ -z "$branch_name" ]]
+  then
+    return 0
+  fi
+  local marker_color
+  if [[ "$(realpath "$(git rev-parse --show-toplevel)")" == "$(realpath "$PWD")" ]]
+  then
+    marker_color=7
+  else
+    marker_color=31
+  fi
+
+  echo -e "$(__prompt_component "\n$(tput setab 16)$(tput setaf $marker_color)\uf126 $(__prompt_git_color_branch "$branch_name")$(__prompt_parse_git_status)")$(_prompt_git_pr)$(__prompt_git_base_branch)"
+}
+
+main

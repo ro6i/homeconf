@@ -1,0 +1,19 @@
+#!/bin/bash
+
+main() {
+  case "$(uname -s)" in
+    Darwin)
+      _session_artifact_name="$(find -f /var/run/wireguard/*.name)"
+      if [[ ! -z "$_session_artifact_name" ]]
+      then
+        _file_name="${_session_artifact_name##*/}"
+        _profile_name="${_file_name%.name}"
+        echo "$_profile_name"
+      fi
+      ;;
+    Linux)
+      echo "$(systemctl list-units --type=service --state=active | grep -oP 'WireGuard via wg-quick.* for \K.*' | xargs)"
+  esac
+}
+
+main

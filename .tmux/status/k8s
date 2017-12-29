@@ -1,0 +1,15 @@
+#!/bin/bash
+
+main() {
+  local context="$(kubectl config current-context)"
+  local namespace="$(kubectl config view --minify --output 'jsonpath={..namespace}')"
+
+  if [[ ! -z "$namespace" ]]
+  then
+    echo "${namespace}@${context##*_}"
+  else
+    echo "${context##*_}"
+  fi
+}
+
+main

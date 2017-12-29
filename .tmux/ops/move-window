@@ -1,0 +1,39 @@
+#!/bin/bash
+
+direction="$1"
+case "$direction" in
+  left|right) ;;
+  *) exit 1 ;;
+esac
+
+index="$(tmux display-message -p '#I')"
+readarray -t indexes < <(tmux list-windows -F '#{window_index}')
+
+total="${indexes[-1]}"
+new_index=
+
+case "$direction" in
+  left)
+    if [[ "$index" == 1 ]]
+    then
+      exit 0
+    else
+      new_index=$(( $index - 1 ))
+    fi
+    ;;
+  right)
+    if [[ "$index" == "$total" ]]
+    then
+      exit 0
+    else
+      new_index=$(( $index + 1 ))
+    fi
+    ;;
+esac
+
+if printf '%s\n' "${indexes[@]}" | grep -q "^$new_index$"
+then
+  &> /dev/null tmux select-window -t ":$index" \; swap-window -s ":$index" -t ":$new_index" \; select-window -t "$new_index"
+else
+  &> /dev/null tmux move-window -s "$index" -t ":$new_index"
+fi

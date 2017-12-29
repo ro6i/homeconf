@@ -1,0 +1,9 @@
+#!/usr/local/bin/bash
+
+declare -A MAP
+
+for FIELD in host port database username password; do
+  MAP[$FIELD]=$(cat ~/projects/dsn.conf.yaml | yq r - "$1.$FIELD");
+done
+
+echo "host='${MAP[host]}' port=${MAP[port]} dbname='${MAP[database]}' user='${MAP[username]}' password='${MAP[password]}'"

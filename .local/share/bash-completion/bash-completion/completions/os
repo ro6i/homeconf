@@ -1,0 +1,13 @@
+# os completion
+
+if [[ $(type -t '_argwork_completion') != function ]]
+then
+  source "$(dirname ${BASH_SOURCE[0]})/../argwork-completion.bash"
+fi
+
+_os_completion() {
+  export ARGWORK_CLI_DIR="$HOME/.os"
+  _argwork_completion
+  unset ARGWORK_CLI_DIR
+} &&
+  complete -o nosort -F _os_completion os

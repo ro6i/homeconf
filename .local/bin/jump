@@ -1,0 +1,19 @@
+#!/bin/bash
+
+_target="${1%/}"
+if [[ -z "$_target" ]]
+then
+  >&2 echo 'No target'
+  exit 1
+fi
+
+_path="$(find ~+ . -mindepth 0 -maxdepth 1 -type d -name "${_target}" | head -n 1)"
+
+echo $_path
+if [[ -d "$_path" ]]
+then
+  tmux new-window -c "$_path" -n $(echo "${_target^^}")
+else
+  >&2 echo "$(tput setaf 3)==>$(tput sgr0) directory [$_path] does not exist"
+  exit 1
+fi

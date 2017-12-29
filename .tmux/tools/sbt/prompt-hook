@@ -1,0 +1,4 @@
+#!/bin/bash
+
+# selecting a pane is too intrusive, send a bell instead
+tmux send-keys -t 1.2 C-g \; copy-mode -t 1.2 \; send-keys -t 1.2 g

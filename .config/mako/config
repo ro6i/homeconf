@@ -1,0 +1,16 @@
+default-timeout=10000
+ignore-timeout=1
+
+font=sans 12
+width=500
+height=250
+border-radius=4
+border-size=2
+
+background-color=#10141acc
+text-color=#eeeeee
+border-color=#2e3238
+padding=8,16
+outer-margin=50,80
+
+format=<b>%a</b> | <b>%s</b>\n\n%b

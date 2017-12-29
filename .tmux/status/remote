@@ -1,0 +1,6 @@
+#!/bin/bash
+
+if [[ ! -z "$(tmux showenv | grep '^SSH_CONNECTION')" ]]
+then
+  echo '1'
+fi

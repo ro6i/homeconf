@@ -1,0 +1,44 @@
+#!/bin/bash
+
+shopt -s dotglob
+
+cp -rf ~/.config/cmus/rc            .config/cmus/
+cp -rf ~/.config/foot/*             .config/foot/
+cp -rf ~/.config/mako/config        .config/mako/
+cp -rf ~/.config/nvim/after/*       .config/nvim/after/
+cp -rf ~/.config/nvim/init.vim      .config/nvim/
+cp -rf ~/.config/sway/config        .config/sway/
+cp -rf ~/.config/swayimg/config     .config/swayimg/
+cp -rf ~/.config/ranger/*.conf      .config/ranger/
+
+cp -rf ~/.tmux/ops/*         .tmux/ops/
+cp -rf ~/.tmux/status/*      .tmux/status/
+cp -rf ~/.tmux/tools/*       .tmux/tools/
+
+cp -f ~/.local/bin/git-*         .local/bin/
+cp -f ~/.local/bin/prompt-*      .local/bin/
+cp -f ~/.local/bin/swaybar-*     .local/bin/
+cp -f ~/.local/bin/argwork-*     .local/bin/
+cp -f ~/.local/bin/jump          .local/bin/
+cp -f ~/.local/bin/today         .local/bin/
+cp -f ~/.local/bin/now           .local/bin/
+cp -f ~/.local/bin/os            .local/bin/
+cp -f ~/.local/bin/ytd           .local/bin/
+cp -f ~/.local/bin/tmux-*        .local/bin/
+
+cp -rf ~/.local/share/bash-completion/  .local/share/bash-completion/
+cp -f  ~/.local/share/bash-completion/argwork-completion.bash  .local/share/bash-completion/
+
+cp -rfa ~/.os/*      .os/
+
+cp -rfa ~/.sbt/1.0/global.sbt      .sbt/1.0/global.sbt
+
+cp -rf ~/.bashrc  ./
+cp -rf ~/.bash_prompt  ./
+cp -rf ~/.inputrc ./
+cp -rf ~/.profile ./
+cp -rf ~/.tmux.conf ./
+
+pacman -Qqe | sort > packages.txt
+
+shopt -u dotglob

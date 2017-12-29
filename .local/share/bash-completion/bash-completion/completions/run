@@ -1,0 +1,13 @@
+# run completion
+
+if [[ $(type -t '_argwork_completion') != function ]]
+then
+  source "$(dirname ${BASH_SOURCE[0]})/../argwork-completion.bash"
+fi
+
+_run_completion() {
+  export ARGWORK_CLI_DIR="$HOME/projects/work/run"
+  _argwork_completion
+  unset ARGWORK_CLI_DIR
+} &&
+  complete -o nosort -F _run_completion run
