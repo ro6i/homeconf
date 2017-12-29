@@ -1,0 +1,13 @@
+set editing-mode vi
+set show-mode-in-prompt On
+
+# set vi-ins-mode-string "_"
+# set vi-cmd-mode-string ":"
+
+set vi-ins-mode-string "\001\e[0;34m\002_\001\e[m\002"
+set vi-cmd-mode-string "\001\e[0;32m\002:\001\e[m\002"
+
+# arrow up
+"\e[A": history-search-backward
+# arrow down
+"\e[B": history-search-forward

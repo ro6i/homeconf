@@ -1,0 +1,5 @@
+#!/bin/bash
+
+nvimSocketNamePrefix="/tmp/nvimsocket-"
+
+NVIM_LISTEN_ADDRESS="${nvimSocketNamePrefix}-$1" nvim

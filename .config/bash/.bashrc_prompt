@@ -1,0 +1,59 @@
+
+_nof() {
+  echo -e "\001\e[m\002"
+}
+
+_setf() {
+  echo -e "\001\e[${1}m\002"
+}
+
+_component() {
+  if [[ -z "$2" ]];
+  then
+    echo ''
+  else
+    echo " $(_setf '100;97')$1:$2$(_nof)"
+  fi
+}
+
+_parse_git_branch() {
+  git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ \1/' -e 's/^[ ]*//' -e 's/[ ]*$//'
+}
+
+_parse_git_status() {
+  git status --short 2> /dev/null | head
+}
+
+prompt_component_git() {
+  local status_color=37
+  local branch="$(_parse_git_branch)"
+  if [[ $branch == "" ]]
+  then
+    echo ""
+  else
+    local status="$(_parse_git_status)"
+    if [[ $status == "" ]]
+    then
+      status_color=37
+    else
+      status_color=33
+    fi
+    echo -e "$(_component 'git' "$(_setf ${status_color})${branch}")"
+  fi
+}
+
+prompt_path() {
+  local d="$(dirs)"
+  local sep=" ⟩ "
+  local pdir="$(dirname "$d" | sed "s/\//$sep/g")"
+  if [[ "$d" == "~" ]];
+  then
+    echo -e "$(_setf '100;37')$d$(_nof)"
+  else
+    echo -e "$(_setf 100)$(_setf 97)$pdir$sep$(_setf 37)$(basename "$d")$(_nof)"
+  fi
+}
+
+prompt_time() {
+  echo -e " $(_setf '100;97')$(date +'%m-%d %H:%M')$(_nof)"
+}
