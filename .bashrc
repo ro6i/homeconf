@@ -6,7 +6,7 @@ set show-mode-in-prompt on
 set vi-ins-mode-string ""
 set vi-cmd-mode-string ":"
 
-export PS1="\n\$(prompt_path)\$(prompt_component_git)\$(prompt_time)\n\$ "
+export PS1="\n\$(prompt_path)\$(prompt_component_git)\$(prompt_time)\n "
 export EDITOR=nvim
 export GREP_OPTIONS='--color=auto'
 export CLICOLOR=1
