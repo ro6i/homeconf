@@ -19,7 +19,7 @@ nnoremap <silent> !z :let &scrolloff=999-&scrolloff<CR>
 nmap <silent> <Tab> :call search('\u', 'W', line("."))<CR>
 nmap <silent> <Backspace> :call search('\u', 'bW', line("."))<CR>
 
-nnoremap <silent> !| :call ToggleColorColumn(80)<CR>
+nnoremap <silent> !\ :call ToggleColorColumn(80)<CR>
 nnoremap <silent> ![ :call ToggleColorColumn(120)<CR>
 nnoremap <silent> !] :call ToggleColorColumn(160)<CR>
 
