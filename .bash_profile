@@ -6,7 +6,8 @@ list=(
   "/usr/local/etc/bash_completion.d/tmux"
   "/usr/local/etc/bash_completion.d/scala"
   "/usr/local/etc/bash_completion.d/npm.sh"
-  "${HOME}/.bashrc"
+  "${HOME}/.config/bash/.bashrc_prompt"
+  "${HOME}/.config/bash/.bashrc"
 )
 
 for item in ${list[*]}
