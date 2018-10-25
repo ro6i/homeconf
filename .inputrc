@@ -11,3 +11,8 @@ set vi-cmd-mode-string "\001\e[0;32m\002:\001\e[m\002"
 "\e[A": history-search-backward
 # arrow down
 "\e[B": history-search-forward
+
+$if mode=vi
+set keymap vi-command
+"\\k": "^itime \e\e"
+$endif
