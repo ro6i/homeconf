@@ -1,4 +1,4 @@
-source "${BASH_SOURCE%/*}/.bashrc_prompt"
+source "${HOME}/.config/bash/prompt"
 
 export PATH="$PATH:~/.bin:/usr/local/sbin:~/.local/bin"
 
