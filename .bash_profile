@@ -6,10 +6,11 @@ list=(
   "/usr/local/etc/bash_completion.d/tmux"
   "/usr/local/etc/bash_completion.d/scala"
   "/usr/local/etc/bash_completion.d/npm.sh"
-  "${HOME}/.config/bash/.bashrc"
 )
 
 for item in ${list[*]}
 do
   [ -r "${item}" ] && source "${item}"
 done
+
+source "${HOME}/.bashrc"
