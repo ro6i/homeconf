@@ -26,11 +26,13 @@ nnoremap <silent> !] :call ToggleColorColumn(160)<CR>
 nnoremap <silent> <Leader>t :tabnew<CR>
 nnoremap <silent> <Leader>f :call FindTextPrompt()<CR>
 nnoremap <silent> <Leader>/ :noh<CR>
+nnoremap <silent> <Leader>zz :let &scrolloff=999-&scrolloff<CR>
+nnoremap <silent> <Leader>rr :tabnew<CR>:term<CR>iranger<CR>
+nnoremap <Leader>sh :w !bash<CR>
+
 nnoremap <silent> <Leader>x :Vexplore<CR>
 nnoremap <silent> <Leader>bo :BufOnly<CR>
 nnoremap <silent> <Leader>bd :BD<CR>
-nnoremap <silent> <Leader>zz :let &scrolloff=999-&scrolloff<CR>
-nnoremap <Leader>sh :w !bash<CR>
 
 nnoremap <silent> <C-p> :CtrlP<CR>
 nnoremap <silent> <C-P> :CtrlPLine<CR>

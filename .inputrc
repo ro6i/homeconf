@@ -16,3 +16,5 @@ $if mode=vi
 set keymap vi-command
 "\\k": "^itime \e\e"
 $endif
+
+set keyseq-timeout 0
