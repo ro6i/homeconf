@@ -11,6 +11,7 @@ nmap <C-w><Leader> <C-w><Bar>
 
 nnoremap <silent> co :copen<CR>
 nnoremap <silent> gb :b#<CR>
+nnoremap <silent> gl :GotoLastTab<CR>
 
 nnoremap <silent> !w :set wrap!<CR>
 nnoremap <silent> !l :set list!<CR>
@@ -46,7 +47,7 @@ nnoremap <silent> <F9> "*p
 inoremap <silent> <F9> <C-o>"*p
 
 tnoremap <C-\><C-\> <C-\><C-n>
-tnoremap <silent> <C-\><C-]> <C-\><C-n>:exe "tabn ".g:lasttab<CR>
+tnoremap <silent> <C-\><C-]> <C-\><C-n>:GotoLastTab<CR>
 
 call plug#begin()
 
@@ -196,10 +197,6 @@ function! SynGroup()
   let l:s = synID(line('.'), col('.'), 1)
   echo synIDattr(l:s, 'name') . ' -> ' . synIDattr(synIDtrans(l:s), 'name')
 endfun
-
-let g:lasttab = 1
-nmap gl :exe "tabn ".g:lasttab<CR>
-au TabLeave * let g:lasttab = tabpagenr()
 
 " au InsertEnter,InsertLeave * silent redraw!
 
