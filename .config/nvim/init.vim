@@ -46,6 +46,7 @@ nnoremap <silent> <F9> "*p
 inoremap <silent> <F9> <C-o>"*p
 
 tnoremap <C-\><C-\> <C-\><C-n>
+tnoremap <silent> <C-\><C-]> <C-\><C-n>:exe "tabn ".g:lasttab<CR>
 
 call plug#begin()
 
