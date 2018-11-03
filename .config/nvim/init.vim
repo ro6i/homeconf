@@ -72,6 +72,7 @@ Plug 'rhysd/open-pdf.vim'
 " Plug 'dhruvasagar/vim-table-mode', { 'on': 'TableModeEnable' }
 Plug 'ro6i/m31.vim'
 Plug 'ro6i/snugfind.vim'
+Plug 'ro6i/gotolasttab.vim'
 Plug 'ro6i/russian-yasherty.vim'
 
 let g:plug_url_format = "https://git::@gitlab.com/%s.git"
