@@ -24,6 +24,8 @@ nnoremap <silent> !\ :call ToggleColorColumn(80)<CR>
 nnoremap <silent> ![ :call ToggleColorColumn(120)<CR>
 nnoremap <silent> !] :call ToggleColorColumn(160)<CR>
 
+nnoremap <silent> !s :set scb!<CR>:call lightline#update()<CR>
+
 nnoremap <silent> <Leader>t :tabnew<CR>
 nnoremap <silent> <Leader>f :call FindTextPrompt()<CR>
 nnoremap <silent> <Leader>/ :noh<CR>
@@ -41,6 +43,9 @@ nnoremap <silent> <C-P> :CtrlPLine<CR>
 vnoremap r "_dP
 vnoremap * y/\V<C-R>"<CR>
 vnoremap <silent> \\ y:FindTextExact <C-R>"<CR>
+
+inoremap <silent> <F6> <C-o>:call NextKeymap()<CR><C-o>:call lightline#update()<CR>
+nnoremap <silent> <F6> :call NextKeymap()<CR>:call lightline#update()<CR>
 
 vnoremap <silent> <F8> "*y
 nnoremap <silent> <F9> "*p
@@ -79,20 +84,20 @@ let g:plug_url_format = "https://git::@gitlab.com/%s.git"
 
 call plug#end()
 
-" backgroud #1a2836
+syntax on
+colorscheme m31
+
 
 let g:java_highlight_all = 1
-let g:java_highlight_functions = 1
-let g:java_highlight_java_lang_ids = 1
-let g:java_highlight_java = 1
-let g:java_highlight_java_lang = 1
-let g:disable_key_mappings = 1
+
 let g:gitgutter_map_keys = 0
+
 let g:netrw_browse_split = 0
 let g:netrw_liststyle = 3
 let g:netrw_sort_options = 'i'
 let g:netrw_keepdir = 1
 let g:netrw_winsize = 20
+
 let g:ctrlp_custom_ignore = {
 \ 'dir':  '\.git$\|\.svn$\|\.build$\|project$\|target$\|build$\|__pycache__$',
 \ 'file': '\.exe$\|\.so$\|\.dat$'
@@ -111,21 +116,15 @@ function! LightlineScrollbind()
   return &scrollbind ? "SB" : ""
 endfunction
 let g:lightline = { 'colorscheme': 'm31', 'lineinfo': "%{line('.') . ':' . col('.') . '/' . line('$')}", 'filename': "%f", 'tabline': { 'left': [ [ 'tabs' ] ], 'right': [ ] }, 'mode_map': { 'n' : ' N ', 'i' : ' I ', 'R' : ' R ', 'v' : ' V ', 'V' : 'V-L', "\<C-v>": 'V-B', 'c' : ' C ', 's' : ' S ', 'S' : 'S-L', "\<C-s>": 'S-B', 't': ' T ' }, 'component_expand': { 'keymap': 'LightlineKeymap', 'scrollbind': 'LightlineScrollbind'}, 'component_type': { 'keymap': 'warning', 'scrollbind': 'info' }, 'active': { 'right': [ [ 'lineinfo' ], [ 'percent' ], [ 'fileformat', 'fileencoding', 'filetype' ], ['keymap', 'scrollbind'] ] }, 'subseparator': { 'left': '', 'right': '|' } }
-inoremap <silent> <F6> <C-o>:call NextKeymap()<CR><C-o>:call lightline#update()<CR>
-nnoremap <silent> <F6> :call NextKeymap()<CR>:call lightline#update()<CR>
-nnoremap <silent> !s :set scb!<CR>:call lightline#update()<CR>
 
 let g:snugfind_exclude_dir = 'project,target,build,.git,.idea,.build,.ensime_cache'
 let g:snugfind_exclude = '.tags,.ensime'
 
 let g:python_highlight_all = 1
-set tags=./.tags,.tags,./tags,tags
+
 " open tag in a split
 " nnoremap <C-]> :sp <CR>:exec("tag ".expand("<cword>"))<CR>
 " nnoremap <C-_> :vsp <CR>:exec("tag ".expand("<cword>"))<CR>
-
-syntax on
-colorscheme m31
 
 function! ToggleColorColumn(width)
   if &colorcolumn == a:width
@@ -184,9 +183,11 @@ set scrollopt+=hor
 
 set spelllang=en,ru_yo
 
+set tags=./.tags,.tags,./tags,tags
+
 au TermOpen * setlocal nonumber norelativenumber
 
-"colors
+" colors
 hi SignatureMarkText ctermfg=10
 hi SignatureMarkLine ctermbg=0
 hi scalaSquareBracketsBrackets ctermfg=9
