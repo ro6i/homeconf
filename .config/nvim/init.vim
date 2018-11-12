@@ -13,19 +13,19 @@ nnoremap <silent> co :copen<CR>
 nnoremap <silent> gb :b#<CR>
 nnoremap <silent> gl :GotoLastTab<CR>
 
-nnoremap <silent> !w :set wrap!<CR>
-nnoremap <silent> !l :set list!<CR>
-nnoremap <silent> !z :let &scrolloff=999-&scrolloff<CR>
-
 nmap <silent> <Tab> :call search('\u', 'W', line("."))<CR>
 nmap <silent> <Backspace> :call search('\u', 'bW', line("."))<CR>
+
+nnoremap <silent> !c :set cursorline!
+nnoremap <silent><expr> !h (&hls && v:hlsearch ? ':nohls' : ':set hls')."\n"
+nnoremap <silent> !l :set list!<CR>
+nnoremap <silent> !s :set scb!<CR>:call lightline#update()<CR>
+nnoremap <silent> !w :set wrap!<CR>
+nnoremap <silent> !z :let &scrolloff=999-&scrolloff<CR>
 
 nnoremap <silent> !\ :call ToggleColorColumn(80)<CR>
 nnoremap <silent> ![ :call ToggleColorColumn(120)<CR>
 nnoremap <silent> !] :call ToggleColorColumn(160)<CR>
-
-nnoremap <silent> !s :set scb!<CR>:call lightline#update()<CR>
-nnoremap <silent><expr> !h (&hls && v:hlsearch ? ':nohls' : ':set hls')."\n"
 
 nnoremap <silent> <Leader>t :tabnew<CR>
 nnoremap <silent> <Leader>f :call FindTextPrompt()<CR>
