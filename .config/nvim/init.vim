@@ -25,7 +25,6 @@ nnoremap <silent> ![ :call ToggleColorColumn(120)<CR>
 nnoremap <silent> !] :call ToggleColorColumn(160)<CR>
 
 nnoremap <silent> !s :set scb!<CR>:call lightline#update()<CR>
-nnoremap <silent> !zz :let &scrolloff=999-&scrolloff<CR>
 nnoremap <silent><expr> !h (&hls && v:hlsearch ? ':nohls' : ':set hls')."\n"
 
 nnoremap <silent> <Leader>t :tabnew<CR>
