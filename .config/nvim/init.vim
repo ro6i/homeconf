@@ -16,7 +16,7 @@ nnoremap <silent> gl :GotoLastTab<CR>
 nmap <silent> <Tab> :call search('\u', 'W', line("."))<CR>
 nmap <silent> <Backspace> :call search('\u', 'bW', line("."))<CR>
 
-nnoremap <silent> !c :set cursorline!
+nnoremap <silent> !c :set cursorline!<CR>
 nnoremap <silent><expr> !h (&hls && v:hlsearch ? ':nohls' : ':set hls')."\n"
 nnoremap <silent> !l :set list!<CR>
 nnoremap <silent> !s :set scb!<CR>:call lightline#update()<CR>
