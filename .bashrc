@@ -1,6 +1,6 @@
 source "${HOME}/.config/bash/prompt"
 
-export PATH="$PATH:~/.bin:/usr/local/sbin:~/.local/bin"
+export PATH="/usr/local/sbin:$PATH:~/.bin:~/.local/bin"
 
 set show-mode-in-prompt on
 set vi-ins-mode-string ""
