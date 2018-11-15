@@ -29,12 +29,12 @@ nnoremap <silent> !] :call ToggleColorColumn(160)<CR>
 
 nnoremap <silent> <Leader>t :tabnew<CR>
 nnoremap <silent> <Leader>f :call FindTextPrompt()<CR>
+nmap              <Leader>p :Files<CR>
 nnoremap <silent> <Leader>rr :tabnew<CR>:term<CR>iranger<CR>
 nnoremap <silent> <Leader>x :Vexplore<CR>
-nnoremap <Leader>sh :w !bash<CR>
+nnoremap          <Leader>sh :w !bash<CR>
 
 nnoremap <silent> <C-p> :CtrlP<CR>
-nnoremap <silent> <C-P> :CtrlPLine<CR>
 
 vnoremap r "_dP
 vnoremap * y/\V<C-R>"<CR>
@@ -71,6 +71,8 @@ Plug 'vim-scripts/BufOnly.vim'
 Plug 'kshenoy/vim-signature'
 Plug 'rhysd/open-pdf.vim'
 " Plug 'dhruvasagar/vim-table-mode', { 'on': 'TableModeEnable' }
+Plug '/usr/local/opt/fzf'
+Plug 'junegunn/fzf.vim'
 Plug 'ro6i/m31.vim'
 Plug 'ro6i/snugfind.vim'
 Plug 'ro6i/gotolasttab.vim'
@@ -99,10 +101,10 @@ let g:ctrlp_custom_ignore = {
 \ 'file': '\.exe$\|\.so$\|\.dat$'
 \}
 let g:ctrlp_root_markers = ['pom.xml', 'project', '.git', '.svn', '.idea']
-let g:ctrlp_working_path_mode = 0
+let g:ctrlp_working_path_mode = 'ra'
 let g:ctrlp_mruf_save_on_update = 0
 let g:ctrlp_mruf_relative = 0
-let g:ctrlp_max_files = 0
+let g:ctrlp_max_files = 2000
 let g:ctrlp_match_window = 'min:4,max:20'
 
 function! LightlineKeymap()
@@ -117,6 +119,11 @@ let g:snugfind_exclude_dir = 'project,target,build,.git,.idea,.build,.ensime_cac
 let g:snugfind_exclude = '.tags,.ensime'
 
 let g:python_highlight_all = 1
+
+if executable('ag')
+  let $FZF_DEFAULT_COMMAND = 'ag --hidden --ignore={.git,.svn,build,project,target,build,__pycache__} -g ""'
+endif
+let g:fzf_colors = { 'fg': ['fg', 'Normal'], 'bg': ['bg', 'Normal'], 'hl': ['fg', 'Comment'], 'fg+': ['fg', 'Normal', 'Comment', 'Normal'], 'bg+': ['bg', 'Normal', 'Normal'], 'hl+': ['fg', 'Statement'], 'info': ['fg', 'PreProc'], 'border': ['fg', 'Ignore'], 'prompt': ['fg', 'Conditional'], 'pointer': ['fg', 'Exception'], 'marker':  ['fg', 'Keyword'], 'spinner': ['fg', 'Label'], 'header':  ['fg', 'Comment'] }
 
 " open tag in a split
 " nnoremap <C-]> :sp <CR>:exec("tag ".expand("<cword>"))<CR>
