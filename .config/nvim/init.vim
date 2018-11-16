@@ -29,10 +29,11 @@ nnoremap <silent> !] :call ToggleColorColumn(160)<CR>
 
 nnoremap <silent> <Leader>t :tabnew<CR>
 nnoremap <silent> <Leader>f :call FindTextPrompt()<CR>
-nmap              <Leader>p :Files<CR>
 nnoremap <silent> <Leader>rr :tabnew<CR>:term<CR>iranger<CR>
 nnoremap <silent> <Leader>x :Vexplore<CR>
 nnoremap          <Leader>sh :w !bash<CR>
+
+nmap     <silent> <Leader><Leader> :Files<CR>
 
 nnoremap <silent> <C-p> :CtrlP<CR>
 
