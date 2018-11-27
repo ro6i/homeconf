@@ -32,21 +32,23 @@ nnoremap <silent> <Leader>f :call FindTextPrompt()<CR>
 nnoremap <silent> <Leader>rr :tabnew<CR>:term<CR>iranger<CR>
 nnoremap <silent> <Leader>x :Vexplore<CR>
 nnoremap          <Leader>sh :w !bash<CR>
-
-nmap     <silent> <Leader><Leader> :Files<CR>
+nnoremap <silent> <Leader><Leader> :Files<CR>
 
 nnoremap <silent> <C-p> :CtrlP<CR>
 
 vnoremap r "_dP
 vnoremap * y/\V<C-R>"<CR>
-vnoremap <silent> \\ y:FindTextExact <C-R>"<CR>
+
+vnoremap <silent> <Leader>f y:FindTextExact <C-R>"<CR>
 
 inoremap <silent> <F6> <C-o>:call NextKeymap()<CR><C-o>:call lightline#update()<CR>
 nnoremap <silent> <F6> :call NextKeymap()<CR>:call lightline#update()<CR>
 
 vnoremap <silent> <F8> "*y
 nnoremap <silent> <F9> "*p
+
 inoremap <silent> <F9> <C-o>"*p
+vnoremap <silent> <F9> "*p
 
 tnoremap <C-\><C-\> <C-\><C-n>
 tnoremap <silent> <C-\><C-]> <C-\><C-n>:GotoLastTab<CR>
@@ -69,6 +71,7 @@ Plug 'chrisbra/csv.vim'
 Plug 'tpope/vim-commentary'
 Plug 'vim-scripts/bufkill.vim'
 Plug 'vim-scripts/BufOnly.vim'
+" Plug 'vim-scripts/AnsiEsc.vim'
 Plug 'kshenoy/vim-signature'
 Plug 'rhysd/open-pdf.vim'
 " Plug 'dhruvasagar/vim-table-mode', { 'on': 'TableModeEnable' }
