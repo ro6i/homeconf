@@ -134,11 +134,7 @@ let g:fzf_colors = { 'fg': ['fg', 'Normal'], 'bg': ['bg', 'Normal'], 'hl': ['fg'
 " nnoremap <C-_> :vsp <CR>:exec("tag ".expand("<cword>"))<CR>
 
 function! ToggleColorColumn(width)
-  if &colorcolumn == a:width
-    setlocal colorcolumn=0
-  else
-    execute "setlocal colorcolumn=" . a:width
-  endif
+  execute "setlocal colorcolumn=" . (&colorcolumn == a:width ? 0 : a:width)
 endfunction
 
 function! NextKeymap()
@@ -150,11 +146,12 @@ function! NextKeymap()
 endfunction
 
 command! RemoveTrailingWhitespace %s/\s\+$//e
-command! CopyFilePathAbs let @+ = expand('%:p')
-command! CopyFilePathRel let @+ = expand('%')
+command! CopyPathAbs let @+ = expand('%:p') | echo '"'.@+.'"' "copied to @+"
+command! CopyPathRel let @+ = fnamemodify(expand("%"), ":~:.") | echo '"'.@+.'"' "copied to @+"
+command! CopyDirAbs let @+ = expand("%:h") | echo '"'.@+.'"' "copied to @+"
+command! CopyDirRel let @+ = expand("%:h") | echo '"'.@+.'"' "copied to @+"
 command! FormatJSON %!python -m json.tool
 command! AsJSON set syntax=json | FormatJSON
-command! Es w !bash
 
 set nowrap
 set noshowmode
