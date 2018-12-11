@@ -1,0 +1,3 @@
+#!/bin/bash
+
+gsed '1s/_\([a-z]\)/\U\1/g'

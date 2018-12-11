@@ -1,0 +1,9 @@
+#!/usr/local/bin/bash
+
+declare -A MAP
+
+for FIELD in host port database; do
+  MAP[$FIELD]=$(cat ~/projects/dsn.conf.yaml | yq r - "$1.$FIELD");
+done
+
+echo "mongodb://${MAP[host]}:${MAP[port]}/${MAP[database]}"
