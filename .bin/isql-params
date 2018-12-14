@@ -3,7 +3,7 @@
 declare -A MAP
 
 for FIELD in user password; do
-  MAP[$FIELD]=$(cat ~/projects/dsn.conf.yaml | yq r - "$1.$FIELD");
+  MAP[$FIELD]=$(cat ~/Projects/dsn.conf.yaml | yq r - "$1.$FIELD");
 done
 
 eval "isql ${1} ${MAP[user]} ${MAP[password]}"
