@@ -27,9 +27,9 @@ nnoremap <silent> !\ :call ToggleColorColumn(80)<CR>
 nnoremap <silent> ![ :call ToggleColorColumn(120)<CR>
 nnoremap <silent> !] :call ToggleColorColumn(160)<CR>
 
-nnoremap <silent> <Leader>t :tabnew<CR>
 nnoremap <silent> <Leader>f :call FindTextPrompt()<CR>
 nnoremap <silent> <Leader>rr :tabnew<CR>:term<CR>iranger<CR>
+nnoremap <silent> <Leader>t :tabnew<CR>
 nnoremap <silent> <Leader>x :Vexplore<CR>
 nnoremap          <Leader>sh :w !bash<CR>
 nnoremap <silent> <Leader><Leader> :Files<CR>
@@ -41,14 +41,13 @@ vnoremap * y/\V<C-R>"<CR>
 
 vnoremap <silent> <Leader>f y:FindTextExact <C-R>"<CR>
 
+vnoremap <silent> <Leader>c "*y
+nnoremap <silent> <Leader>v "*p
+inoremap <silent> <Leader>c <C-o>"*p
+vnoremap <silent> <Leader>v "*p
+
 inoremap <silent> <F6> <C-o>:call NextKeymap()<CR><C-o>:call lightline#update()<CR>
 nnoremap <silent> <F6> :call NextKeymap()<CR>:call lightline#update()<CR>
-
-vnoremap <silent> <F8> "*y
-nnoremap <silent> <F9> "*p
-
-inoremap <silent> <F9> <C-o>"*p
-vnoremap <silent> <F9> "*p
 
 tnoremap <C-\><C-\> <C-\><C-n>
 tnoremap <silent> <C-\><C-]> <C-\><C-n>:GotoLastTab<CR>
