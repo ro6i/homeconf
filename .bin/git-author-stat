@@ -1,0 +1,3 @@
+#!/bin/bash
+
+git ls-files | while read f; do git blame -w -M -C -C --line-porcelain "$f" | grep '^author '; done | sort -f | uniq -ic | sort -n
