@@ -147,6 +147,7 @@ function! NextKeymap()
   endif
 endfunction
 
+command! Conf source $MYVIMRC
 command! RemoveTrailingWhitespace %s/\s\+$//e
 command! CopyPathAbs let @+ = expand('%:p') | echo '"'.@+.'"' "copied to @+"
 command! CopyPathRel let @+ = fnamemodify(expand("%"), ":~:.") | echo '"'.@+.'"' "copied to @+"
