@@ -1,18 +1,25 @@
 #!/usr/local/bin/bash
 
 case $1 in
+
   new-session)
     name=$(printf '%-10s ' "$2" | tr '[:lower:]' '[:upper:]')
 
     tmux new -s "${name}" -d
     tmux switch -t "${name}"
     ;;
+
   find-session)
     part_of_name=$(echo "$2" | tr '[:lower:]' '[:upper:]')
 
-    tmux ls -F '#{session_name}' | tr '[:lower:]' '[:upper:]' | grep "$part_of_name" | head -n 1 | xargs tmux switch -t
+    if [[ -z $part_of_name ]]
+    then
+      tmux ls -F '#{session_name}' | tr '[:lower:]' '[:upper:]' | grep "$part_of_name" | head -n 1 | xargs tmux switch -t
+    fi
     ;;
+
   rename-window-to-current-dir)
     echo "$2" | tr '[:lower:]' '[:upper:]' | xargs tmux rename-window
     ;;
+
 esac
