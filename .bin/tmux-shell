@@ -12,7 +12,7 @@ case $1 in
   find-session)
     part_of_name=$(echo "$2" | tr '[:lower:]' '[:upper:]')
 
-    if [[ -z $part_of_name ]]
+    if [[ ! -z "$part_of_name" ]]
     then
       tmux ls -F '#{session_name}' | tr '[:lower:]' '[:upper:]' | grep "$part_of_name" | head -n 1 | xargs tmux switch -t
     fi
