@@ -3,12 +3,13 @@
 case $1 in
 
   new-session)
-    name=$(printf '%-10s ' "$2" | tr '[:lower:]' '[:upper:]')
+    name="$2"
+    name_padded=$(printf '%-10s ' "$name" | tr '[:lower:]' '[:upper:]')
 
     if [[ ! -z "$name" ]]
     then
-      tmux new -s "${name}" -d
-      tmux switch -t "${name}"
+      tmux new -s "${name_padded}" -d
+      tmux switch -t "${name_padded}"
     fi
     ;;
 
