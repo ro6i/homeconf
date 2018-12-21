@@ -5,8 +5,11 @@ case $1 in
   new-session)
     name=$(printf '%-10s ' "$2" | tr '[:lower:]' '[:upper:]')
 
-    tmux new -s "${name}" -d
-    tmux switch -t "${name}"
+    if [[ ! -z "$name" ]]
+    then
+      tmux new -s "${name}" -d
+      tmux switch -t "${name}"
+    fi
     ;;
 
   find-session)
