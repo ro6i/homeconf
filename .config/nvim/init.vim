@@ -32,13 +32,18 @@ nnoremap <silent> <Leader>f :call FindTextPrompt()<CR>
 vnoremap <silent> <Leader>f y:FindTextExact <C-R>"<CR>
 nnoremap <silent> <Leader>l :call NextKeymap()<CR>:call lightline#update()<CR>
 nnoremap <silent> <Leader>rr :tabnew<CR>:term<CR>iranger<CR>
-nnoremap <silent> <Leader>t :tabnew<CR>
 nnoremap <silent> <Leader>v "*p
 vnoremap <silent> <Leader>v "*p
 nnoremap <silent> <Leader>x :Vexplore<CR>
 nnoremap          <Leader>sh :w !bash<CR>
 
 nnoremap <silent> <Leader><Leader> :Files<CR>
+
+nnoremap <silent> <Space>l :GotoLastTab<CR>
+nnoremap <silent> <Space>n :tabnext<CR>
+nnoremap <silent> <Space>p :tabprevious<CR>
+nnoremap <silent> <Space>t :tabnew<CR>
+nnoremap <silent> <Space>q :copen<CR>
 
 vnoremap <silent> <M-c> "*y
 inoremap <silent> <M-v> <C-o>"*p
@@ -130,10 +135,6 @@ if executable('ag')
   let $FZF_DEFAULT_COMMAND = 'ag --hidden --ignore={.git,.svn,build,project,target,build,__pycache__} -g ""'
 endif
 let g:fzf_colors = { 'fg': ['fg', 'Normal'], 'bg': ['bg', 'Normal'], 'hl': ['fg', 'Comment'], 'fg+': ['fg', 'Normal', 'Comment', 'Normal'], 'bg+': ['bg', 'Normal', 'Normal'], 'hl+': ['fg', 'Statement'], 'info': ['fg', 'PreProc'], 'border': ['fg', 'Ignore'], 'prompt': ['fg', 'Conditional'], 'pointer': ['fg', 'Exception'], 'marker':  ['fg', 'Keyword'], 'spinner': ['fg', 'Label'], 'header':  ['fg', 'Comment'] }
-
-" open tag in a split
-" nnoremap <C-]> :sp <CR>:exec("tag ".expand("<cword>"))<CR>
-" nnoremap <C-_> :vsp <CR>:exec("tag ".expand("<cword>"))<CR>
 
 function! ToggleColorColumn(width)
   execute "setlocal colorcolumn=" . (&colorcolumn == a:width ? 0 : a:width)
