@@ -2,9 +2,60 @@
 
 nvimSocketNamePrefix="/tmp/nvimsocket-"
 
-syntax=""
-if [ ! -z "$2" ]; then 
-  syntax="$2"
+NAME="$1"; shift
+
+SERVERNAME="${nvimSocketNamePrefix}-${NAME}"
+
+# nvr -cc 'setlocal buftype=nofile bufhidden=hide noswapfile syntax=none' -c "setlocal syntax=$syntax" --remote-send '<esc>G' - --servername "${SERVERNAME}"
+
+ARGS=`getopt --name 'nvim-pipe' --options 'sc' --longoptions syntax:,comment: -- "$@"`
+eval set -- "$ARGS"
+
+_syntax=''
+_comment=''
+
+while true ; do
+  case "$1" in
+    --syntax)
+        case "$2" in
+          "")
+            shift 2 ;;
+          *)
+            _syntax="$2"
+            shift 2 ;;
+        esac ;;
+    --comment)
+      case "$2" in
+          "")
+            shift 2 ;;
+          *)
+            _comment="$2"
+            shift 2 ;;
+      esac ;;
+    --)
+      shift
+      break ;;
+    *)
+      echo "error parsing args"
+      exit 1 ;;
+  esac
+done
+
+_syntax_conf=
+if [[ -z "${_syntax}" ]]
+then
+  _syntax_conf="nofoldenable"
+else
+  _syntax_conf="syntax=${_syntax} foldenable "
 fi
 
-nvr -cc 'setlocal buftype=nofile bufhidden=hide noswapfile syntax=none' -c "setlocal syntax=$syntax" --remote-send '<esc>G' - --servername "${nvimSocketNamePrefix}-$1"
+_configure="<esc>:setlocal buftype=nofile bufhidden=hide viminfo= noswapfile ${_syntax_conf}<cr>"
+
+if [[ -z "${_comment}" ]]
+then
+  _comment_content='<esc>G'
+else
+  _comment_content="<esc>i${_comment}<cr><cr><esc>"
+fi
+
+nvr --remote-send "${_configure}${_comment_content}" - --servername "$SERVERNAME"
