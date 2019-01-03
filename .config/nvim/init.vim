@@ -18,8 +18,9 @@ nmap <silent> <Backspace> :call search('\u', 'bW', line("."))<CR>
 
 nnoremap <silent> !c :set cursorline!<CR>
 nnoremap <silent><expr> !h (&hls && v:hlsearch ? ':nohls' : ':set hls')."\n"
-nnoremap <silent> !l :set list!<CR>
-nnoremap <silent> !s :set scb!<CR>:call lightline#update()<CR>
+nnoremap <silent> !lc :setlocal cursorbind!<CR>:call lightline#update()<CR>
+nnoremap <silent> !ls :setlocal scrollbind!<CR>:call lightline#update()<CR>
+nnoremap <silent> !r :set list!<CR>
 nnoremap <silent> !w :set wrap!<CR>
 nnoremap <silent> !z :let &scrolloff=999-&scrolloff<CR>
 
@@ -122,10 +123,11 @@ let g:ctrlp_match_window = 'min:4,max:20'
 function! LightlineKeymap()
   return !exists("b:keymap_name") ? "" : toupper(b:keymap_name)
 endfunction
-function! LightlineScrollbind()
-  return &scrollbind ? "SB" : ""
+function! LightlineBindings()
+  let value = (&cursorbind ? "C" : "") . (&scrollbind ? "S" : "")
+  return (&cursorbind || &scrollbind) ? ('● ' . value) : ''
 endfunction
-let g:lightline = { 'colorscheme': 'm31', 'lineinfo': "%{line('.') . ':' . col('.') . '/' . line('$')}", 'filename': "%f", 'tabline': { 'left': [ [ 'tabs' ] ], 'right': [ ] }, 'mode_map': { 'n' : ' N ', 'i' : ' I ', 'R' : ' R ', 'v' : ' V ', 'V' : 'V-L', "\<C-v>": 'V-B', 'c' : ' C ', 's' : ' S ', 'S' : 'S-L', "\<C-s>": 'S-B', 't': ' T ' }, 'component_expand': { 'keymap': 'LightlineKeymap', 'scrollbind': 'LightlineScrollbind'}, 'component_type': { 'keymap': 'warning', 'scrollbind': 'info' }, 'active': { 'right': [ [ 'lineinfo' ], [ 'percent' ], [ 'fileformat', 'fileencoding', 'filetype' ], ['keymap', 'scrollbind'] ] }, 'subseparator': { 'left': '', 'right': '|' } }
+let g:lightline = { 'colorscheme': 'm31', 'lineinfo': "%{line('.') . ':' . col('.') . '/' . line('$')}", 'filename': "%f", 'tabline': { 'left': [ [ 'tabs' ] ], 'right': [ ] }, 'mode_map': { 'n' : ' N ', 'i' : ' I ', 'R' : ' R ', 'v' : ' V ', 'V' : 'V-L', "\<C-v>": 'V-B', 'c' : ' C ', 's' : ' S ', 'S' : 'S-L', "\<C-s>": 'S-B', 't': ' T ' }, 'component_expand': { 'keymap': 'LightlineKeymap', 'scrollbind': 'LightlineScrollbind', 'bindings': 'LightlineBindings'}, 'component_type': { 'keymap': 'warning', 'bindings': 'warning' }, 'active': { 'right': [ [ 'lineinfo' ], [ 'percent' ], [ 'fileformat', 'fileencoding', 'filetype' ], ['keymap', 'bindings' ] ] }, 'subseparator': { 'left': '', 'right': '|' } }
 
 let g:snugfind_exclude_dir = 'project,target,build,.git,.idea,.build,.ensime_cache'
 let g:snugfind_exclude = '.tags,.ensime'
