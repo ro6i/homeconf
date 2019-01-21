@@ -1,18 +1,24 @@
 #!/bin/bash
 
-nvimSocketNamePrefix="/tmp/nvimsocket-"
+nvimSocketNamePrefix="/tmp/nvimsocket"
 
 NAME="$1"; shift
 
 SERVERNAME="${nvimSocketNamePrefix}-${NAME}"
+
+if [ ! -e "$SERVERNAME" ]
+then
+  echo "File $SERVERNAME does not exit."
+  exit 1
+fi
 
 # nvr -cc 'setlocal buftype=nofile bufhidden=hide noswapfile syntax=none' -c "setlocal syntax=$syntax" --remote-send '<esc>G' - --servername "${SERVERNAME}"
 
 ARGS=`getopt --name 'nvim-pipe' --options 'sc' --longoptions syntax:,comment: -- "$@"`
 eval set -- "$ARGS"
 
-_syntax=''
-_comment=''
+_syntax=
+_comment=
 
 while true ; do
   case "$1" in
