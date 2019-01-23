@@ -41,6 +41,16 @@ nnoremap          <Leader>sh :w !bash<CR>
 nnoremap <silent> <Leader><Leader> :Files<CR>
 
 nnoremap <silent> <Space> <nop>
+nnoremap <silent> <Space><Space> za
+nnoremap <silent> <Space>1 1gt<CR>
+nnoremap <silent> <Space>2 2gt<CR>
+nnoremap <silent> <Space>3 3gt<CR>
+nnoremap <silent> <Space>4 4gt<CR>
+nnoremap <silent> <Space>5 5gt<CR>
+nnoremap <silent> <Space>6 6gt<CR>
+nnoremap <silent> <Space>7 7gt<CR>
+nnoremap <silent> <Space>8 8gt<CR>
+nnoremap <silent> <Space>9 9gt<CR>
 nnoremap <silent> <Space>l :GotoLastTab<CR>
 nnoremap <silent> <Space>n :tabnext<CR>
 nnoremap <silent> <Space>p :tabprevious<CR>
