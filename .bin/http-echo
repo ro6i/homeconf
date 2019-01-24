@@ -1,0 +1,22 @@
+#!/usr/local/bin/bash
+
+_port="$1"
+_content=$(less <&0)
+_content_length=$(( $(echo -e "$_content" | wc -c) - 1 ))
+
+echo -e "HTTP Server mock started on port $_port:"
+
+while true
+do
+
+  echo -e "\
+HTTP/1.1 200 OK\r\n\
+Date: $(date)\r\n\
+Content-type: application/json\r\n\
+Content-length: $_content_length\r\n\r\n\
+$_content" \
+  |  nc -l -v -p $_port
+
+  echo ""
+  echo "=/="
+done
