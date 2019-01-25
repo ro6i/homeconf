@@ -20,7 +20,8 @@ eval set -- "$ARGS"
 _syntax=
 _comment=
 
-while true ; do
+while true
+do
   case "$1" in
     --syntax)
         case "$2" in
