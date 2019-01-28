@@ -3,27 +3,45 @@
 case $1 in
 
   new-session)
-    name="$2"
-    name_padded=$(printf '%-10s ' "$name" | tr '[:lower:]' '[:upper:]')
+    _name="$2"
+    _name_padded=$(printf '%-10s ' "$_name" | tr '[:lower:]' '[:upper:]')
 
-    if [[ ! -z "$name" ]]
+    if [[ ! -z "$_name" ]]
     then
-      tmux new -s "${name_padded}" -d
-      tmux switch -t "${name_padded}"
+      tmux new -s "${_name_padded}" -d
+      tmux switch -t "${_name_padded}"
     fi
     ;;
 
   find-session)
-    part_of_name=$(echo "$2" | tr '[:lower:]' '[:upper:]')
+    _part_of_name=$(echo "$2" | tr '[:lower:]' '[:upper:]')
 
-    if [[ ! -z "$part_of_name" ]]
+    if [[ ! -z "$_part_of_name" ]]
     then
-      tmux ls -F '#{session_name}' | tr '[:lower:]' '[:upper:]' | grep "$part_of_name" | head -n 1 | xargs tmux switch -t
+      tmux ls -F '#{session_name}' | tr '[:lower:]' '[:upper:]' | grep "$_part_of_name" | head -n 1 | xargs tmux switch -t
     fi
     ;;
 
   rename-window-to-current-dir)
     echo "$2" | tr '[:lower:]' '[:upper:]' | xargs tmux rename-window
+    ;;
+
+  move-window-left)
+    _index=$(tmux display-message -p '#I')
+    tmux swap-window -s :$_index -t :$(( $_index - 1 )) &> /dev/null
+    if [ $? -ne 0 ]
+    then
+      tmux swap-window -s :$_index -t :{session_windows}
+    fi
+    ;;
+
+  move-window-right)
+    _index=$(tmux display-message -p '#I')
+    tmux swap-window -s :$_index -t :$(( $_index + 1 )) &> /dev/null
+    if [ $? -ne 0 ]
+    then
+      tmux swap-window -s :$_index -t :1
+    fi
     ;;
 
 esac
