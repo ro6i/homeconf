@@ -1,4 +1,5 @@
 source "${HOME}/.config/bash/prompt"
+source "${HOME}/.config/bash/cdi"
 
 export PATH="/usr/local/sbin:$PATH:~/.bin:~/.local/bin"
 
