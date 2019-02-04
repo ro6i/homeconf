@@ -1,13 +1,13 @@
 source "${HOME}/.config/bash/prompt"
 source "${HOME}/.config/bash/cdi"
 
-export PATH="/usr/local/sbin:$PATH:~/.bin:~/.local/bin"
+export PATH="/usr/local/sbin:/usr/local/opt/gnu-getopt/bin:$PATH:~/.bin:~/.local/bin"
 
 set show-mode-in-prompt on
 set vi-ins-mode-string ""
 set vi-cmd-mode-string ":"
 
-export PS1="\n\$(prompt_path)\$(prompt_component_git)\$(prompt_time)\n "
+export PS1="\n\$(prompt_path)\$(prompt_component_git)\$(prompt_jobs)\$(prompt_time)\n "
 # export HISTCONTROL=ignoredups
 export HISTTIMEFORMAT="%Y-%m-%dT%T "
 export EDITOR=nvim

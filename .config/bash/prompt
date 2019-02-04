@@ -57,3 +57,11 @@ prompt_path() {
 prompt_time() {
   echo -e " $(_setf '100;97')$(date +'%m-%d %H:%M')$(_nof)"
 }
+
+prompt_jobs() {
+  local j="$(($(jobs -p | wc -l)))"
+  if [[ $j > 0 ]]
+  then
+    echo -e "$(_component 'jobs' "$(_setf 91)$j")"
+  fi
+}
