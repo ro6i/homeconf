@@ -1,11 +1,5 @@
-# source .bashrc
+
 list=(
-  "/usr/local/etc/bash_completion.d/brew"
-  "/usr/local/etc/bash_completion.d/git-completion.bash"
-  "/usr/local/etc/bash_completion.d/git-prompt.sh"
-  "/usr/local/etc/bash_completion.d/tmux"
-  "/usr/local/etc/bash_completion.d/scala"
-  "/usr/local/etc/bash_completion.d/npm.sh"
 )
 
 for item in ${list[*]}

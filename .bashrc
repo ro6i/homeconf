@@ -1,5 +1,19 @@
-source "${HOME}/.config/bash/prompt"
-source "${HOME}/.config/bash/cdi"
+
+list=(
+  "/usr/local/etc/bash_completion.d/brew"
+  "/usr/local/etc/bash_completion.d/git-completion.bash"
+  "/usr/local/etc/bash_completion.d/git-prompt.sh"
+  "/usr/local/etc/bash_completion.d/tmux"
+  "/usr/local/etc/bash_completion.d/scala"
+  "/usr/local/etc/bash_completion.d/npm.sh"
+  "${HOME}/.config/bash/prompt"
+  "${HOME}/.config/bash/cdi"
+)
+
+for item in ${list[*]}
+do
+  [ -r "${item}" ] && source "${item}"
+done
 
 export PATH="/usr/local/sbin:/usr/local/opt/gnu-getopt/bin:$PATH:~/.bin:~/.local/bin"
 
