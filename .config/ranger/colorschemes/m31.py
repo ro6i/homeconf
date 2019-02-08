@@ -98,6 +98,7 @@ class M31(ColorScheme):
             elif context.tab:
                 if context.good:
                     bg = green
+                    fg = black
             elif context.link:
                 fg = cyan
             attr |= bold
