@@ -64,8 +64,6 @@ vnoremap <silent> <M-v> "*p
 inoremap <silent> <M-l> <C-o>:call NextKeymap()<CR><C-o>:call lightline#update()<CR>
 nnoremap <silent> <M-l> :call NextKeymap()<CR>:call lightline#update()<CR>
 
-nnoremap <silent> <C-p> :CtrlP<CR>
-
 vnoremap r "_dP
 vnoremap * y/\V<C-R>"<CR>
 
@@ -76,7 +74,6 @@ call plug#begin()
 
 let g:plug_url_format = "https://git::@github.com/%s.git"
 Plug 'itchyny/lightline.vim'
-Plug 'ctrlpvim/ctrlp.vim'
 Plug 'jeetsukumaran/vim-indentwise'
 Plug 'sheerun/vim-polyglot'
 Plug 'airblade/vim-gitgutter'
@@ -118,17 +115,6 @@ let g:netrw_liststyle = 3
 let g:netrw_sort_options = 'i'
 let g:netrw_keepdir = 1
 let g:netrw_winsize = 20
-
-let g:ctrlp_custom_ignore = {
-\ 'dir':  '\.git$\|\.svn$\|\.build$\|project$\|target$\|build$\|__pycache__$',
-\ 'file': '\.exe$\|\.so$\|\.dat$'
-\}
-let g:ctrlp_root_markers = ['pom.xml', 'project', '.git', '.svn', '.idea']
-let g:ctrlp_working_path_mode = 'ra'
-let g:ctrlp_mruf_save_on_update = 0
-let g:ctrlp_mruf_relative = 0
-let g:ctrlp_max_files = 2000
-let g:ctrlp_match_window = 'min:4,max:20'
 
 function! LightlineKeymap()
   return !exists("b:keymap_name") ? "" : toupper(b:keymap_name)
