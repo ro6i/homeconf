@@ -1,0 +1,24 @@
+#!/bin/bash
+
+case $(uname -s) in
+    "Darwin")
+_app="$(osascript << 'EOF'
+global frontApp, frontAppName
+
+tell application "System Events"
+    set frontApp to first application process whose frontmost is true
+    set frontAppName to name of frontApp
+end tell
+
+return frontAppName
+EOF
+)"
+      if [[ "$_app" == "iTerm2" ]]
+      then
+        echo "1"
+      else
+        echo ""
+      fi
+        ;;
+    *) echo;
+esac
