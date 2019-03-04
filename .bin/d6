@@ -101,7 +101,7 @@ done
 
 # make sure there is no 'null' value returned by `yq`
 # in case the attribute could not be found
-for FIELD in host port database
+for FIELD in host database
 do
   if [[ "${_map[$FIELD]}" == "null" ]]
   then
@@ -149,4 +149,15 @@ case $SPEC in
         ;;
     esac
     ;;
+
+  "mssql")
+
+    case $TOOL in
+      "shell")
+        eval "isql $NAME ${_map[username]} ${_map[password]}"
+        ;;
+      "uri")
+        error "$SPEC $TOOL not supported" ;;
+    esac
+
 esac
