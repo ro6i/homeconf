@@ -1,0 +1,152 @@
+#!/usr/local/bin/bash
+
+function help {
+cat <<'EOF'
+usage: d6 <spec> <tool> <format> <dsn-token> [options]
+   or: d6 --help
+
+Arguments:
+  <spec>        mongo | redshift | mssql
+  <tool>        shell | uri
+  <format>      Use case:               Description:
+    csv         redshft shell csv       Outputs the data in CSV format
+  <dsn-token>   token from DSN conf
+
+Options (DSN overrides):
+  --host        overrides 'host'
+  --database    overrides 'host'
+  --username    overrides 'username'
+  --password    overrides 'password'
+
+EOF
+}
+
+case $1 in
+  -h | --help)
+    help; exit 0 ;;
+  *) ;;
+esac
+
+_dsn_path="$HOME/projects/dsn1.conf.yaml"
+
+function error {
+  if [ -t 1 ]
+  then
+    >&2 echo -e "$(tput setaf 1)${1}$(tput sgr0)"
+  else
+    >&2 echo -e "$1"
+  fi
+}
+
+# specification of dbms
+SPEC="$1"; shift
+# a specific tool fromt the supported toolset
+# shell - runs a cli shell/tool for the dbms specified by $SPEC
+# uri - outputs connection strings in a format specified by $FORMAT
+TOOL="$1"; shift
+# format of the output (processing details)
+FORMAT="$1"; shift
+# name of the token to read the connection attributes from
+NAME="$1"; shift
+
+# validate all positional arguments
+case $SPEC in
+  "mongo")
+    case "$FORMAT" in
+      - | -- | default) ;;
+      *) error "'$FORMAT' output format is not supported"; exit 1
+    esac
+    ;;
+  "redshift")
+    case "$FORMAT" in
+      csv | psycopg | - | -- | default) ;;
+      *) error "'$FORMAT' format is not supported"; exit 1
+    esac
+    ;;
+  "mssql")
+    ;;
+  *) error "'$SPEC' spec is not supported"; exit 1
+esac
+case $TOOL in
+  "shell" | "uri") ;;
+  *) error "'$TOOL' is not a valid argument"; exit 1
+esac
+
+_scope="${SPEC^^}"
+
+# read database connection attributes into a map
+declare -A _map
+for FIELD in host port database username password
+do
+  _map[$FIELD]=$(cat $_dsn_path | yq r - "$_scope.$NAME.$FIELD")
+done
+
+# read all the optional arguments
+ARGS=`getopt --name 'database-tool' --options 'asc' --longoptions database: -- "$@"`
+eval set -- "$ARGS"
+
+# parameters can be overridden
+while true
+do
+  case "$1" in
+    --database)
+        case "$2" in
+          "") shift 2 ;;
+          *) _map[database]="$2"; shift 2 ;;
+        esac ;;
+    --) shift; break ;;
+    *) echo "error parsing args"; exit 1
+  esac
+done
+
+# make sure there is no 'null' value returned by `yq`
+# in case the attribute could not be found
+for FIELD in host port database
+do
+  if [[ "${_map[$FIELD]}" == "null" ]]
+  then
+    error "$_scope.$NAME.$FIELD must not be 'null'"; exit 1
+  fi
+done
+
+case $SPEC in
+  "mongo")
+
+    case "$FORMAT" in
+      - | -- | default) ;;
+    esac
+
+    _uri="mongodb://${_map[host]}:${_map[port]}/${_map[database]}"
+
+    case $TOOL in
+      "shell") mongo --quiet "$_uri" ;;
+      "uri") echo "$_uri" ;;
+    esac
+    ;;
+
+  "redshift")
+
+    case $TOOL in
+      "shell")
+        _psql_params=
+        _csv_params='--no-align --field-separator "," --pset footer'
+
+        case "$FORMAT" in
+          csv) _psql_params=$_csv_params ;;
+          - | -- | default) ;;
+        esac
+
+        eval "PGPASSWORD=${_map[password]} psql ${_psql_params} --host=${_map[host]} --port=${_map[port]} ${_map[database]} ${_map[username]}"
+        ;;
+      "uri")
+        case "$FORMAT" in
+          psycopg)
+            echo "host='${_map[host]}' port=${_map[port]} dbname='${_map[database]}' user='${_map[username]}' password='${_map[password]}'"
+            ;;
+          - | -- | default)
+            error "$SPEC $TOOL output format must be specified explicitly" ;;
+        esac
+        ;;
+    esac
+    ;;
+esac
