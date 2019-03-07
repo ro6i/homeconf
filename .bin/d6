@@ -27,7 +27,7 @@ case $1 in
   *) ;;
 esac
 
-_dsn_path="$HOME/projects/dsn1.conf.yaml"
+_dsn_path="$HOME/projects/.dsn.conf.yml"
 
 function error {
   if [ -t 1 ]
