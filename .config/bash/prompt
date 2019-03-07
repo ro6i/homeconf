@@ -1,4 +1,6 @@
 
+_component_delimiter=' '
+
 _nof() {
   echo -e "\001\e[m\002"
 }
@@ -12,7 +14,7 @@ _component() {
   then
     echo ''
   else
-    echo " $(_setf '100;97')$1:$2$(_nof)"
+    echo " $(_setf '100;97')$1${_component_delimiter}$2$(_nof)"
   fi
 }
 
