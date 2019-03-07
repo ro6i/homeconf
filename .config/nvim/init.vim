@@ -198,6 +198,10 @@ au TermOpen * setlocal nonumber norelativenumber
 hi SignatureMarkText ctermfg=10
 hi SignatureMarkLine ctermbg=0
 hi scalaSquareBracketsBrackets ctermfg=9
+hi link GitGutterAdd LineNr
+hi link GitGutterChange LineNr
+hi link GitGutterDelete LineNr
+hi link GitGutterChangeDelete LineNr
 au BufRead,BufNewFile * syn match parensRoundLeft /[(]/ | hi parensRoundLeft ctermfg=6
 au BufRead,BufNewFile * syn match parensRoundRight /[)]/ | hi parensRoundRight ctermfg=13
 au BufRead,BufNewFile * syn match parensCurly /[{}]/ | hi parensCurly ctermfg=10
