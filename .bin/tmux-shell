@@ -22,7 +22,7 @@ case $1 in
     fi
     ;;
 
-  rename-window-to-current-dir)
+  rename-window-to)
     echo "$2" | tr '[:lower:]' '[:upper:]' | xargs tmux rename-window
     ;;
 
