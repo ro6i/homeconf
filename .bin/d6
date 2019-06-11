@@ -6,7 +6,7 @@ usage: d6 <spec> <tool> <format> <dsn-token> [options]
    or: d6 --help
 
 Arguments:
-  <spec>        mongo | redshift | mssql
+  <spec>        mongo | { redshift | postgres } | mssql
   <tool>        shell | uri
   <format>      Use case:               Description:
     csv         redshft shell csv       Outputs the data in CSV format
@@ -14,6 +14,7 @@ Arguments:
 
 Options (DSN overrides):
   --host        overrides 'host'
+  --port        overrides 'port'
   --database    overrides 'database'
   --username    overrides 'username'
   --password    overrides 'password'
@@ -57,7 +58,7 @@ case $SPEC in
       *) error "'$FORMAT' output format is not supported"; exit 1
     esac
     ;;
-  "redshift")
+  "redshift" | "postgres")
     case "$FORMAT" in
       csv | psycopg | - | -- | default) ;;
       *) error "'$FORMAT' format is not supported"; exit 1
@@ -124,7 +125,7 @@ case $SPEC in
     esac
     ;;
 
-  "redshift")
+  "redshift" | "postgres")
 
     case $TOOL in
       "shell")
