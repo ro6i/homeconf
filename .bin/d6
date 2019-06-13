@@ -6,10 +6,11 @@ usage: d6 <spec> <tool> <format> <dsn-token> [options]
    or: d6 --help
 
 Arguments:
-  <spec>        mongo | { redshift | postgres } | mssql
+  <spec>        mongo | { redshift | postgres } | heroku | mssql | bypass
   <tool>        shell | uri
   <format>      Use case:               Description:
-    csv         redshft shell csv       Outputs the data in CSV format
+    -           redshift shell -        Ignore the format parameter
+    csv         redshift shell csv      Hints the tool to output the data in CSV format
   <dsn-token>   token from DSN conf
 
 Options (DSN overrides):
@@ -52,6 +53,12 @@ NAME="$1"; shift
 
 # validate all positional arguments
 case $SPEC in
+  "bypass")
+    case "$FORMAT" in
+      - | -- | default) ;;
+      *) error "'$FORMAT' output format is not supported"; exit 1
+    esac
+    ;;
   "mongo")
     case "$FORMAT" in
       - | -- | default) ;;
@@ -61,6 +68,12 @@ case $SPEC in
   "redshift" | "postgres")
     case "$FORMAT" in
       csv | psycopg | - | -- | default) ;;
+      *) error "'$FORMAT' format is not supported"; exit 1
+    esac
+    ;;
+  "heroku")
+    case "$FORMAT" in
+      - | -- | default) ;;
       *) error "'$FORMAT' format is not supported"; exit 1
     esac
     ;;
@@ -77,7 +90,7 @@ _scope="${SPEC^^}"
 
 # read database connection attributes into a map
 declare -A _map
-for FIELD in host port database username password
+for FIELD in host port database username password app
 do
   _map[$FIELD]=$(cat $_dsn_path | yq r - "$_scope.$NAME.$FIELD")
 done
@@ -102,15 +115,22 @@ done
 
 # make sure there is no 'null' value returned by `yq`
 # in case the attribute could not be found
-for FIELD in host database
-do
-  if [[ "${_map[$FIELD]}" == "null" ]]
-  then
-    error "$_scope.$NAME.$FIELD must not be 'null'"; exit 1
-  fi
-done
+if [[ "${SPEC}" != "bypass" ]]
+then
+  for FIELD in database
+  do
+    if [[ "${_map[$FIELD]}" == "null" ]]
+    then
+      error "$_scope.$NAME.$FIELD must not be 'null'"; exit 1
+    fi
+  done
+fi
 
 case $SPEC in
+  "bypass")
+
+      cat
+    ;;
   "mongo")
 
     case "$FORMAT" in
@@ -147,6 +167,20 @@ case $SPEC in
           - | -- | default)
             error "$SPEC $TOOL output format must be specified explicitly" ;;
         esac
+        ;;
+    esac
+    ;;
+
+  "heroku")
+
+    case $TOOL in
+      "shell")
+        _heroku_params=
+
+        case "$FORMAT" in
+          - | -- | default) ;;
+        esac
+        eval "heroku pg:psql '${_map[database]}' --app '${_map[app]}'"
         ;;
     esac
     ;;
