@@ -28,6 +28,7 @@ nnoremap <silent> !\ :call ToggleColorColumn(80)<CR>
 nnoremap <silent> ![ :call ToggleColorColumn(120)<CR>
 nnoremap <silent> !] :call ToggleColorColumn(160)<CR>
 
+xmap     <silent> <Leader>a <Plug>(EasyAlign)
 vnoremap <silent> <Leader>c "*y
 nnoremap <silent> <Leader>f :call FindTextPrompt()<CR>
 vnoremap <silent> <Leader>f y:FindTextExact <C-R>"<CR>
@@ -89,6 +90,7 @@ Plug 'bitc/vim-hdevtools'
 Plug 'hdima/python-syntax'
 Plug 'chrisbra/csv.vim'
 Plug 'tpope/vim-commentary'
+Plug 'junegunn/vim-easy-align'
 Plug 'vim-scripts/bufkill.vim'
 Plug 'vim-scripts/BufOnly.vim'
 " Plug 'vim-scripts/AnsiEsc.vim'
@@ -129,7 +131,7 @@ function! LightlineBindings()
 endfunction
 let g:lightline = { 'colorscheme': 'm31', 'lineinfo': "%{line('.') . ':' . col('.') . '/' . line('$')}", 'filename': "%f", 'tabline': { 'left': [ [ 'tabs' ] ], 'right': [ ] }, 'mode_map': { 'n' : ' N ', 'i' : ' I ', 'R' : ' R ', 'v' : ' V ', 'V' : 'V-L', "\<C-v>": 'V-B', 'c' : ' C ', 's' : ' S ', 'S' : 'S-L', "\<C-s>": 'S-B', 't': ' T ' }, 'component_expand': { 'keymap': 'LightlineKeymap', 'scrollbind': 'LightlineScrollbind', 'bindings': 'LightlineBindings'}, 'component_type': { 'keymap': 'warning', 'bindings': 'warning' }, 'active': { 'right': [ [ 'lineinfo' ], [ 'percent' ], [ 'fileformat', 'fileencoding', 'filetype' ], ['keymap', 'bindings' ] ] }, 'subseparator': { 'left': '', 'right': '|' } }
 
-let g:snugfind_exclude_dir = 'project,target,build,.git,.idea,.build,.ensime_cache'
+let g:snugfind_exclude_dir = 'project,target,build,.git,.idea,.build,.ensime_cache,node_modules,tmp,log'
 let g:snugfind_exclude = '.tags,.ensime'
 
 let g:python_highlight_all = 1
@@ -206,6 +208,8 @@ hi link GitGutterAdd LineNr
 hi link GitGutterChange LineNr
 hi link GitGutterDelete LineNr
 hi link GitGutterChangeDelete LineNr
+hi! def link Define Keyword
+hi! def link rubyIdentifier NONE
 au BufRead,BufNewFile * syn match parensRoundLeft /[(]/ | hi parensRoundLeft ctermfg=6
 au BufRead,BufNewFile * syn match parensRoundRight /[)]/ | hi parensRoundRight ctermfg=13
 au BufRead,BufNewFile * syn match parensCurly /[{}]/ | hi parensCurly ctermfg=10
