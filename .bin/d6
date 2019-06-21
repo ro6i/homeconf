@@ -157,7 +157,7 @@ case $SPEC in
           - | -- | default) ;;
         esac
 
-        eval "PGPASSWORD=${_map[password]} psql ${_psql_params} --host=${_map[host]} --port=${_map[port]} ${_map[database]} ${_map[username]}"
+        eval "PGPASSWORD='${_map[password]}' psql ${_psql_params} -h ${_map[host]} -U ${_map[username]} -d ${_map[database]} -p ${_map[port]} --quiet"
         ;;
       "uri")
         case "$FORMAT" in
