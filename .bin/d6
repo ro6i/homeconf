@@ -157,7 +157,7 @@ case $SPEC in
           - | -- | default) ;;
         esac
 
-        eval "PGPASSWORD='${_map[password]}' psql ${_psql_params} -h ${_map[host]} -U ${_map[username]} -d ${_map[database]} -p ${_map[port]} --quiet"
+        PGPASSWORD="${_map[password]}" psql ${_psql_params} -h ${_map[host]} -U ${_map[username]} -d ${_map[database]} -p ${_map[port]} --quiet
         ;;
       "uri")
         case "$FORMAT" in
@@ -180,7 +180,7 @@ case $SPEC in
         case "$FORMAT" in
           - | -- | default) ;;
         esac
-        eval "heroku pg:psql '${_map[database]}' --app '${_map[app]}'"
+        heroku pg:psql ${_map[database]} --app ${_map[app]}
         ;;
     esac
     ;;
@@ -189,7 +189,7 @@ case $SPEC in
 
     case $TOOL in
       "shell")
-        eval "isql $NAME ${_map[username]} ${_map[password]}"
+        $(isql '$NAME' '${_map[username]}' '${_map[password]}')
         ;;
       "uri")
         error "$SPEC $TOOL not supported" ;;
