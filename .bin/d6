@@ -9,7 +9,7 @@ Arguments:
   <spec>        mongo | { redshift | postgres } | heroku | mssql | bypass
   <tool>        shell | uri
   <format>      Use case:               Description:
-    -           redshift shell -        Ignore the format parameter
+    -           redshift shell -        Default output format
     csv         redshift shell csv      Hints the tool to output the data in CSV format
   <dsn-token>   token from DSN conf
 
@@ -29,8 +29,17 @@ case $1 in
   *) ;;
 esac
 
-_dsn_path="$HOME/projects/.dsn.conf.yml"
-
+_rc_path="$HOME/.config/d6/rc.conf.yml"
+_dsn_conf_dir="$HOME"
+if [[ -f "$_rc_path" ]]
+then
+  _dsn_conf_dir=$(cat "$_rc_path" | yq r - 'path')
+fi
+_dsn_conf_path="$_dsn_conf_dir/.dsn.conf.yml"
+if [[ -f "$_rc_path" ]]
+then
+  error "Cannot find configuration file $dsn_conf_path"
+fi
 function error {
   if [ -t 1 ]
   then
@@ -92,7 +101,7 @@ _scope="${SPEC^^}"
 declare -A _map
 for FIELD in host port database username password app
 do
-  _map[$FIELD]=$(cat $_dsn_path | yq r - "$_scope.$NAME.$FIELD")
+  _map[$FIELD]=$(cat "$_dsn_conf_path" | yq r - "$_scope.$NAME.$FIELD")
 done
 
 # read all the optional arguments
