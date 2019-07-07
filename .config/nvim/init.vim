@@ -208,8 +208,6 @@ hi link GitGutterAdd LineNr
 hi link GitGutterChange LineNr
 hi link GitGutterDelete LineNr
 hi link GitGutterChangeDelete LineNr
-hi! def link Define Keyword
-hi! def link rubyIdentifier NONE
 au BufRead,BufNewFile * syn match parensRoundLeft /[(]/ | hi parensRoundLeft ctermfg=6
 au BufRead,BufNewFile * syn match parensRoundRight /[)]/ | hi parensRoundRight ctermfg=13
 au BufRead,BufNewFile * syn match parensCurly /[{}]/ | hi parensCurly ctermfg=10
@@ -219,8 +217,7 @@ function! SynGroup()
   echo synIDattr(l:s, 'name') . ' -> ' . synIDattr(synIDtrans(l:s), 'name')
 endfun
 
-" au InsertEnter,InsertLeave * silent redraw!
-
 au FileType md,latex,tex,md,markdown,scala,java,sbt setlocal spell
 au FileType qf nnoremap <buffer> g<Enter> <C-w><Enter><C-w>T
 au FileType xml setlocal equalprg=xmllint\ --format\ --recover\ -\ 2>/dev/null
+au FileType yaml hi link yamlKey Label
