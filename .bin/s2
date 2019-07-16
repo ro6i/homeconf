@@ -1,0 +1,12 @@
+#!/bin/bash
+
+IFS=''
+while read -r line
+do
+   if [[ "${line}" == ']]' ]]
+   then
+     exit 0
+   else
+     echo "${line}"
+   fi
+done
