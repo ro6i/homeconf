@@ -1,0 +1,11 @@
+#!/bin/bash
+
+_tempfile="$(mktemp -t 'tmux-pipe-pane.tempfile')"
+
+cat > "$_tempfile"
+tmux pipe-pane -Io -t :.+ "cat -- '$_tempfile'; rm -f -- '$_tempfile'"
+
+# the temporary file has to be deleted within the context of the pipe-pane
+# because pipe-pane is non-blocking,
+# so the file might be deleted before it is fully piped
+# rm -f -- "$_tempfile"
