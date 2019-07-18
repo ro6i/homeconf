@@ -37,6 +37,8 @@ nnoremap <silent> <Leader>rr :tabnew<CR>:term<CR>iranger<CR>
 nnoremap <silent> <Leader>v "*p
 vnoremap <silent> <Leader>v "*p
 nnoremap <silent> <Leader>x :Vexplore<CR>
+
+nnoremap          <Leader>pn :w !tmux-pipe-to-next-pane<CR>
 nnoremap          <Leader>sh :w !bash<CR>
 
 nnoremap <silent> <Leader><Leader> :Files<CR>
@@ -99,6 +101,7 @@ Plug 'rhysd/open-pdf.vim'
 " Plug 'dhruvasagar/vim-table-mode', { 'on': 'TableModeEnable' }
 Plug '/usr/local/opt/fzf'
 Plug 'junegunn/fzf.vim'
+Plug 'inkarkat/vim-SyntaxRange'
 Plug 'ro6i/m31.vim'
 Plug 'ro6i/snugfind.vim'
 Plug 'ro6i/gotolasttab.vim'
