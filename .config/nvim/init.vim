@@ -38,7 +38,8 @@ nnoremap <silent> <Leader>v "*p
 vnoremap <silent> <Leader>v "*p
 nnoremap <silent> <Leader>x :Vexplore<CR>
 
-nnoremap          <Leader>pn :w !tmux-pipe-to-next-pane<CR>
+nnoremap          <Leader>pall :w !tmux-pipe-to-next-pane<CR>
+vnoremap          <Leader>ps :w !tmux-pipe-to-next-pane<CR>
 nnoremap          <Leader>sh :w !bash<CR>
 
 nnoremap <silent> <Leader><Leader> :Files<CR>
