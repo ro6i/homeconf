@@ -133,10 +133,10 @@ function! LightlineBindings()
   let value = (&cursorbind ? "C" : "") . (&scrollbind ? "S" : "")
   return (&cursorbind || &scrollbind) ? ('● ' . value) : ''
 endfunction
-let g:lightline = { 'colorscheme': 'm31', 'lineinfo': "%{line('.') . ':' . col('.') . '/' . line('$')}", 'filename': "%f", 'tabline': { 'left': [ [ 'tabs' ] ], 'right': [ ] }, 'mode_map': { 'n' : ' N ', 'i' : ' I ', 'R' : ' R ', 'v' : ' V ', 'V' : 'V-L', "\<C-v>": 'V-B', 'c' : ' C ', 's' : ' S ', 'S' : 'S-L', "\<C-s>": 'S-B', 't': ' T ' }, 'component_expand': { 'keymap': 'LightlineKeymap', 'scrollbind': 'LightlineScrollbind', 'bindings': 'LightlineBindings'}, 'component_type': { 'keymap': 'warning', 'bindings': 'warning' }, 'active': { 'right': [ [ 'lineinfo' ], [ 'percent' ], [ 'fileformat', 'fileencoding', 'filetype' ], ['keymap', 'bindings' ] ] }, 'subseparator': { 'left': '', 'right': '|' } }
+let g:lightline = { 'colorscheme': 'm31', 'lineinfo': "%{line('.') . ':' . col('.') . '/' . line('$')}", 'filename': "%f", 'tabline': { 'left': [ [ 'tabs' ] ], 'right': [ ] }, 'mode_map': { 'n' : 'N', 'i' : 'I', 'R' : 'R', 'v' : 'V', 'V' : 'L', "\<C-v>": 'B', 'c' : 'C', 's' : 'S', 'S' : 'S-L', "\<C-s>": 'S-B', 't': 'T' }, 'component_expand': { 'keymap': 'LightlineKeymap', 'scrollbind': 'LightlineScrollbind', 'bindings': 'LightlineBindings'}, 'component_type': { 'keymap': 'warning', 'bindings': 'warning' }, 'active': { 'right': [ [ 'lineinfo' ], [ 'percent' ], [ 'fileformat', 'fileencoding', 'filetype' ], ['keymap', 'bindings' ] ] }, 'subseparator': { 'left': '', 'right': '|' } }
 
-let g:snugfind_exclude_dir = 'project,target,build,.git,.idea,.build,.ensime_cache,node_modules,tmp,log'
-let g:snugfind_exclude = '.tags,.ensime'
+let g:snugfind_exclude_dirs = 'project,target,build,.git,.idea,.build,.ensime_cache,node_modules,tmp,log'
+let g:snugfind_exclude_files = '.tags,.ensime'
 
 let g:python_highlight_all = 1
 
