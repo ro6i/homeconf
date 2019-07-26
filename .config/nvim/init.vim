@@ -32,8 +32,9 @@ xmap     <silent> <Leader>a <Plug>(EasyAlign)
 vnoremap <silent> <Leader>c "*y
 nnoremap <silent> <Leader>f :call FindTextPrompt()<CR>
 vnoremap <silent> <Leader>f y:FindTextExact <C-R>"<CR>
-nnoremap <silent> <Leader>l :call NextKeymap()<CR>:call lightline#update()<CR>
+nnoremap <silent> <Leader>l :call NextKeymap()<CR><C-o>:call lightline#update()<CR>
 nnoremap <silent> <Leader>rr :tabnew<CR>:term<CR>iranger<CR>
+nnoremap <silent> <Leader>t :call SetNvimPipe()<CR>
 nnoremap <silent> <Leader>v "*p
 vnoremap <silent> <Leader>v "*p
 nnoremap <silent> <Leader>x :Vexplore<CR>
@@ -133,7 +134,29 @@ function! LightlineBindings()
   let value = (&cursorbind ? "C" : "") . (&scrollbind ? "S" : "")
   return (&cursorbind || &scrollbind) ? ('● ' . value) : ''
 endfunction
-let g:lightline = { 'colorscheme': 'm31', 'lineinfo': "%{line('.') . ':' . col('.') . '/' . line('$')}", 'filename': "%f", 'tabline': { 'left': [ [ 'tabs' ] ], 'right': [ ] }, 'mode_map': { 'n' : 'N', 'i' : 'I', 'R' : 'R', 'v' : 'V', 'V' : 'L', "\<C-v>": 'B', 'c' : 'C', 's' : 'S', 'S' : 'S-L', "\<C-s>": 'S-B', 't': 'T' }, 'component_expand': { 'keymap': 'LightlineKeymap', 'scrollbind': 'LightlineScrollbind', 'bindings': 'LightlineBindings'}, 'component_type': { 'keymap': 'warning', 'bindings': 'warning' }, 'active': { 'right': [ [ 'lineinfo' ], [ 'percent' ], [ 'fileformat', 'fileencoding', 'filetype' ], ['keymap', 'bindings' ] ] }, 'subseparator': { 'left': '', 'right': '|' } }
+function! LightlineEnv()
+  return empty($NVIM_PIPE) ? '' : ('|> ' . $NVIM_PIPE . ' |')
+endfunction
+function! SetNvimPipe()
+  call inputsave()
+  echoh Comment
+  let token = input("$NVIM_PIPE = ")
+  echoh None
+  echom token
+  call inputrestore()
+  if !empty(token)
+    execute "let $NVIM_PIPE = '" . token . "'"
+    execute "redraw"
+    echoh PreCondit
+    echom "nvim-pipe command will output to [" . $NVIM_PIPE . "]"
+    echoh None
+  endif
+  call lightline#update()
+endfunction
+function LightlineLineinfo()
+  return "%3p%% %{line('.') . ':' . col('.') . ' /' . line('$')}"
+endfunction
+let g:lightline = { 'colorscheme': 'm31', 'filename': "%f", 'tabline': { 'left': [ [ 'tabs' ] ], 'right': [ ] }, 'mode_map': { 'n' : 'N', 'i' : 'I', 'R' : 'R', 'v' : 'V', 'V' : 'L', "\<C-v>": 'B', 'c' : 'C', 's' : 'S', 'S' : 'S-L', "\<C-s>": 'S-B', 't': 'T' }, 'component_expand': { 'keymap': 'LightlineKeymap', 'env': 'LightlineEnv', 'bindings': 'LightlineBindings', 'lineinfo': 'LightlineLineinfo' }, 'component_type': { 'keymap': 'warning', 'bindings': 'warning' }, 'active': { 'right': [ [], [ 'lineinfo' ], [ 'fileformat', 'fileencoding', 'filetype' ], ['keymap', 'bindings', 'env' ] ] }, 'inactive': { 'right': [ [ 'lineinfo' ] ] }, 'subseparator': { 'left': '', 'right': '|' } }
 
 let g:snugfind_exclude_dirs = 'project,target,build,.git,.idea,.build,.ensime_cache,node_modules,tmp,log'
 let g:snugfind_exclude_files = '.tags,.ensime'
