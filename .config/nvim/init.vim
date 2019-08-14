@@ -103,7 +103,7 @@ Plug 'rhysd/open-pdf.vim'
 " Plug 'dhruvasagar/vim-table-mode', { 'on': 'TableModeEnable' }
 Plug '/usr/local/opt/fzf'
 Plug 'junegunn/fzf.vim'
-Plug 'inkarkat/vim-SyntaxRange'
+" Plug 'inkarkat/vim-SyntaxRange'
 Plug 'ro6i/m31.vim'
 Plug 'ro6i/snugfind.vim'
 Plug 'ro6i/gotolasttab.vim'
@@ -146,10 +146,13 @@ function! SetNvimPipe()
   call inputrestore()
   if !empty(token)
     execute "let $NVIM_PIPE = '" . token . "'"
-    execute "redraw"
+    redraw
     echoh PreCondit
     echom "nvim-pipe command will output to [" . $NVIM_PIPE . "]"
     echoh None
+  else
+    let $NVIM_PIPE = ''
+    redraw
   endif
   call lightline#update()
 endfunction
