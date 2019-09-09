@@ -63,6 +63,7 @@ nnoremap <silent> <Space>t :tabnew<CR>
 nnoremap <silent> <Space>q :copen<CR>
 nnoremap <silent> <Space>x :q<CR>
 nnoremap <silent> <Space>X :q!<CR>
+nnoremap <silent> <Space>w <C-w>
 nnoremap <silent> <Space>z :qa<CR>
 nnoremap <silent> <Space>Z :qa!<CR>
 
@@ -156,7 +157,7 @@ function! SetNvimPipe()
   endif
   call lightline#update()
 endfunction
-function LightlineLineinfo()
+function! LightlineLineinfo()
   return "%3p%% %{line('.') . ':' . col('.') . ' /' . line('$')}"
 endfunction
 let g:lightline = { 'colorscheme': 'm31', 'filename': "%f", 'tabline': { 'left': [ [ 'tabs' ] ], 'right': [ ] }, 'mode_map': { 'n' : 'N', 'i' : 'I', 'R' : 'R', 'v' : 'V', 'V' : 'L', "\<C-v>": 'B', 'c' : 'C', 's' : 'S', 'S' : 'S-L', "\<C-s>": 'S-B', 't': 'T' }, 'component_expand': { 'keymap': 'LightlineKeymap', 'env': 'LightlineEnv', 'bindings': 'LightlineBindings', 'lineinfo': 'LightlineLineinfo' }, 'component_type': { 'keymap': 'warning', 'bindings': 'warning' }, 'active': { 'right': [ [], [ 'lineinfo' ], [ 'fileformat', 'fileencoding', 'filetype' ], ['keymap', 'bindings', 'env' ] ] }, 'inactive': { 'right': [ [ 'lineinfo' ] ] }, 'subseparator': { 'left': '', 'right': '|' } }
