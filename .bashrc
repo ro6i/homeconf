@@ -6,6 +6,7 @@ list=(
   "/usr/local/etc/bash_completion.d/tmux"
   "/usr/local/etc/bash_completion.d/scala"
   "/usr/local/etc/bash_completion.d/npm.sh"
+  "/usr/local/opt/fzf/shell/completion.bash"
   "${HOME}/.config/bash/prompt"
   "${HOME}/.config/bash/cdi"
 )
