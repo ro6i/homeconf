@@ -56,14 +56,13 @@ nnoremap <silent> <Space>6 6gt<CR>
 nnoremap <silent> <Space>7 7gt<CR>
 nnoremap <silent> <Space>8 8gt<CR>
 nnoremap <silent> <Space>9 9gt<CR>
+nnoremap <silent> <Space>f :copen<CR>
 nnoremap <silent> <Space>l :GotoLastTab<CR>
 nnoremap <silent> <Space>n :tabnext<CR>
 nnoremap <silent> <Space>p :tabprevious<CR>
 nnoremap <silent> <Space>t :tabnew<CR>
-nnoremap <silent> <Space>q :copen<CR>
 nnoremap <silent> <Space>x :q<CR>
 nnoremap <silent> <Space>X :q!<CR>
-nnoremap <silent> <Space>w <C-w>
 nnoremap <silent> <Space>z :qa<CR>
 nnoremap <silent> <Space>Z :qa!<CR>
 
