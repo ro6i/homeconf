@@ -33,7 +33,8 @@ vnoremap <silent> <Leader>c "*y
 nnoremap <silent> <Leader>f :call FindTextPrompt()<CR>
 vnoremap <silent> <Leader>f y:FindTextExact <C-R>"<CR>
 nnoremap <silent> <Leader>l :call NextKeymap()<CR><C-o>:call lightline#update()<CR>
-nnoremap <silent> <Leader>rr :tabnew<CR>:term<CR>iranger<CR>
+nnoremap <silent> <Leader>r :Ranger<CR>
+nnoremap <silent> <Leader>s :tabnew<CR>:term<CR>iranger<CR>
 nnoremap <silent> <Leader>t :call SetNvimPipe()<CR>
 nnoremap <silent> <Leader>v "*p
 vnoremap <silent> <Leader>v "*p
@@ -103,6 +104,7 @@ Plug 'rhysd/open-pdf.vim'
 " Plug 'dhruvasagar/vim-table-mode', { 'on': 'TableModeEnable' }
 Plug '/usr/local/opt/fzf'
 Plug 'junegunn/fzf.vim'
+Plug 'francoiscabrol/ranger.vim'
 " Plug 'inkarkat/vim-SyntaxRange'
 Plug 'ro6i/m31.vim'
 Plug 'ro6i/snugfind.vim'
@@ -126,6 +128,8 @@ let g:netrw_liststyle = 3
 let g:netrw_sort_options = 'i'
 let g:netrw_keepdir = 1
 let g:netrw_winsize = 20
+
+let g:ranger_map_keys = 0
 
 function! LightlineKeymap()
   return !exists("b:keymap_name") ? "" : toupper(b:keymap_name)
