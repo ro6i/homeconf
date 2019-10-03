@@ -6,7 +6,7 @@ nnoremap <C-k> <C-y>
 nnoremap <C-l> 5zl
 nnoremap <C-h> 5zh
 nnoremap <C-x> $x
-nmap <C-w>a <C-w>w<C-w><Bar>0
+nmap <C-w>a <C-w>w<C-w><Bar>z999<CR>
 nmap <C-w><Leader> <C-w><Bar>
 
 nnoremap <silent> co :copen<CR>
@@ -45,6 +45,7 @@ vnoremap          <Leader>ps :w !tmux-pipe-to-next-pane<CR>
 nnoremap          <Leader>sh :w !bash<CR>
 
 nnoremap <silent> <Leader><Leader> :Files<CR>
+nnoremap <silent> <Leader><Bar> :Buffers<CR>
 
 nnoremap <silent> <Space> <nop>
 nnoremap <silent> <Space><Space> za
@@ -57,15 +58,18 @@ nnoremap <silent> <Space>6 6gt<CR>
 nnoremap <silent> <Space>7 7gt<CR>
 nnoremap <silent> <Space>8 8gt<CR>
 nnoremap <silent> <Space>9 9gt<CR>
+nnoremap <silent> <Space>a <C-w>w<C-w><Bar>z999<CR>
+
+nnoremap <silent> <Space>z :call ToggleWindowSize()<CR>
 nnoremap <silent> <Space>f :copen<CR>
 nnoremap <silent> <Space>l :GotoLastTab<CR>
 nnoremap <silent> <Space>n :tabnext<CR>
 nnoremap <silent> <Space>p :tabprevious<CR>
 nnoremap <silent> <Space>t :tabnew<CR>
-nnoremap <silent> <Space>x :q<CR>
+nnoremap <silent> <Space>x :bd<CR>
 nnoremap <silent> <Space>X :q!<CR>
-nnoremap <silent> <Space>z :qa<CR>
-nnoremap <silent> <Space>Z :qa!<CR>
+" nnoremap <silent> <Space>z :qa<CR>
+" nnoremap <silent> <Space>Z :qa!<CR>
 
 vnoremap <silent> <M-c> "*y
 inoremap <silent> <M-v> <C-o>"*p
@@ -109,6 +113,7 @@ Plug 'francoiscabrol/ranger.vim'
 Plug 'ro6i/m31.vim'
 Plug 'ro6i/snugfind.vim'
 Plug 'ro6i/gotolasttab.vim'
+Plug 'ro6i/maximize-toggle.vim'
 Plug 'ro6i/russian-yasherty.vim'
 
 let g:plug_url_format = "https://git::@gitlab.com/%s.git"
@@ -243,9 +248,9 @@ hi link GitGutterAdd LineNr
 hi link GitGutterChange LineNr
 hi link GitGutterDelete LineNr
 hi link GitGutterChangeDelete LineNr
-au BufRead,BufNewFile * syn match parensRoundLeft /[(]/ | hi parensRoundLeft ctermfg=6
-au BufRead,BufNewFile * syn match parensRoundRight /[)]/ | hi parensRoundRight ctermfg=13
-au BufRead,BufNewFile * syn match parensCurly /[{}]/ | hi parensCurly ctermfg=10
+" au BufRead,BufNewFile * syn match parensRoundLeft /[(]/ | hi parensRoundLeft ctermfg=6
+" au BufRead,BufNewFile * syn match parensRoundRight /[)]/ | hi parensRoundRight ctermfg=13
+" au BufRead,BufNewFile * syn match parensCurly /[{}]/ | hi parensCurly ctermfg=10
 
 function! SynGroup()
   let l:s = synID(line('.'), col('.'), 1)
