@@ -248,9 +248,8 @@ hi link GitGutterAdd LineNr
 hi link GitGutterChange LineNr
 hi link GitGutterDelete LineNr
 hi link GitGutterChangeDelete LineNr
-" au BufRead,BufNewFile * syn match parensRoundLeft /[(]/ | hi parensRoundLeft ctermfg=6
-" au BufRead,BufNewFile * syn match parensRoundRight /[)]/ | hi parensRoundRight ctermfg=13
-" au BufRead,BufNewFile * syn match parensCurly /[{}]/ | hi parensCurly ctermfg=10
+au BufRead,BufNewFile * syn match parensCustomLeft /[(]/ | hi parensCustomLeft ctermfg=6
+au BufRead,BufNewFile * syn match parensCustomRight /[)]/ | hi parensCustomRight ctermfg=13
 
 function! SynGroup()
   let l:s = synID(line('.'), col('.'), 1)
