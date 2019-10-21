@@ -11,7 +11,6 @@ nmap <C-w><Leader> <C-w><Bar>
 
 nnoremap <silent> co :copen<CR>
 nnoremap <silent> gb :b#<CR>
-nnoremap <silent> gl :GotoLastTab<CR>
 
 nmap <silent> <Tab> :call search('\u', 'W', line("."))<CR>
 nmap <silent> <Backspace> :call search('\u', 'bW', line("."))<CR>
@@ -34,7 +33,7 @@ nnoremap <silent> <Leader>f :call FindTextPrompt()<CR>
 vnoremap <silent> <Leader>f y:FindTextExact <C-R>"<CR>
 nnoremap <silent> <Leader>l :call NextKeymap()<CR><C-o>:call lightline#update()<CR>
 nnoremap <silent> <Leader>r :Ranger<CR>
-nnoremap <silent> <Leader>s :tabnew<CR>:term<CR>iranger<CR>
+" nnoremap <silent> <Leader>s :tabnew<CR>:term<CR>iranger<CR>
 nnoremap <silent> <Leader>t :call SetNvimPipe()<CR>
 nnoremap <silent> <Leader>v "*p
 vnoremap <silent> <Leader>v "*p
@@ -60,7 +59,7 @@ nnoremap <silent> <Space>8 8gt<CR>
 nnoremap <silent> <Space>9 9gt<CR>
 nnoremap <silent> <Space>a <C-w>w<C-w><Bar>z999<CR>
 
-nnoremap <silent> <Space>z :call ToggleWindowSize()<CR>
+nnoremap <silent> <Space>b :b#<CR>
 nnoremap <silent> <Space>f :copen<CR>
 nnoremap <silent> <Space>l :GotoLastTab<CR>
 nnoremap <silent> <Space>n :tabnext<CR>
@@ -68,8 +67,7 @@ nnoremap <silent> <Space>p :tabprevious<CR>
 nnoremap <silent> <Space>t :tabnew<CR>
 nnoremap <silent> <Space>x :bd<CR>
 nnoremap <silent> <Space>X :q!<CR>
-" nnoremap <silent> <Space>z :qa<CR>
-" nnoremap <silent> <Space>Z :qa!<CR>
+nnoremap <silent> <Space>z :call ToggleWindowSize()<CR>
 
 vnoremap <silent> <M-c> "*y
 inoremap <silent> <M-v> <C-o>"*p
