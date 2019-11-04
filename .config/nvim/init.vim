@@ -66,7 +66,7 @@ nnoremap <silent> <Space>n :tabnext<CR>
 nnoremap <silent> <Space>p :tabprevious<CR>
 nnoremap <silent> <Space>t :tabnew<CR>
 nnoremap <silent> <Space>x :bd<CR>
-nnoremap <silent> <Space>X :q!<CR>
+nnoremap <silent> <Space>q :q<CR>
 nnoremap <silent> <Space>z :call ToggleWindowSize()<CR>
 
 vnoremap <silent> <M-c> "*y
