@@ -26,7 +26,12 @@ _parse_git_status() {
   git status --short 2> /dev/null | head
 }
 
-prompt_component_git() {
+_prompt_conf_value() {
+  _name="PROMPT_CONF_${1^^}"
+  echo "${!_name}"
+}
+
+_prompt_component_git() {
   local status_color=37
   local branch="$(_parse_git_branch)"
   if [[ $branch == "" ]]
@@ -44,7 +49,7 @@ prompt_component_git() {
   fi
 }
 
-prompt_path() {
+_prompt_path() {
   local d="$(dirs)"
   local sep=" ⟩ "
   local pdir="$(dirname "$d" | sed "s/\//$sep/g")"
@@ -56,14 +61,36 @@ prompt_path() {
   fi
 }
 
-prompt_time() {
+_prompt_time() {
+  if [[ $(_prompt_conf_value time) != 'on' ]]
+  then
+    return
+  fi
   echo -e " $(_setf '100;97')$(date +'%m-%d %H:%M')$(_nof)"
 }
 
-prompt_jobs() {
+_prompt_jobs() {
   local j="$(($(jobs -p | wc -l)))"
   if [[ $j > 0 ]]
   then
     echo -e "$(_component 'jobs' "$(_setf 91)$j")"
   fi
+}
+
+# prompt configuration cli
+prompt() {
+  case "$1" in
+  toggle)
+    _name="PROMPT_CONF_${2^^}"
+    _val="${!_name}"
+    if [[ "$_val" != 'on' ]]
+    then
+      export $_name='on'
+    else
+      unset $_name
+    fi
+    ;;
+  *)
+    ;;
+  esac
 }

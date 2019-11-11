@@ -22,7 +22,7 @@ set show-mode-in-prompt on
 set vi-ins-mode-string ""
 set vi-cmd-mode-string ":"
 
-export PS1="\n\$(prompt_path)\$(prompt_component_git)\$(prompt_jobs)\$(prompt_time)\n "
+export PS1="\n\$(_prompt_path)\$(_prompt_component_git)\$(_prompt_jobs)\$(_prompt_time)\n "
 # export HISTCONTROL=ignoredups
 export HISTTIMEFORMAT="%Y-%m-%dT%T "
 export EDITOR=nvim
