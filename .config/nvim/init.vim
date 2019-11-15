@@ -28,19 +28,20 @@ nnoremap <silent> ![ :call ToggleColorColumn(120)<CR>
 nnoremap <silent> !] :call ToggleColorColumn(160)<CR>
 
 xmap     <silent> <Leader>a <Plug>(EasyAlign)
-vnoremap <silent> <Leader>c "*y
 nnoremap <silent> <Leader>f :call FindTextPrompt()<CR>
 vnoremap <silent> <Leader>f y:FindTextExact <C-R>"<CR>
 nnoremap <silent> <Leader>l :call NextKeymap()<CR><C-o>:call lightline#update()<CR>
+nnoremap <silent> <Leader>p "*p
+vnoremap <silent> <Leader>p "*p
+nnoremap <silent> <Leader>P "*P
+vnoremap <silent> <Leader>P "*P
 nnoremap <silent> <Leader>r :Ranger<CR>
 " nnoremap <silent> <Leader>s :tabnew<CR>:term<CR>iranger<CR>
 nnoremap <silent> <Leader>t :call SetNvimPipe()<CR>
-nnoremap <silent> <Leader>v "*p
-vnoremap <silent> <Leader>v "*p
 nnoremap <silent> <Leader>x :Vexplore<CR>
+vnoremap <silent> <Leader>y "*y
 
-nnoremap          <Leader>pall :w !tmux-pipe-to-next-pane<CR>
-vnoremap          <Leader>ps :w !tmux-pipe-to-next-pane<CR>
+vnoremap          <Leader>np :w !tmux-pipe-to-next-pane<CR>
 nnoremap          <Leader>sh :w !bash<CR>
 
 nnoremap <silent> <Leader><Leader> :Files<CR>
@@ -169,13 +170,13 @@ function! LightlineLineinfo()
 endfunction
 let g:lightline = { 'colorscheme': 'm31', 'filename': "%f", 'tabline': { 'left': [ [ 'tabs' ] ], 'right': [ ] }, 'mode_map': { 'n' : 'N', 'i' : 'I', 'R' : 'R', 'v' : 'V', 'V' : 'L', "\<C-v>": 'B', 'c' : 'C', 's' : 'S', 'S' : 'S-L', "\<C-s>": 'S-B', 't': 'T' }, 'component_expand': { 'keymap': 'LightlineKeymap', 'env': 'LightlineEnv', 'bindings': 'LightlineBindings', 'lineinfo': 'LightlineLineinfo' }, 'component_type': { 'keymap': 'warning', 'bindings': 'warning' }, 'active': { 'right': [ [], [ 'lineinfo' ], [ 'fileformat', 'fileencoding', 'filetype' ], ['keymap', 'bindings', 'env' ] ] }, 'inactive': { 'right': [ [ 'lineinfo' ] ] }, 'subseparator': { 'left': '', 'right': '|' } }
 
-let g:snugfind_exclude_dirs = 'project,target,build,.git,.idea,.build,.ensime_cache,node_modules,tmp,log'
+let g:snugfind_exclude_dirs = 'project,target,build,.git,.idea,.build,.ensime_cache,node_modules,tmp,log,frontend/tmp'
 let g:snugfind_exclude_files = '.tags,.ensime'
 
 let g:python_highlight_all = 1
 
 if executable('ag')
-  let $FZF_DEFAULT_COMMAND = 'ag --hidden --ignore={.git,.svn,build,project,target,build,__pycache__} -g ""'
+  let $FZF_DEFAULT_COMMAND = 'ag --hidden --ignore={tmp,frontend/tmp,.git,.svn,build,project,target,build,__pycache__} -g ""'
 endif
 let g:fzf_colors = { 'fg': ['fg', 'Normal'], 'bg': ['bg', 'Normal'], 'hl': ['fg', 'Comment'], 'fg+': ['fg', 'Normal', 'Comment', 'Normal'], 'bg+': ['bg', 'Normal', 'Normal'], 'hl+': ['fg', 'Statement'], 'info': ['fg', 'PreProc'], 'border': ['fg', 'Ignore'], 'prompt': ['fg', 'Conditional'], 'pointer': ['fg', 'Exception'], 'marker':  ['fg', 'Keyword'], 'spinner': ['fg', 'Label'], 'header':  ['fg', 'Comment'] }
 
@@ -199,6 +200,8 @@ command! CopyDirAbs let @+ = expand("%:h") | echo '"'.@+.'"' "copied to @+"
 command! CopyDirRel let @+ = expand("%:h") | echo '"'.@+.'"' "copied to @+"
 command! FormatJSON %!python -m json.tool
 command! AsJSON set syntax=json | FormatJSON
+
+command! Pipe :w !tmux-pipe-to-next-pane
 
 set nowrap
 set noshowmode
