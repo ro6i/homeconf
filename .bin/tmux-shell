@@ -4,7 +4,8 @@ case $1 in
 
   new-session)
     _name="$2"
-    _name_padded=$(printf '%-10s ' "$_name" | tr '[:lower:]' '[:upper:]')
+#   _name_padded=$(printf '%-20s ' "$_name" | tr '[:lower:]' '[:upper:]')
+    _name_padded=$(echo "$_name" | tr '[:lower:]' '[:upper:]')
 
     if [[ ! -z "$_name" ]]
     then
