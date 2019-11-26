@@ -6,7 +6,6 @@ nnoremap <C-k> <C-y>
 nnoremap <C-l> 5zl
 nnoremap <C-h> 5zh
 nnoremap <C-x> $x
-nmap <C-w>a <C-w>w<C-w><Bar>z999<CR>
 nmap <C-w><Leader> <C-w><Bar>
 
 nnoremap <silent> co :copen<CR>
@@ -58,14 +57,24 @@ nnoremap <silent> <Space>6 6gt<CR>
 nnoremap <silent> <Space>7 7gt<CR>
 nnoremap <silent> <Space>8 8gt<CR>
 nnoremap <silent> <Space>9 9gt<CR>
-nnoremap <silent> <Space>a <C-w>w<C-w><Bar>z999<CR>
 
+nnoremap <silent> <Space>a <C-w>w<C-w><Bar>z999<CR>
 nnoremap <silent> <Space>b :b#<CR>
 nnoremap <silent> <Space>f :copen<CR>
 nnoremap <silent> <Space>l :GotoLastTab<CR>
 nnoremap <silent> <Space>n :tabnext<CR>
+
+nnoremap <silent> <Space>rj :resize -5<CR>
+nnoremap <silent> <Space>rk :resize +5<CR>
+
 nnoremap <silent> <Space>p :tabprevious<CR>
 nnoremap <silent> <Space>t :tabnew<CR>
+
+nnoremap <silent> <Space>wh <C-w>h
+nnoremap <silent> <Space>wj <C-w>j
+nnoremap <silent> <Space>wk <C-w>k
+nnoremap <silent> <Space>wl <C-w>l
+
 nnoremap <silent> <Space>x :bd<CR>
 nnoremap <silent> <Space>q :q<CR>
 nnoremap <silent> <Space>z :call ToggleWindowSize()<CR>
