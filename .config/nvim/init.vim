@@ -6,7 +6,6 @@ nnoremap <C-k> <C-y>
 nnoremap <C-l> 5zl
 nnoremap <C-h> 5zh
 nnoremap <C-x> $x
-nmap <C-w><Leader> <C-w><Bar>
 
 nnoremap <silent> co :copen<CR>
 nnoremap <silent> gb :b#<CR>
@@ -29,6 +28,7 @@ nnoremap <silent> !] :call ToggleColorColumn(160)<CR>
 xmap     <silent> <Leader>a <Plug>(EasyAlign)
 nnoremap <silent> <Leader>f :call FindTextPrompt()<CR>
 vnoremap <silent> <Leader>f y:FindTextExact <C-R>"<CR>
+nnoremap <silent> <Leader>g :Gblame<CR>
 nnoremap <silent> <Leader>l :call NextKeymap()<CR><C-o>:call lightline#update()<CR>
 nnoremap <silent> <Leader>p "*p
 vnoremap <silent> <Leader>p "*p
