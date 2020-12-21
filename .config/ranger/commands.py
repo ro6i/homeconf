@@ -56,3 +56,11 @@ class fzf_locate(Command):
                 self.fm.cd(fzf_file)
             else:
                 self.fm.select_file(fzf_file)
+class trash(Command):
+    def execute(self):
+        # argument 0 is the command name.
+        # first argument
+        self.fm.notify(self.arg(1))
+        # run a shell command
+        for file in self.fm.thistab.get_selection():
+            self.fm.run(['trash', file.path])
