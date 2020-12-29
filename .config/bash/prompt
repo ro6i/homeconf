@@ -51,13 +51,13 @@ _prompt_component_git() {
 
 _prompt_path() {
   local d="$(dirs)"
-  local sep=" ⟩ "
+  local sep="$(_setf '90')\/$(_setf '97')"
   local pdir="$(dirname "$d" | sed "s/\//$sep/g")"
-  if [[ "$d" == "~" ]];
+  if [[ "$d" == '~' || "$d" == '/' ]];
   then
     echo -e "$(_setf '100;37')$d$(_nof)"
   else
-    echo -e "$(_setf 100)$(_setf 97)$pdir$sep$(_setf 37)$(basename "$d")$(_nof)"
+    echo -e "$(_setf 97)$pdir$(_setf 90)/$(_setf 37)$(basename "$d")$(_nof)"
   fi
 }
 

@@ -13,7 +13,7 @@ end tell
 return frontAppName
 EOF
 )"
-      if [[ "$_app" == "iTerm2" ]]
+      if [[ "$_app" == 'iTerm2' || "$_app" == 'alacritty' ]]
       then
         echo "1"
       else
