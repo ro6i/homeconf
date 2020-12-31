@@ -1,0 +1,41 @@
+window:
+  dynamic_padding: true
+
+font:
+  size: 14
+  normal:
+    family: IBM 3270 Semi-Narrow
+  bold:
+    family: IBM 3270 Semi-Narrow
+    style: bold
+  offset:
+    x: 1
+    y: 0
+  glyph_offset:
+    x: 0
+    y: 0
+
+colors:
+  primary:
+    background: '0x0a1528'
+    foreground: '0x9ca5b4'
+
+  normal:
+    black:   '0x1a1f25'
+    red:     '0xc7828e'
+    green:   '0x95a385'
+    yellow:  '0xada279'
+    blue:    '0x8099c6'
+    magenta: '0xaf8abd'
+    cyan:    '0x80aba8'
+    white:   '0x9ca5b4'
+
+  bright:
+    black:   '0x2b3543'
+    red:     '0xcc857b'
+    green:   '0x979d64'
+    yellow:  '0xb79376'
+    blue:    '0x898aba'
+    magenta: '0xc5709f'
+    cyan:    '0x71a089'
+    white:   '0x727f9e'
