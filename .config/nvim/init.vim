@@ -26,6 +26,7 @@ nnoremap <silent> ![ :call ToggleColorColumn(120)<CR>
 nnoremap <silent> !] :call ToggleColorColumn(160)<CR>
 
 xmap     <silent> <Leader>a <Plug>(EasyAlign)
+nnoremap <silent> <Leader>b :tabnew<CR>:term<CR>iranger<CR>
 nnoremap <silent> <Leader>f :call FindTextPrompt()<CR>
 vnoremap <silent> <Leader>f y:FindTextExact <C-R>"<CR>
 nnoremap <silent> <Leader>g :Gblame<CR>
@@ -35,7 +36,6 @@ vnoremap <silent> <Leader>p "*p
 nnoremap <silent> <Leader>P "*P
 vnoremap <silent> <Leader>P "*P
 nnoremap <silent> <Leader>r :Ranger<CR>
-" nnoremap <silent> <Leader>s :tabnew<CR>:term<CR>iranger<CR>
 nnoremap <silent> <Leader>t :call SetNvimPipe()<CR>
 nnoremap <silent> <Leader>x :Vexplore<CR>
 vnoremap <silent> <Leader>y "*y
@@ -66,6 +66,8 @@ nnoremap <silent> <Space>n :tabnext<CR>
 
 nnoremap <silent> <Space>rj :resize -5<CR>
 nnoremap <silent> <Space>rk :resize +5<CR>
+nnoremap <silent> <Space>rh :vertical resize -5<CR>
+nnoremap <silent> <Space>rl :vertical resize +5<CR>
 
 nnoremap <silent> <Space>p :tabprevious<CR>
 nnoremap <silent> <Space>t :tabnew<CR>
@@ -254,10 +256,6 @@ au TermOpen * setlocal nonumber norelativenumber
 hi SignatureMarkText ctermfg=10
 hi SignatureMarkLine ctermbg=0
 hi scalaSquareBracketsBrackets ctermfg=9
-hi link GitGutterAdd LineNr
-hi link GitGutterChange LineNr
-hi link GitGutterDelete LineNr
-hi link GitGutterChangeDelete LineNr
 au BufRead,BufNewFile * syn match parensCustomLeft /[(]/ | hi parensCustomLeft ctermfg=6
 au BufRead,BufNewFile * syn match parensCustomRight /[)]/ | hi parensCustomRight ctermfg=13
 
@@ -266,7 +264,7 @@ function! SynGroup()
   echo synIDattr(l:s, 'name') . ' -> ' . synIDattr(synIDtrans(l:s), 'name')
 endfun
 
-au FileType md,latex,tex,md,markdown,scala,java,sbt setlocal spell
-au FileType qf nnoremap <buffer> g<Enter> <C-w><Enter><C-w>T
+au FileType md,latex,tex,md,markdown setlocal spell
+au FileType qf nnoremap <buffer> <Space><Enter> <C-w><Enter><C-w>T
 au FileType xml setlocal equalprg=xmllint\ --format\ --recover\ -\ 2>/dev/null
 au FileType yaml hi link yamlKey Label
