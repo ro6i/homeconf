@@ -49,15 +49,26 @@ _prompt_component_git() {
   fi
 }
 
+_prompt_component_k8s() {
+  if [[ $(_prompt_conf_value k8s) != 'on' ]]
+  then
+    return
+  fi
+  context=$(kubectl config current-context)
+  namespace=$(kubectl config view --minify --output 'jsonpath={..namespace}')
+  echo -e "$(_component 'k8s' "$(_setf 32)${namespace}$(_setf 97)@...$(_setf 37)${context##*_}")"
+}
+
 _prompt_path() {
   local d="$(dirs)"
   local sep="$(_setf '90')\/$(_setf '97')"
-  local pdir="$(dirname "$d" | sed "s/\//$sep/g")"
+  local dn="$(dirname "$d")"
+  local pdir="$(_setf 37)${dn:0:1}$(_setf '97')$(echo "${dn:1}" | sed "s/\//$sep/g")"
   if [[ "$d" == '~' || "$d" == '/' ]];
   then
     echo -e "$(_setf '100;37')$d$(_nof)"
   else
-    echo -e "$(_setf 97)$pdir$(_setf 90)/$(_setf 37)$(basename "$d")$(_nof)"
+    echo -e "$pdir$(_setf 90)/$(_setf 37)$(basename "$d")$(_nof)"
   fi
 }
 
