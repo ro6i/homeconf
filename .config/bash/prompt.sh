@@ -77,7 +77,8 @@ _prompt_time() {
   then
     return
   fi
-  echo -e " $(_setf '100;97')$(date +'%m-%d %H:%M')$(_nof)"
+  echo -e " $(_setf '90')$(date +'%m-%d %H:%M')$(_nof)"
+  #echo -e " $(_setf '90')$(date +'%m-%d') $(_setf '97')$(date +'%H:%M')$(_nof)"
 }
 
 _prompt_jobs() {
