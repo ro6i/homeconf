@@ -3,7 +3,7 @@ export CLICOLOR=1
 export LC_ALL=en_US.UTF-8  
 export LANG=en_US.UTF-8
 
-export PATH="/usr/local/sbin:/usr/local/opt/gnu-getopt/bin:$PATH:~/.bin:~/.local/bin:/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/bin"
+export PATH="/usr/local/sbin:/usr/local/opt/gnu-getopt/bin:$PATH:~/.bin:~/.local/bin:/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/bin:~/node_modules/.bin:~/projects/.bin"
 
 
 if type brew &>/dev/null; then
@@ -17,7 +17,7 @@ if type brew &>/dev/null; then
   fi
 fi
 
-for BASH_CONFIG in "${HOME}/.config/bash/"*
+for BASH_CONFIG in "${HOME}/.config/bash/"* ~/.fzf.bash ~/.bin/kiq.sh
 do
   [[ -r "$BASH_CONFIG" ]] && source "$BASH_CONFIG"
 done
@@ -32,7 +32,11 @@ export PS1="\n\$(_prompt_path)\$(_prompt_jobs)\$(_prompt_component_git)\$(_promp
 export HISTTIMEFORMAT="%Y-%m-%dT%T "
 export GREP_OPTIONS='--color=auto'
 
+alias cd='cd -P'
+alias ll='ls -l'
+# alias rm='trash'
+
 alias fresh="source ~/.bash_profile && tmux source-file ~/.tmux.conf"
 alias rr='ranger'
-# alias rm='trash'
-# alias ll='ls -l'
+
+# [ -f ~/.fzf.bash ] && source ~/.fzf.bash
