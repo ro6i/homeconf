@@ -9,12 +9,47 @@ _setf() {
   echo -e "\001\e[${1}m\002"
 }
 
+# _fg_n_base=30
+# _fg_s_base=90
+# _dark=0
+# _red=1
+# _green=2
+# _yellow=3
+# _blue=4
+# _magenta=5
+# _cyan=6
+# _white=7
+
+_fg_nd() { _setf 30 ; }
+_fg_nr() { _setf 31 ; }
+_fg_ng() { _setf 32 ; }
+_fg_ny() { _setf 33 ; }
+_fg_nb() { _setf 34 ; }
+_fg_nm() { _setf 35 ; }
+_fg_nc() { _setf 36 ; }
+_fg_nw() { _setf 37 ; }
+
+_fg_sd() { _setf 90 ; }
+_fg_sr() { _setf 91 ; }
+_fg_sg() { _setf 92 ; }
+_fg_sy() { _setf 93 ; }
+_fg_sb() { _setf 94 ; }
+_fg_sm() { _setf 95 ; }
+_fg_sc() { _setf 96 ; }
+_fg_sw() { _setf 97 ; }
+
+_bg_nb() { _setf 40 ; }
+_bg_nw() { _setf 47 ; }
+
+_bg_sb() { _setf 100 ; }
+_bg_sw() { _setf 107 ; }
+
 _component() {
   if [[ -z "$2" ]];
   then
     echo ''
   else
-    echo " $(_setf '100;97')$1${_component_delimiter}$2$(_nof)"
+    echo " $(_bg_nb)$(_fg_sw)$1${_component_delimiter}$2$(_nof)"
   fi
 }
 
@@ -23,7 +58,18 @@ _parse_git_branch() {
 }
 
 _parse_git_status() {
-  git status --short 2> /dev/null | head
+  local _status=$(git status --short 2> /dev/null | head)
+  if [[ ! -z "$_status" ]]
+  then
+    local _traits=()
+    if [[ ! -z "$(git diff --exit-code)" ]]; then _traits+=" $(_fg_nr)unstaged"; fi
+    if [[ ! -z "$(git ls-files --other --exclude-standard --directory --no-empty-directory)" ]]; then _traits+=" $(_fg_sr)untracked"; fi
+    if [[ ! -z "$(git diff --cached --exit-code)" ]]; then _traits+=" $(_fg_ng)staged"; fi
+    _status="${_traits[@]}"
+    _status="${_status:1}"
+    _status="$(_fg_sw)($_status$(_fg_sw))"
+  fi
+  echo "$_status"
 }
 
 _prompt_conf_value() {
@@ -39,13 +85,8 @@ _prompt_component_git() {
     echo ""
   else
     local status="$(_parse_git_status)"
-    if [[ $status == "" ]]
-    then
-      status_color=37
-    else
-      status_color=33
-    fi
-    echo -e "$(_component 'git' "$(_setf ${status_color})${branch}")"
+    status_color=$([[ $status == "" ]] && echo 37 || echo 33)
+    echo -e "$(_component 'git' "$(_setf ${status_color})${branch}${status}$(_nof)")"
   fi
 }
 
@@ -54,21 +95,26 @@ _prompt_component_k8s() {
   then
     return
   fi
-  context=$(kubectl config current-context)
-  namespace=$(kubectl config view --minify --output 'jsonpath={..namespace}')
-  echo -e "$(_component 'k8s' "$(_setf 32)${namespace}$(_setf 97)@...$(_setf 37)${context##*_}")"
+  local context=$(kubectl config current-context)
+  local namespace=$(kubectl config view --minify --output 'jsonpath={..namespace}')
+  echo -e "$(_component 'k8s' "$(_fg_ng)${namespace}$(_fg_sw)@..$(_fg_nw)${context##*_}")"
 }
 
 _prompt_path() {
   local d="$(dirs)"
-  local sep="$(_setf '90')\/$(_setf '97')"
+  local sep="$(_fg_sd)\/$(_fg_sw)"
   local dn="$(dirname "$d")"
-  local pdir="$(_setf 37)${dn:0:1}$(_setf '97')$(echo "${dn:1}" | sed "s/\//$sep/g")"
+  local pdir="$(_fg_nw)${dn:0:1}$(_fg_sw)$(echo "${dn:1}" | sed "s/\//$sep/g")"
   if [[ "$d" == '~' || "$d" == '/' ]];
   then
-    echo -e "$(_setf '100;37')$d$(_nof)"
+    echo -e "$(_bg_nb)$(_fg_nw)$d$(_nof)"
   else
-    echo -e "$pdir$(_setf 90)/$(_setf 37)$(basename "$d")$(_nof)"
+    local decorated_base_name="$(_fg_nw)$(basename "$d")"
+    if [[ -f './.alias' ]]
+    then
+      decorated_base_name="$(_fg_ny)\$$(_fg_sy)$(cat '.alias')"
+    fi
+    echo -e "$pdir$(_fg_sd)/$decorated_base_name$(_nof)"
   fi
 }
 
@@ -77,7 +123,7 @@ _prompt_time() {
   then
     return
   fi
-  echo -e " $(_setf '90')$(date +'%m-%d %H:%M')$(_nof)"
+  echo -e " $(_fg_sd)$(date +'%m-%d %H:%M')$(_nof)"
   #echo -e " $(_setf '90')$(date +'%m-%d') $(_setf '97')$(date +'%H:%M')$(_nof)"
 }
 
@@ -85,7 +131,7 @@ _prompt_jobs() {
   local j="$(($(jobs -p | wc -l)))"
   if [[ $j > 0 ]]
   then
-    echo -e "$(_component 'jobs' "$(_setf 91)$j")"
+    echo -e "$(_component 'jobs' "$(_fg_sr)$j")"
   fi
 }
 
