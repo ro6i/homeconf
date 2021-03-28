@@ -28,6 +28,7 @@ set vi-cmd-mode-string ":"
 
 export PROMPT_CONF_TIME='on'
 export PS1="\n\$(_prompt_path)\$(_prompt_jobs)\$(_prompt_component_git)\$(_prompt_component_k8s)\$(_prompt_time)\n "
+# export PS1="\n\$(_prompt_path)\$(_prompt_jobs)\$(_prompt_component_git)\$(_prompt_component_k8s)\$(_prompt_time)\n\$(aline)\n "
 
 export HISTTIMEFORMAT="%Y-%m-%dT%T "
 export GREP_OPTIONS='--color=auto'

@@ -3,7 +3,12 @@ nnoremap <C-k> <C-y>
 nnoremap <C-l> 5zl
 nnoremap <C-h> 5zh
 
-nnoremap <silent> qf :copen<CR>
+nnoremap <Down> gj
+nnoremap <Up> gk
+vnoremap <Down> gj
+vnoremap <Up> gk
+inoremap <Down> <C-o>gj
+inoremap <Up> <C-o>gk
 
 nmap <silent> <Tab> :call search('\u', 'W', line("."))<CR>
 nmap <silent> <Backspace> :call search('\u', 'bW', line("."))<CR>
@@ -11,7 +16,6 @@ nmap <silent> <Backspace> :call search('\u', 'bW', line("."))<CR>
 xmap     <silent> <Leader>a <Plug>(EasyAlign)
 nnoremap <silent> <Leader>f :call FindTextSettings()<CR>
 nnoremap <silent> <Leader>s :call FindTextPrompt()<CR>
-vnoremap <silent> <Leader>s y:FindTextExact <C-R>"<CR>
 nnoremap <silent> <Leader>g :Gblame<CR>
 nnoremap <silent> <Leader>l <C-o>:call NextKeymap()<CR><C-o>:call lightline#update()<CR>
 nnoremap <silent> <Leader>p "*p
@@ -31,7 +35,6 @@ nnoremap <silent> <Leader><Leader> :Files<CR>
 nnoremap <silent> <Leader><Bar> :Buffers<CR>
 
 nnoremap <silent> <Space> <nop>
-nnoremap <silent> <Space><Space> za
 nnoremap <silent> <Space>1 1gt<CR>
 nnoremap <silent> <Space>2 2gt<CR>
 nnoremap <silent> <Space>3 3gt<CR>
@@ -45,7 +48,6 @@ nnoremap <silent> <Space>9 9gt<CR>
 nnoremap <silent> <Space>a <C-w>w<C-w><Bar>z999<CR>
 nnoremap <silent> <Space>b :b#<CR>
 nnoremap <silent> <Space>d :bd<CR>
-nnoremap <silent> <Space>f :call ToggleQuickfixList()<CR>
 nnoremap <silent><expr> <Space>h (&hls && v:hlsearch ? ':nohls' : ':set hls')."\n"
 nnoremap <silent> <Space>j *
 nnoremap <silent> <Space>l :GotoLastTab<CR>
@@ -64,22 +66,26 @@ nnoremap <silent> <Space>wj <C-w>j
 nnoremap <silent> <Space>wk <C-w>k
 nnoremap <silent> <Space>wl <C-w>l
 
+nnoremap <silent> <Space>q :q<CR>
+nnoremap <silent> <Space>x :Vexplore<CR>
+nnoremap <silent> <Space>z :call ToggleWindowSize()<CR>
+
+nnoremap <silent> <Space><Space> za
+nnoremap <silent> <Space><Space>f :call ToggleQuickfixList()<CR>
 nnoremap <silent> <Space><Space>w :set wrap!<CR>
 nnoremap <silent> <Space><Space>c :set cursorline!<CR>
 nnoremap <silent> <Space><Space>lc :setlocal cursorbind!<CR>:call lightline#update()<CR>
 nnoremap <silent> <Space><Space>ls :setlocal scrollbind!<CR>:call lightline#update()<CR>
 nnoremap <silent> <Space><Space>r :set list!<CR>
 nnoremap <silent> <Space><Space>z :let &scrolloff=999-&scrolloff<CR>
-nnoremap <silent> <Space>\ :call ToggleColorColumn(80)<CR>
-nnoremap <silent> <Space>[ :call ToggleColorColumn(120)<CR>
-nnoremap <silent> <Space>] :call ToggleColorColumn(160)<CR>
-
-nnoremap <silent> <Space>x :Vexplore<CR>
-nnoremap <silent> <Space>q :q<CR>
-nnoremap <silent> <Space>z :call ToggleWindowSize()<CR>
+nnoremap <silent> <Space><Space>\ :call ToggleColorColumn(80)<CR>
+nnoremap <silent> <Space><Space>[ :call ToggleColorColumn(120)<CR>
+nnoremap <silent> <Space><Space>] :call ToggleColorColumn(160)<CR>
 
 " fuzzy go-to definition
 nnoremap <silent> <Space>s<Space> viw"ty:call FindTextFlat(getreg('t'))<CR>
+vnoremap <silent> <Space>s<Space> "ty:call FindTextFlat(getreg('t'))<CR>
+vnoremap <silent> <Space>s        "ty:call FindTextFlat(getreg('t'))<CR>
 nnoremap <silent> <Space>sj viw"ty:call FindTextRegex('(class\\|object\\|trait\\|def\\|val\\|function\\|fun\\|fn\\|const\\|auto)\s+' . getreg('t') . '\s*[^\w]')<CR>:nohls<CR>
 nnoremap <silent> <Space>so viw"ty:call FindTextRegex('(class\\|object\\|trait\\|def\\|val\\|function\\|fun\\|fn\\|const\\|auto)\s+' . getreg('t') . '\s*[^\w]')<CR><C-w><Enter><C-w>T:nohls<CR>
 " fuzzy show usages
@@ -164,13 +170,13 @@ function! LightlineLineinfo()
 endfunction
 let g:lightline = { 'colorscheme': 'm31', 'filename': "%f", 'tabline': { 'left': [ [ 'tabs' ] ], 'right': [ ] }, 'mode_map': { 'n' : 'N', 'i' : 'I', 'R' : 'R', 'v' : 'V', 'V' : 'L', "\<C-v>": 'B', 'c' : 'C', 's' : 'S', 'S' : 'S-L', "\<C-s>": 'S-B', 't': 'T' }, 'component_expand': { 'keymap': 'LightlineKeymap', 'env': 'LightlineEnv', 'snugfind': 'LightlineSnugfind', 'bindings': 'LightlineBindings', 'lineinfo': 'LightlineLineinfo' }, 'component_type': { 'keymap': 'warning', 'bindings': 'warning' }, 'active': { 'right': [ [], [ 'lineinfo' ], [ 'fileformat', 'fileencoding', 'filetype' ], ['keymap', 'bindings', 'env', 'snugfind' ] ] }, 'inactive': { 'right': [ [ 'lineinfo' ] ] }, 'subseparator': { 'left': '', 'right': '|' } }
 
-let g:snugfind_exclude_dirs = 'project,target,build,.git,.idea,.build,.ensime_cache,node_modules,tmp,log,frontend/tmp,__'
-let g:snugfind_exclude_files = '.tags,.ensime'
+let g:snugfind_exclude_dirs = 'project,target,build,.git,.idea,.build,node_modules,tmp,log,frontend/tmp,__'
+let g:snugfind_exclude_files = '.tags'
 
 let g:python_highlight_all = 1
 
 if executable('ag')
-  let $FZF_DEFAULT_COMMAND = 'ag --hidden --follow --ignore={tmp,frontend/tmp,.git,.svn,build,project,target,build,__pycache__,__} -g ""'
+  let $FZF_DEFAULT_COMMAND = 'ag --hidden --follow --ignore={tmp,frontend/tmp,.git,.svn,build,project,target,build,__pycache__,.view,.work,__} -g ""'
 endif
 let g:fzf_colors = { 'fg': ['fg', 'Normal'], 'bg': ['bg', 'Normal'], 'hl': ['fg', 'Comment'], 'fg+': ['fg', 'Normal', 'Comment', 'Normal'], 'bg+': ['bg', 'Normal', 'Normal'], 'hl+': ['fg', 'Statement'], 'info': ['fg', 'PreProc'], 'border': ['fg', 'Ignore'], 'prompt': ['fg', 'Conditional'], 'pointer': ['fg', 'Exception'], 'marker':  ['fg', 'Keyword'], 'spinner': ['fg', 'Label'], 'header':  ['fg', 'Comment'] }
 
@@ -240,12 +246,13 @@ set tags=./.tags,.tags,./tags,tags
 
 au TermOpen * setlocal nonumber norelativenumber
 
-" colors
-hi scalaSquareBracketsBrackets ctermfg=15
-hi! link scalaKeywordModifier StorageClass
 " au BufRead,BufNewFile * syn match parensCustomLeft /[(]/ | hi parensCustomLeft ctermfg=6
-au BufRead,BufNewFile * syn match parensCustomLeft /[(]/ | hi parensCustomLeft ctermfg=15
-au BufRead,BufNewFile * syn match parensCustomRight /[)]/ | hi parensCustomRight ctermfg=13
+au BufRead,BufNewFile * syn match parensCustom /[()]/ | hi parensCustom ctermfg=15 cterm=bold
+au BufRead,BufNewFile * syn match curlyCustom /[{}]/ | hi curlyCustom ctermfg=10
+" colors
+hi scalaSquareBracketsBrackets ctermfg=11
+hi! link scalaKeywordModifier StorageClass
+hi! link scalaIstanceDeclaration Type
 
 function! SynGroup()
   let l:s = synID(line('.'), col('.'), 1)
