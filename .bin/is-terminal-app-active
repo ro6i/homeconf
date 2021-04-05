@@ -1,5 +1,7 @@
 #!/bin/bash
 
+_app=
+
 case $(uname -s) in
   'Darwin')
     _app="$(osascript << 'EOF'
@@ -18,7 +20,9 @@ EOF
     _app="$(xdotool getactivewindow getwindowname)"
     ;;
 esac
+
 _app_lower_case="${_app,,}"
-if [[ "$_app_lower_case" == 'iterm2' || "$_app_lower_case" == 'alacritty' ]]
+if [[ "$_app_lower_case" == 'alacritty' || "$_app_lower_case" == 'iterm2' ]]
+then
   echo '1'
 fi

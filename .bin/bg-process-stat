@@ -10,4 +10,11 @@ case $(uname -s) in
       echo "$_profile_name"
     fi
     ;;
+  'Linux')
+    _active_property="$(systemctl status wg-quick@staging | grep --color=never '^\s*Active\:\s' | awk '{print $2'})"
+    if [[ "$_active_property" == 'active' ]]
+    then
+      _profile_name="$(systemctl status wg-quick@staging | head -n 1 | grep -oP '\sfor\s\K.*$')"
+      echo "$_profile_name"
+    fi
 esac
