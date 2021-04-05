@@ -1,0 +1,20 @@
+#!/bin/bash
+
+case $(uname -s) in
+  'Darwin')
+    _session_artifact_name="$(find -f /var/run/wireguard/*.name)"
+    if [[ ! -z "$_session_artifact_name" ]]
+    then
+      _file_name="${_session_artifact_name##*/}"
+      _profile_name="${_file_name%.name}"
+      echo "$_profile_name"
+    fi
+    ;;
+  'Linux')
+    _active_property="$(systemctl status wg-quick@staging | grep --color=never '^\s*Active\:\s' | awk '{print $2'})"
+    if [[ "$_active_property" == 'active' ]]
+    then
+      _profile_name="$(systemctl status wg-quick@staging | head -n 1 | grep -oP '\sfor\s\K.*$')"
+      echo "$_profile_name"
+    fi
+esac

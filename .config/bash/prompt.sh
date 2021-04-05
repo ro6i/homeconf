@@ -90,16 +90,6 @@ _prompt_component_git() {
   fi
 }
 
-_prompt_component_k8s() {
-  if [[ $(_prompt_conf_value k8s) != 'on' ]]
-  then
-    return
-  fi
-  local context=$(kubectl config current-context)
-  local namespace=$(kubectl config view --minify --output 'jsonpath={..namespace}')
-  echo -e "$(_component 'k8s' "$(_fg_ng)${namespace}$(_fg_sw)@..$(_fg_nw)${context##*_}")"
-}
-
 _prompt_path() {
   local d="$(dirs)"
   local sep="$(_fg_sd)\/$(_fg_sw)"

@@ -1,0 +1,5 @@
+#!/bin/bash
+
+_context="$(kubectl config current-context)"
+_namespace="$(kubectl config view --minify --output 'jsonpath={..namespace}')"
+echo "${_namespace}@${_context##*_}"
