@@ -8,4 +8,12 @@ case $(uname -s) in
       echo 'CAPS'
     fi
     ;;
+
+  'Linux')
+    _value="$(xset -q | grep 'Caps' | awk '{print $4}')"
+    if [[ ! "$_value" == 'off' ]]
+    then
+      echo 'CAPS'
+    fi
+    ;;
 esac

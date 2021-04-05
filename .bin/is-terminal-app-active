@@ -2,7 +2,7 @@
 
 case $(uname -s) in
   'Darwin')
-_app="$(osascript << 'EOF'
+    _app="$(osascript << 'EOF'
 global frontApp, frontAppName
 
 tell application "System Events"
@@ -13,12 +13,12 @@ end tell
 return frontAppName
 EOF
 )"
-    if [[ "$_app" == 'iTerm2' || "$_app" == 'alacritty' ]]
-    then
-      echo "1"
-    else
-      echo ""
-    fi
-      ;;
-  *) echo;
+    ;;
+  'Linux')
+    _app="$(xdotool getactivewindow getwindowname)"
+    ;;
 esac
+_app_lower_case="${_app,,}"
+if [[ "$_app_lower_case" == 'iterm2' || "$_app_lower_case" == 'alacritty' ]]
+  echo '1'
+fi
