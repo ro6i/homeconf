@@ -5,7 +5,7 @@ case $(uname -s) in
     _summary="$(/usr/bin/python -c 'import Cocoa; print Cocoa.NSEvent.modifierFlags() & Cocoa.NSAlphaShiftKeyMask ')"
     if [[ (($_summary > 0)) ]]
     then
-      echo "CAPS"
+      echo 'CAPS'
     fi
-      ;;
+    ;;
 esac
