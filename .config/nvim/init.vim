@@ -18,15 +18,15 @@ nnoremap <silent> <Leader>f :call FindTextSettings()<CR>
 nnoremap <silent> <Leader>s :call FindTextPrompt()<CR>
 nnoremap <silent> <Leader>g :Gblame<CR>
 nnoremap <silent> <Leader>l <C-o>:call NextKeymap()<CR><C-o>:call lightline#update()<CR>
-nnoremap <silent> <Leader>p "*p
-vnoremap <silent> <Leader>p "*p
-nnoremap <silent> <Leader>P "*P
-vnoremap <silent> <Leader>P "*P
-inoremap <silent> <M-v>      <C-o>"*p
+nnoremap <silent> <Leader>p "+p
+vnoremap <silent> <Leader>p "+p
+nnoremap <silent> <Leader>P "+P
+vnoremap <silent> <Leader>P "+P
+inoremap <silent> <M-v>      <C-o>"+p
 nnoremap <silent> <Leader>r :Ranger<CR>
 nnoremap <silent> <Leader>rr :tabnew<CR>:term<CR>iranger<CR>
 nnoremap <silent> <Leader>t :call SetNvimPipe('NVIM_PIPE')<CR>
-vnoremap <silent> <Leader>y "*y
+vnoremap <silent> <Leader>y "+y
 
 vnoremap          <Leader>np :w !tmux-pipe-to-next-pane<CR>
 nnoremap          <Leader>ex :w !bash<CR>
@@ -105,25 +105,24 @@ Plug 'jeetsukumaran/vim-indentwise'
 Plug 'sheerun/vim-polyglot'
 Plug 'airblade/vim-gitgutter'
 Plug 'tpope/vim-fugitive'
+Plug 'tommcdo/vim-fugitive-blame-ext'
 Plug 'derekwyatt/vim-scala'
 Plug 'GEverding/vim-hocon'
 Plug 'neovimhaskell/haskell-vim'
 Plug 'bitc/vim-hdevtools'
 Plug 'hdima/python-syntax'
-Plug 'chrisbra/csv.vim'
 Plug 'tpope/vim-commentary'
 Plug 'junegunn/vim-easy-align'
 Plug 'vim-scripts/bufkill.vim'
 Plug 'vim-scripts/BufOnly.vim'
 Plug 'milkypostman/vim-togglelist'
-" Plug 'vim-scripts/AnsiEsc.vim'
 Plug 'kshenoy/vim-signature'
 Plug 'rhysd/open-pdf.vim'
 " Plug 'dhruvasagar/vim-table-mode', { 'on': 'TableModeEnable' }
-Plug '/usr/local/opt/fzf'
+" Plug '/usr/local/opt/fzf'
+Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
 Plug 'francoiscabrol/ranger.vim'
-" Plug 'inkarkat/vim-SyntaxRange'
 Plug 'haya14busa/incsearch.vim'
 Plug 'ro6i/m31.vim'
 Plug 'ro6i/snugfind.vim'
@@ -225,6 +224,8 @@ set nocursorline
 if !has('nvim')
   set cursorline
   set cursorlineopt=number
+else
+  set guicursor=n-v-c-sm:block,i-ci-ve:hor25,r-cr-o:ver20
 endif
 set nocursorcolumn
 set showmatch
@@ -243,6 +244,8 @@ set scrollopt+=hor
 set spelllang=en,ru_yo
 
 set tags=./.tags,.tags,./tags,tags
+
+set mouse=a
 
 au TermOpen * setlocal nonumber norelativenumber
 
