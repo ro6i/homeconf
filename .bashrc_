@@ -17,6 +17,8 @@ if type brew &>/dev/null; then
   fi
 fi
 
+[ -r /usr/share/bash-completion/bash_completion ] && . /usr/share/bash-completion/bash_completion
+
 for BASH_CONFIG in "${HOME}/.config/bash/"* ~/.fzf.bash ~/.bin/kiq.sh
 do
   [[ -r "$BASH_CONFIG" ]] && source "$BASH_CONFIG"
@@ -35,6 +37,9 @@ export GREP_OPTIONS='--color=auto'
 
 alias cd='cd -P'
 alias ll='ls -l'
+alias cp="cp -i"                          # confirm before overwriting something
+alias df='df -h'                          # human-readable sizes
+alias free='free -m'                      # show sizes in MB
 # alias rm='trash'
 
 alias fresh="source ~/.bash_profile && tmux source-file ~/.tmux.conf"
