@@ -1,5 +1,5 @@
 
-_component_delimiter=' '
+_component_delimiter=':'
 
 _nof() {
   echo -e "\001\e[m\002"
@@ -49,7 +49,7 @@ _component() {
   then
     echo ''
   else
-    echo " $(_bg_nb)$(_fg_sw)$1${_component_delimiter}$2$(_nof)"
+    echo "  $(_fg_sw)$1$(_fg_sd)${_component_delimiter}$2$(_nof)"
   fi
 }
 
@@ -97,7 +97,7 @@ _prompt_path() {
   local pdir="$(_fg_nw)${dn:0:1}$(_fg_sw)$(echo "${dn:1}" | sed "s/\//$sep/g")"
   if [[ "$d" == '~' || "$d" == '/' ]];
   then
-    echo -e "$(_bg_nb)$(_fg_nw)$d$(_nof)"
+    echo -e "$(_fg_nw)$d$(_nof)"
   else
     local decorated_base_name="$(_fg_nw)$(basename "$d")"
     if [[ -f './.alias' ]]
@@ -108,12 +108,15 @@ _prompt_path() {
   fi
 }
 
+PROMPT_TIME_FORMAT='%m-%d %H:%M'
+
 _prompt_time() {
-  if [[ $(_prompt_conf_value time) != 'on' ]]
+  is_on="$(_prompt_conf_value time)"
+  if [[ "$is_on" == 'off' ]]
   then
     return
   fi
-  echo -e " $(_fg_sd)$(date +'%m-%d %H:%M')$(_nof)"
+  echo -e " $(_fg_sd)$(date +"${PROMPT_TIME_FORMAT}")$(_nof)"
   #echo -e " $(_setf '90')$(date +'%m-%d') $(_setf '97')$(date +'%H:%M')$(_nof)"
 }
 
@@ -123,6 +126,14 @@ _prompt_jobs() {
   then
     echo -e "$(_component 'jobs' "$(_fg_sr)$j")"
   fi
+}
+
+_prompt_hb() {
+  local _time=" $(date +"${PROMPT_TIME_FORMAT}")"
+  local _session_width=$(tput cols)
+  local _width=$(( 80 < $_session_width ? 80 : $_session_width ))
+  local _length=$(( $_width - ${#_time} ))
+  echo "$(_fg_sd)$(printf "%${_length}s" | tr ' ' '-')$(_prompt_time)$(_nof)"
 }
 
 # prompt configuration cli
