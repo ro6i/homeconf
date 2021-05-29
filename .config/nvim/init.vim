@@ -1,5 +1,5 @@
-nnoremap <C-j> <C-e>
-nnoremap <C-k> <C-y>
+nnoremap <C-j> 5<C-e>
+nnoremap <C-k> 5<C-y>
 nnoremap <C-l> 5zl
 nnoremap <C-h> 5zh
 
@@ -10,13 +10,16 @@ vnoremap <Up> gk
 inoremap <Down> <C-o>gj
 inoremap <Up> <C-o>gk
 
+nnoremap <Enter> ;
+vnoremap <Enter> ;
+
 nmap <silent> <Tab> :call search('\u', 'W', line("."))<CR>
 nmap <silent> <Backspace> :call search('\u', 'bW', line("."))<CR>
 
 xmap     <silent> <Leader>a <Plug>(EasyAlign)
 nnoremap <silent> <Leader>f :call FindTextSettings()<CR>
 nnoremap <silent> <Leader>s :call FindTextPrompt()<CR>
-nnoremap <silent> <Leader>g :Gblame<CR>
+nnoremap <silent> <Leader>g :Git blame<CR>
 nnoremap <silent> <Leader>l <C-o>:call NextKeymap()<CR><C-o>:call lightline#update()<CR>
 nnoremap <silent> <Leader>p "+p
 vnoremap <silent> <Leader>p "+p
@@ -65,6 +68,8 @@ nnoremap <silent> <Space>wh <C-w>h
 nnoremap <silent> <Space>wj <C-w>j
 nnoremap <silent> <Space>wk <C-w>k
 nnoremap <silent> <Space>wl <C-w>l
+nnoremap <silent> <Space>ws <C-w>s
+nnoremap <silent> <Space>wv <C-w>v
 
 nnoremap <silent> <Space>q :q<CR>
 nnoremap <silent> <Space>x :Vexplore<CR>
@@ -98,6 +103,8 @@ tnoremap <C-\><C-\> <C-\><C-n>
 tnoremap <silent> <C-\><C-]> <C-\><C-n>:GotoLastTab<CR>
 
 call plug#begin()
+
+let g:polyglot_disabled = ['csv', 'csv.plugin'] 
 
 let g:plug_url_format = "https://git::@github.com/%s.git"
 Plug 'itchyny/lightline.vim'
@@ -178,6 +185,7 @@ if executable('ag')
   let $FZF_DEFAULT_COMMAND = 'ag --hidden --follow --ignore={tmp,frontend/tmp,.git,.svn,build,project,target,build,__pycache__,.view,.work,__} -g ""'
 endif
 let g:fzf_colors = { 'fg': ['fg', 'Normal'], 'bg': ['bg', 'Normal'], 'hl': ['fg', 'Comment'], 'fg+': ['fg', 'Normal', 'Comment', 'Normal'], 'bg+': ['bg', 'Normal', 'Normal'], 'hl+': ['fg', 'Statement'], 'info': ['fg', 'PreProc'], 'border': ['fg', 'Ignore'], 'prompt': ['fg', 'Conditional'], 'pointer': ['fg', 'Exception'], 'marker':  ['fg', 'Keyword'], 'spinner': ['fg', 'Label'], 'header':  ['fg', 'Comment'] }
+let g:fzf_layout = { 'window': { 'width': 1, 'height': 0.6 } }
 
 function! ToggleColorColumn(width)
   execute "setlocal colorcolumn=" . (&colorcolumn == a:width ? 0 : a:width)
@@ -227,6 +235,7 @@ if !has('nvim')
 else
   set guicursor=n-v-c-sm:block,i-ci-ve:hor25,r-cr-o:ver20
 endif
+set cursorline
 set nocursorcolumn
 set showmatch
 set number
@@ -266,3 +275,4 @@ au FileType md,latex,tex,md,markdown setlocal spell
 au FileType qf nnoremap <buffer> <Space><Enter> <C-w><Enter><C-w>T
 au FileType xml setlocal equalprg=xmllint\ --format\ --recover\ -\ 2>/dev/null
 au FileType yaml hi link yamlKey Label
+au FileType csv set filetype=
