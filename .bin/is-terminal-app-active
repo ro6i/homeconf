@@ -17,7 +17,22 @@ EOF
 )"
     ;;
   'Linux')
-    _app="$(xdotool getactivewindow getwindowname)"
+    if [[ -z "$WAYLAND_DISPLAY" ]]
+    then
+      _app="$(xdotool getactivewindow getwindowname)"
+    else
+      _app="$(gdbus call \
+        --session \
+        --dest org.gnome.Shell \
+        --object-path /org/gnome/Shell \
+        --method org.gnome.Shell.Eval "
+          global
+            .get_window_actors()
+            .map(a=>a.meta_window)
+            .find(w=>w.has_focus())
+            .get_wm_class()" \
+        | cut -d'"' -f 2)"
+    fi
     ;;
 esac
 
