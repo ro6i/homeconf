@@ -1,10 +1,37 @@
+shopt -s histappend
+
 export EDITOR=nvim
 export CLICOLOR=1
 export LC_ALL=en_US.UTF-8  
 export LANG=en_US.UTF-8
+export HISTTIMEFORMAT="%Y-%m-%dT%T "
+export GREP_OPTIONS='--color=auto'
 
-export PATH="/usr/local/sbin:/usr/local/opt/gnu-getopt/bin:$PATH:~/.bin:~/.local/bin:/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/bin:~/node_modules/.bin:~/projects/.bin"
+export PATH="$PATH:$HOME/.bin:$HOME/.local/bin:~/projects/.bin"
+export PATH="$PATH:~/node_modules/.bin"
+# export PATH="/usr/local/sbin:$PATH"
 
+for BASH_CONFIG in "${HOME}/.config/bash/"*
+do
+  [[ -r "$BASH_CONFIG" ]] && source "$BASH_CONFIG"
+done
+
+export PS1="\$(_prompt_hb)\n\$(_prompt_path)\$(_prompt_jobs)\$(_prompt_component_git)\n "
+export PROMPT_COMMAND="history -a; history -n; $PROMPT_COMMAND"
+
+alias cd='cd -P'
+alias ll='ls -l'
+alias cp="cp -i"                          # confirm before overwriting something
+alias df='df -h'                          # human-readable sizes
+alias free='free -m'                      # show sizes in MB
+# alias rm='trash'
+
+alias fresh="source ~/.bash_profile && tmux source-file ~/.tmux.conf"
+alias rr='ranger'
+
+[ -r /usr/share/bash-completion/bash_completion ] && . /usr/share/bash-completion/bash_completion
+
+eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv)
 
 if type brew &>/dev/null; then
   HOMEBREW_PREFIX="$(brew --prefix)"
@@ -17,27 +44,13 @@ if type brew &>/dev/null; then
   fi
 fi
 
-for BASH_CONFIG in "${HOME}/.config/bash/"* ~/.fzf.bash ~/.bin/kiq.sh
-do
-  [[ -r "$BASH_CONFIG" ]] && source "$BASH_CONFIG"
-done
+[[ -f ~/.fzf.bash ]] && source ~/.fzf.bash
+[[ -f ~/.bin/kiq.sh ]] && source ~/.bin/kiq.sh
 
-set show-mode-in-prompt on
-set vi-ins-mode-string ""
-set vi-cmd-mode-string ":"
+GOOGLE_CLOUD_SDK_PATH="$HOMEBREW_PREFIX/Caskroom/google-cloud-sdk/latest/google-cloud-sdk"
+GOOGLE_CLOUD_SDK_PATH="$HOME/.install/google-cloud-sdk"
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f "$GOOGLE_CLOUD_SDK_PATH/path.bash.inc" ]; then . "$GOOGLE_CLOUD_SDK_PATH/path.bash.inc"; fi
 
-export PROMPT_CONF_TIME='on'
-export PS1="\n\$(_prompt_path)\$(_prompt_jobs)\$(_prompt_component_git)\$(_prompt_time)\n "
-# export PS1="\n\$(_prompt_path)\$(_prompt_jobs)\$(_prompt_component_git)\$(_prompt_component_k8s)\$(_prompt_time)\n\$(aline)\n "
-
-export HISTTIMEFORMAT="%Y-%m-%dT%T "
-export GREP_OPTIONS='--color=auto'
-
-alias cd='cd -P'
-alias ll='ls -l'
-# alias rm='trash'
-
-alias fresh="source ~/.bash_profile && tmux source-file ~/.tmux.conf"
-alias rr='ranger'
-
-# [ -f ~/.fzf.bash ] && source ~/.fzf.bash
+# The next line enables shell command completion for gcloud.
+if [ -f "$GOOGLE_CLOUD_SDK_PATH/completion.bash.inc" ]; then . "$GOOGLE_CLOUD_SDK_PATH/completion.bash.inc"; fi
