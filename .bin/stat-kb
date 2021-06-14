@@ -10,10 +10,12 @@ case $(uname -s) in
     ;;
 
   'Linux')
-    _value="$(xset -q | grep 'Caps' | awk '{print $4}')"
-    if [[ ! "$_value" == 'off' ]]
-    then
-      echo 'CAPS'
+    if [[ -z "$WAYLAND_DISPLAY" ]]
+      _value="$(xset -q | grep 'Caps' | awk '{print $4}')"
+      if [[ ! "$_value" == 'off' ]]
+      then
+        echo 'CAPS'
+      fi
     fi
     ;;
 esac
