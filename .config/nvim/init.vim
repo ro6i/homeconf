@@ -16,20 +16,23 @@ vnoremap <Enter> ;
 nmap <silent> <Tab> :call search('\u', 'W', line("."))<CR>
 nmap <silent> <Backspace> :call search('\u', 'bW', line("."))<CR>
 
-xmap     <silent> <Leader>a <Plug>(EasyAlign)
-nnoremap <silent> <Leader>f :call FindTextSettings()<CR>
-nnoremap <silent> <Leader>s :call FindTextPrompt()<CR>
-nnoremap <silent> <Leader>g :Git blame<CR>
-nnoremap <silent> <Leader>l <C-o>:call NextKeymap()<CR><C-o>:call lightline#update()<CR>
-nnoremap <silent> <Leader>p "+p
-vnoremap <silent> <Leader>p "+p
-nnoremap <silent> <Leader>P "+P
-vnoremap <silent> <Leader>P "+P
+xmap     <silent> <Leader>a  <Plug>(EasyAlign)
+vnoremap <silent> <Leader>c  y:OSCYank<CR>
+nnoremap <silent> <Leader>f  :call FindTextSettings()<CR>
+nnoremap <silent> <Leader>s  :call FindTextPrompt()<CR>
+nnoremap <silent> <Leader>g  :Git blame<CR>
+nnoremap <silent> <Leader>l  <C-o>:call NextKeymap()<CR><C-o>:call lightline#update()<CR>
+nnoremap <silent> <Leader>wp "+p
+vnoremap <silent> <Leader>wp "+p
+nnoremap <silent> <Leader>wP "+P
+vnoremap <silent> <Leader>wP "+P
+vnoremap <silent> <Leader>wy "+y
 inoremap <silent> <M-v>      <C-o>"+p
-nnoremap <silent> <Leader>r :Ranger<CR>
+nnoremap <silent> <Leader>r  :Ranger<CR>
 nnoremap <silent> <Leader>rr :tabnew<CR>:term<CR>iranger<CR>
-nnoremap <silent> <Leader>t :call SetNvimPipe('NVIM_PIPE')<CR>
-vnoremap <silent> <Leader>y "+y
+nnoremap <silent> <Leader>t  :call SetNvimPipe('NVIM_PIPE')<CR>
+vnoremap <silent> <Leader>y  y<cr>:call system("tmux load-buffer -", @0)<cr>
+nnoremap  <leader>p  :let @0 = system("tmux save-buffer -")<cr>"0p<cr>g;
 
 vnoremap          <Leader>np :w !tmux-pipe-to-next-pane<CR>
 nnoremap          <Leader>ex :w !bash<CR>
@@ -72,13 +75,15 @@ nnoremap <silent> <Space>ws <C-w>s
 nnoremap <silent> <Space>wv <C-w>v
 
 nnoremap <silent> <Space>q :q<CR>
+nnoremap <silent> <Space>Q :only<CR>
 nnoremap <silent> <Space>x :Vexplore<CR>
 nnoremap <silent> <Space>z :call ToggleWindowSize()<CR>
 
 nnoremap <silent> <Space><Space> za
 nnoremap <silent> <Space><Space>f :call ToggleQuickfixList()<CR>
 nnoremap <silent> <Space><Space>w :set wrap!<CR>
-nnoremap <silent> <Space><Space>c :set cursorline!<CR>
+nnoremap <silent> <Space><Space>cl :set cursorline!<CR>
+nnoremap <silent> <Space><Space>cc :set cursorcolumn!<CR>
 nnoremap <silent> <Space><Space>lc :setlocal cursorbind!<CR>:call lightline#update()<CR>
 nnoremap <silent> <Space><Space>ls :setlocal scrollbind!<CR>:call lightline#update()<CR>
 nnoremap <silent> <Space><Space>r :set list!<CR>
@@ -95,6 +100,7 @@ nnoremap <silent> <Space>sj viw"ty:call FindTextRegex('(class\\|object\\|trait\\
 nnoremap <silent> <Space>so viw"ty:call FindTextRegex('(class\\|object\\|trait\\|def\\|val\\|function\\|fun\\|fn\\|const\\|auto)\s+' . getreg('t') . '\s*[^\w]')<CR><C-w><Enter><C-w>T:nohls<CR>
 " fuzzy show usages
 nnoremap <silent> <Space>su viw"ty:call FindTextRegex('((with\s\\|extends\s\\|[\(\[])' . getreg('t') . '\\|(?<!def\s\\|val\s\\|ass\s\\|ect\s)' . getreg('t') . '[\)(\[\} ])')<CR>:nohls<CR>
+" nnoremap <silent> <Space>si :call FindTextRegex(substitute(expand('%:t'), 'Impl.scala$', '.scala''((with\s\\|extends\s\\|[\(\[])' . getreg('t') . '\\|(?<!def\s\\|val\s\\|ass\s\\|ect\s)' . getreg('t') . '[\)(\[\} ])')<CR>:nohls<CR>
 
 vnoremap r "_dP
 vnoremap * y/\V<C-R>"<CR>
@@ -131,6 +137,7 @@ Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
 Plug 'francoiscabrol/ranger.vim'
 Plug 'haya14busa/incsearch.vim'
+Plug 'ojroques/vim-oscyank'
 Plug 'ro6i/m31.vim'
 Plug 'ro6i/snugfind.vim'
 Plug 'ro6i/gotolasttab.vim'
@@ -210,15 +217,19 @@ command! AsJSON set syntax=json | FormatJSON
 
 command! Pipe :w !tmux-pipe-to-next-pane
 
+set virtualedit=all
 set nowrap
+set sidescroll=1
+set nostartofline
 set noshowmode
 set tabstop=2
 set shiftwidth=2
 set expandtab
 set backspace=indent,eol,start
 
-" set list
-set listchars=tab:>-,trail:.,extends:>,precedes:<,eol:¬
+set list
+set listchars=tab:>-,trail:#,extends:>,precedes:<
+" set listchars=tab:>-,trail:.,extends:>,precedes:<,eol:¬
 
 "set fillchars+=vert:
 
@@ -255,6 +266,7 @@ set spelllang=en,ru_yo
 set tags=./.tags,.tags,./tags,tags
 
 set mouse=a
+" set clipboard=unnamedplus
 
 au TermOpen * setlocal nonumber norelativenumber
 
