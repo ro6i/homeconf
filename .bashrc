@@ -16,8 +16,10 @@ do
   [[ -r "$BASH_CONFIG" ]] && source "$BASH_CONFIG"
 done
 
+export PROMPT_CONF_TIME=on
+
 export PS1="\$(_prompt_hb)\n\$(_prompt_path)\$(_prompt_jobs)\$(_prompt_component_git)\n "
-export PROMPT_COMMAND="history -a; history -n; $PROMPT_COMMAND"
+#export PROMPT_COMMAND="history -a; history -n; $PROMPT_COMMAND"
 
 alias cd='cd -P'
 alias ll='ls -l'
@@ -31,7 +33,7 @@ alias rr='ranger'
 
 [ -r /usr/share/bash-completion/bash_completion ] && . /usr/share/bash-completion/bash_completion
 
-eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv)
+#eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv)
 
 if type brew &>/dev/null; then
   HOMEBREW_PREFIX="$(brew --prefix)"

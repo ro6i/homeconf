@@ -1,4 +1,4 @@
-#!/usr/local/bin/bash
+#!/bin/bash
 
 function kiq {
   _key=$(sed "s/ /\&\#x20;/g" <<< $@)

@@ -1,0 +1,38 @@
+#!/bin/bash
+
+wg_profile="$1"
+
+sudo -nv 2> /dev/null
+if [[ "$?" != 0 ]]
+then
+  _doecho=yes
+fi
+
+function start_wg_profile() {
+  printf "Starting wireguard: [$1]... "
+  [[ "$_doecho" == 'yes' ]] && echo
+  sudo systemctl start "wg-quick@$1"
+}
+
+function stop_wg_profile() {
+  printf "Stopping wireguard: [$1]... "
+  [[ "$_doecho" == 'yes' ]] && echo
+  sudo systemctl stop "wg-quick@$1"
+}
+
+if [[ -z "$wg_profile" ]]
+then
+  while read -r wg_profile
+  do
+    stop_wg_profile "$wg_profile"
+  done < <(systemctl list-units --type=service --state=active | grep -oP 'WireGuard via wg-quick.* for \K.*')
+else
+  if $(systemctl list-units --type=service --state=active | grep -oP 'WireGuard via wg-quick.* for \K.*' | grep -q "$wg_profile")
+  then
+    stop_wg_profile "$wg_profile"
+  else
+    start_wg_profile "$wg_profile"
+  fi
+fi
+
+echo 'done.'
