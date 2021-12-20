@@ -1,0 +1,7 @@
+#!/bin/bash
+
+SCRIPT_NAME="$1"
+
+shift 1
+
+"$HOME/path/to/run/run-${SCRIPT_NAME}.sh" $@
