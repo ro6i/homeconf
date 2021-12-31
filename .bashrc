@@ -2,7 +2,7 @@ shopt -s histappend
 
 export EDITOR=nvim
 export CLICOLOR=1
-export LC_ALL=en_US.UTF-8  
+export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
 export HISTTIMEFORMAT="%Y-%m-%dT%T "
 export GREP_OPTIONS='--color=auto'
