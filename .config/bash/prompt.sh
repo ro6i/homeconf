@@ -1,5 +1,5 @@
 
-_component_delimiter=':'
+_component_delimiter=' '
 
 _nof() {
   echo -e "\001\e[m\002"

@@ -19,9 +19,10 @@ nmap <silent> <Backspace> :call search('\u', 'bW', line("."))<CR>
 xmap     <silent> <Leader>a  <Plug>(EasyAlign)
 vnoremap <silent> <Leader>c  y:OSCYank<CR>
 nnoremap <silent> <Leader>f  :call FindTextSettings()<CR>
+nnoremap <silent> <Leader>j  :AsJSON<CR>
 nnoremap <silent> <Leader>s  :call FindTextPrompt()<CR>
 nnoremap <silent> <Leader>g  :Git blame<CR>
-nnoremap <silent> <Leader>l  <C-o>:call NextKeymap()<CR><C-o>:call lightline#update()<CR>
+nnoremap <silent> <Leader>l  :call NextKeymap()<CR>:call lightline#update()<CR>
 nnoremap <silent> <Leader>wp "+p
 vnoremap <silent> <Leader>wp "+p
 nnoremap <silent> <Leader>wP "+P
@@ -115,15 +116,15 @@ let g:polyglot_disabled = ['csv', 'csv.plugin']
 let g:plug_url_format = "https://git::@github.com/%s.git"
 Plug 'itchyny/lightline.vim'
 Plug 'jeetsukumaran/vim-indentwise'
-Plug 'sheerun/vim-polyglot'
+" Plug 'sheerun/vim-polyglot'
 Plug 'airblade/vim-gitgutter'
 Plug 'tpope/vim-fugitive'
 Plug 'tommcdo/vim-fugitive-blame-ext'
-Plug 'derekwyatt/vim-scala'
+" Plug 'derekwyatt/vim-scala'
 Plug 'GEverding/vim-hocon'
-Plug 'neovimhaskell/haskell-vim'
+" Plug 'neovimhaskell/haskell-vim'
 Plug 'bitc/vim-hdevtools'
-Plug 'hdima/python-syntax'
+" Plug 'hdima/python-syntax'
 Plug 'tpope/vim-commentary'
 Plug 'junegunn/vim-easy-align'
 Plug 'vim-scripts/bufkill.vim'
@@ -273,10 +274,6 @@ au TermOpen * setlocal nonumber norelativenumber
 " au BufRead,BufNewFile * syn match parensCustomLeft /[(]/ | hi parensCustomLeft ctermfg=6
 au BufRead,BufNewFile * syn match parensCustom /[()]/ | hi parensCustom ctermfg=15 cterm=bold
 au BufRead,BufNewFile * syn match curlyCustom /[{}]/ | hi curlyCustom ctermfg=10
-" colors
-hi scalaSquareBracketsBrackets ctermfg=11
-hi! link scalaKeywordModifier StorageClass
-hi! link scalaIstanceDeclaration Type
 
 function! SynGroup()
   let l:s = synID(line('.'), col('.'), 1)
