@@ -4,16 +4,17 @@ nvimSocketNamePrefix="/tmp/nvimsocket"
 
 NAME="$1"; shift
 
-if [[ "$NAME" == "-" ]]
+if [[ -z "$NAME" ]]
 then
-  NAME="$NVIM_PIPE"
+  >&2 echo 'No target pipe'
+  exit 1
 fi
 
 SERVERNAME="${nvimSocketNamePrefix}-${NAME}"
 
 if [ ! -e "$SERVERNAME" ]
 then
-  echo "File $SERVERNAME does not exit."
+  >&2 echo "File $SERVERNAME does not exist"
   exit 1
 fi
 
@@ -46,7 +47,7 @@ do
       shift
       break ;;
     *)
-      echo "error parsing args"
+      >&2 echo "Error parsing args"
       exit 1 ;;
   esac
 done

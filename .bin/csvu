@@ -1,5 +1,0 @@
-#!/bin/bash
-
-_column_number=$1
-_q="{OFS=\",\"; print \$${_column_number}}"
-awk -F, "$_q"

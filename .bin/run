@@ -1,0 +1,21 @@
+#!/bin/bash
+
+set -e
+
+SCRIPT_NAME="$1"
+
+shift 1
+
+if [ -z "$RUN_CLI_DIR" ]
+then
+  >&2 echo -e 'RUN_CLI_DIR not specified'
+  exit 1
+fi
+
+GLOBAL_INCLUDE_PATH="$RUN_CLI_DIR/.lib.sh"
+[[ -f "$GLOBAL_INCLUDE_PATH" ]] && . "$GLOBAL_INCLUDE_PATH"
+
+GLOBAL_ENV_PATH="$RUN_CLI_DIR/.env.sh"
+[[ -f "$GLOBAL_ENV_PATH" ]] && . "$GLOBAL_ENV_PATH"
+
+. "$RUN_CLI_DIR/run-${SCRIPT_NAME}.sh"

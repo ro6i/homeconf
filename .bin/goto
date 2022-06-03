@@ -1,0 +1,9 @@
+#!/bin/bash
+
+_target="$1"
+[ -z "$_target" ] && echo "Error: No target" 1>&2 && exit 1
+
+# _path="$PWD/.view/$_target"
+_path="$(find ~+ . -mindepth 0 -maxdepth 2 -type d -name '.dbMigration' -prune -false -o -name "${_target}" | head -n 1)"
+
+[ -d "$_path" ] && tmux new-window -c "$_path" -n $(echo "${_target^^}") || echo "Error: Directory $_path does not exist." 1>&2 && exit 1
