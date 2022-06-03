@@ -12,10 +12,120 @@ then
   exit 1
 fi
 
-GLOBAL_INCLUDE_PATH="$RUN_CLI_DIR/.lib.sh"
-[[ -f "$GLOBAL_INCLUDE_PATH" ]] && . "$GLOBAL_INCLUDE_PATH"
+function warn {
+  if [ -t 1 ]
+  then
+    >&2 echo -e "$(tput setaf 9)WARN: $(tput setaf 3)${1}$(tput sgr0)"
+  else
+    >&2 echo -e "WARN $1"
+  fi
+}
 
+function capture_match {
+  if $(cat "$RUN_CLI_DIR/$2" | grep -q "^$1\$")
+  then
+    CAPTURED="$1"
+  else
+    MESSAGE="value is not in source [$2]"
+  fi
+}
+
+function capture_uuid {
+  if [[ "$1" =~ ^\{?[A-F0-9a-f]{8}-[A-F0-9a-f]{4}-[A-F0-9a-f]{4}-[A-F0-9a-f]{4}-[A-F0-9a-f]{12}\}?$ ]]
+  then
+    CAPTURED="$1"
+  else
+    MESSAGE="[$1] not UUID"
+  fi
+}
+
+function capture_date {
+  if [[ $(date "+%Y-%m-%d" -d "$1") == "$1" ]]
+  then
+    CAPTURED="$1"
+  else
+    MESSAGE="[$1] not DATE"
+  fi
+}
+
+function _one {
+  local mode="$1"
+  local type="$2"
+  local val="$3"
+  local var="$4"
+  local src="$5"
+
+  case "$mode" in
+    assert)
+      if [[ -z "$val" ]]
+      then
+        warn "value [$var] must have value"
+        exit 1
+      fi
+      ;;
+    *)
+      ;;
+  esac
+
+  if [[ -z "$var" ]]
+  then
+    warn "assertion must have variable name in second argument"
+    exit 1
+  fi
+
+  CAPTURED=
+
+  case "$type" in
+    from)
+      capture_match "$val" "$src"
+      ;;
+    uuid)
+      capture_uuid "$val"
+      ;;
+    date)
+      capture_date "$val"
+      ;;
+    *)
+      warn "unknown type [$type]"
+      exit 1
+      ;;
+  esac
+
+  case "$mode" in
+    assert)
+      if [[ -z "$CAPTURED" ]]
+      then
+        warn "$MESSAGE"
+        exit 1
+      fi
+      ;;
+    optin)
+      if [[ ! -z "$val"  && ! -z "$MESSAGE" ]]
+      then
+        warn "$MESSAGE"
+        exit 1
+      fi
+      ;;
+    *)
+      ;;
+  esac
+
+  eval "$var=$CAPTURED"
+}
+
+# high level interface
+function assert {
+  _one assert "$1" "$2" "$3" "$4"
+}
+
+function optin {
+  _one optin "$1" "$2" "$3" "$4"
+}
+
+# include script that may contain customizations, functions, settings
 GLOBAL_ENV_PATH="$RUN_CLI_DIR/.env.sh"
 [[ -f "$GLOBAL_ENV_PATH" ]] && . "$GLOBAL_ENV_PATH"
 
+# include the actual runnable script
+# lib functions (e.g. assert, optin) can be invoked inside run script
 . "$RUN_CLI_DIR/run-${SCRIPT_NAME}.sh"
