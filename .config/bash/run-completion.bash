@@ -2,7 +2,7 @@
 
 _complit_help() {
   # line 2 is expected to contain the completion spec
-  HELP="$(cat "${RUN_PATH}/run-${COMP_WORDS[1]}.sh" | head -n 2 | tail -1)"
+  HELP="$(cat "${RUN_CLI_DIR}/run-${COMP_WORDS[1]}.sh" | head -n 2 | tail -1)"
   COMPREPLY=("${HELP}" '')
 }
 
@@ -35,7 +35,7 @@ _complit() {
         IFS='@'; read -a PARTS <<< "$LINE"
         PART_RIGHT=$(echo ${PARTS[1]} | awk '{$1=$1};1')
         IFS=$'\n'
-        COMPREPLY=($(compgen -W "$(cat "${RUN_PATH}/$PART_RIGHT")" -- "${COMP_WORDS[$COMP_CWORD]}"))
+        COMPREPLY=($(compgen -W "$(cat "${RUN_CLI_DIR}/$PART_RIGHT")" -- "${COMP_WORDS[$COMP_CWORD]}"))
         MATCHED=yes
         break
       fi
@@ -68,18 +68,18 @@ _run_completions() {
     return
   fi
 
-  # the first section is completed with script names at the RUN_PATH
+  # the first section is completed with script names at the RUN_CLI_DIR
   # in order to be listed the script file name must start with 'run-'
   if [ "${COMP_CWORD}" -eq 1 ]
   then
     IFS=$'\n'
-    COMPREPLY=($(compgen -W "$(find "${RUN_PATH}" -type f -name 'run-*' -printf "%f\n" | sed 's/^run-//g; s/.sh$//g'| sort)" -- "${COMP_WORDS[1]}"))
+    COMPREPLY=($(compgen -W "$(find "${RUN_CLI_DIR}" -type f -name 'run-*' -printf "%f\n" | sed 's/^run-//g; s/.sh$//g'| sort)" -- "${COMP_WORDS[1]}"))
     return
   else
     if [ "${COMP_CWORD}" -gt 1 ]
     then
       # line 3 is expected to contain the argument completion spec
-      SPEC="$(cat "${RUN_PATH}/run-${COMP_WORDS[1]}.sh" | sed 's/^[#][[:space:]]*//' | head -n 3 | tail -1)"
+      SPEC="$(cat "${RUN_CLI_DIR}/run-${COMP_WORDS[1]}.sh" | sed 's/^[#][[:space:]]*//' | head -n 3 | tail -1)"
 
       _complit "$SPEC"
     fi
