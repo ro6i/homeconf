@@ -21,13 +21,21 @@ function warn {
   fi
 }
 
-function capture_match {
+function capture_match_file {
   if $(cat "$RUN_CLI_DIR/$2" | grep -q "^$1\$")
   then
     CAPTURED="$1"
   else
-    MESSAGE="value is not in source [$2]"
+    MESSAGE="value [$1] is not at [$2]"
   fi
+}
+
+function capture_match_values {
+  for el in "${_arg_list[@]}";
+  do
+    [[ "$el" == "$1" ]] && CAPTURED="$1"
+  done
+  MESSAGE="value [$1] is not in [${_arg_list[@]}]"
 }
 
 function capture_uuid {
@@ -77,7 +85,11 @@ function _one {
 
   case "$type" in
     from)
-      capture_match "$val" "$src"
+      capture_match_file "$val" "$src"
+      ;;
+    opts)
+      _arg_list=("${@:5}")
+      capture_match_values "$val"
       ;;
     uuid)
       capture_uuid "$val"
@@ -115,11 +127,11 @@ function _one {
 
 # high level interface
 function assert {
-  _one assert "$1" "$2" "$3" "$4"
+  _one assert "$@"
 }
 
 function optin {
-  _one optin "$1" "$2" "$3" "$4"
+  _one optin "$@"
 }
 
 # include script that may contain customizations, functions, settings
