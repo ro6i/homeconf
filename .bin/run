@@ -2,10 +2,6 @@
 
 set -e
 
-SCRIPT_NAME="$1"
-
-shift 1
-
 if [ -z "$RUN_CLI_DIR" ]
 then
   >&2 echo -e 'RUN_CLI_DIR not specified'
@@ -35,7 +31,10 @@ function capture_match_values {
   do
     [[ "$el" == "$1" ]] && CAPTURED="$1"
   done
-  MESSAGE="value [$1] is not in [${_arg_list[@]}]"
+  if [[ -z "$CAPTURED" ]]
+  then
+    MESSAGE="value [$1] is not in [${_arg_list[@]}]"
+  fi
 }
 
 function capture_uuid {
@@ -56,12 +55,59 @@ function capture_date {
   fi
 }
 
+function capture_text {
+  local is_set=
+  local op="$2"
+  local len="$3"
+  case "$op" in
+    eq)
+      if [[ "${#1}" -eq "$len" ]]; then is_set=1; fi
+      ;;
+    lt)
+      if [[ "${#1}" -lt "$len" ]]; then is_set=1; fi
+      ;;
+    gt)
+      if [[ "${#1}" -gt "$len" ]]; then is_set=1; fi
+      ;;
+    le)
+      if [[ "${#1}" -le "$len" ]]; then is_set=1; fi
+      ;;
+    ge)
+      if [[ "${#1}" -ge "$len" ]]; then is_set=1; fi
+      ;;
+  esac
+  if [[ ! -z "$is_set" ]]
+  then
+    CAPTURED="$2"
+  else
+    MESSAGE="[$1] out of range"
+  fi
+}
+
+function capture_regex {
+  if $(echo "$1" | grep -q "$2")
+  then
+    CAPTURED="$1"
+  else
+    MESSAGE="[$1] does not match /$2/"
+  fi
+}
+
+function capture_integer {
+  if $(echo "$1" | grep -q '^[0-9]*$')
+  then
+    CAPTURED="$1"
+  else
+    MESSAGE="[$1] not integer"
+  fi
+}
+
 function _one {
   local mode="$1"
-  local type="$2"
-  local val="$3"
-  local var="$4"
-  local src="$5"
+  local index="$2"
+  local val="${args[$index]}"
+  local var="$3"
+  local type="$4"
 
   case "$mode" in
     assert)
@@ -85,10 +131,10 @@ function _one {
 
   case "$type" in
     from)
-      capture_match_file "$val" "$src"
+      capture_match_file "$val" "$5"
       ;;
     opts)
-      _arg_list=("${@:5}")
+      _arg_list=(${@:5})
       capture_match_values "$val"
       ;;
     uuid)
@@ -96,6 +142,15 @@ function _one {
       ;;
     date)
       capture_date "$val"
+      ;;
+    text)
+      capture_text "$val" "$5" "$6" "$7"
+      ;;
+    regex)
+      capture_regex "$val" "$5"
+      ;;
+    integer)
+      capture_integer "$val"
       ;;
     *)
       warn "unknown type [$type]"
@@ -122,7 +177,10 @@ function _one {
       ;;
   esac
 
-  eval "$var=$CAPTURED"
+  if [[ "$var" != '_' ]]
+  then
+    eval "$var='$CAPTURED'"
+  fi
 }
 
 # high level interface
@@ -134,6 +192,13 @@ function optin {
   _one optin "$@"
 }
 
+
+args=($@)
+
+SCRIPT_NAME="$1"
+shift 1
+
+
 # include script that may contain customizations, functions, settings
 GLOBAL_ENV_PATH="$RUN_CLI_DIR/.env.sh"
 [[ -f "$GLOBAL_ENV_PATH" ]] && . "$GLOBAL_ENV_PATH"
@@ -141,3 +206,8 @@ GLOBAL_ENV_PATH="$RUN_CLI_DIR/.env.sh"
 # include the actual runnable script
 # lib functions (e.g. assert, optin) can be invoked inside run script
 . "$RUN_CLI_DIR/run-${SCRIPT_NAME}.sh"
+
+
+[[ $(type -t main) != function ]] && warn 'main function not found' && exit 1
+
+main

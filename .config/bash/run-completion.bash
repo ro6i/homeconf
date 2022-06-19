@@ -6,56 +6,93 @@ _complit_help() {
   COMPREPLY=("${HELP}" '')
 }
 
-# argument completion
-# parameter specifications are separated by ;;
-_complit() {
-  CONF_LINE_1="$1"
+function _one {
+  local mode="$1"
+  local index="$2"
+  local val="${COMP_WORDS[$index]}"
+  local var="$3"
+  local type="$4"
 
-  S1="$(echo "$CONF_LINE_1" | sed 's/;;/\n/g')"
-  IFS=$'\n' SPLIT=( $(echo "$S1") )
+  case "$type" in
+    from)
+      LOOKUP_TYPES[$index]='from'
+      LOOKUP_VALUES[$index]="$5"
+      ;;
+    opts)
+      _arg_list=(${@:5})
+      LOOKUP_TYPES[$index]='opts'
+      LOOKUP_VALUES[$index]=$(IFS=, ; echo "${_arg_list[*]}")
+      ;;
+    uuid)
+      LOOKUP_TYPES[$index]='uuid'
+      LOOKUP_VALUES[$index]=
+      ;;
+    date)
+      LOOKUP_TYPES[$index]='date'
+      LOOKUP_VALUES[$index]='YYYY-MM-DD'
+      ;;
+    text)
+      LOOKUP_TYPES[$index]='text'
+      LOOKUP_VALUES[$index]=
+      ;;
+    regex)
+      LOOKUP_TYPES[$index]='regex'
+      LOOKUP_VALUES[$index]=
+      ;;
+    integer)
+      LOOKUP_TYPES[$index]='integer'
+      LOOKUP_VALUES[$index]=
+      ;;
+    *)
+      ;;
+  esac
 
+}
+
+# high level interface
+function assert {
+  _one assert "$@"
+}
+
+function optin {
+  _one optin "$@"
+}
+
+
+_complit2() {
   # if available argument completion is exhausted
   # then ignore the completion request
-  if [[ "${COMP_CWORD}" -gt $((${#SPLIT[@]} + 1)) ]]
-  then
-    return
-  fi
+  # echo "${COMP_CWORD} -> ${!LOOKUP_TYPES[@]} -> ${#LOOKUP_TYPES[@]}"
+
+  max_key=-1; for k in "${!LOOKUP_TYPES[@]}"; do (($k > max_key)) && max_key=$k; done
+  if [[ ${COMP_CWORD} -gt $(($max_key + 1)) ]]; then return; fi
 
   MATCHED=
-  for i in "${!SPLIT[@]}"
-  do
-    LINE="$(echo "${SPLIT[i]}" | awk '{$1=$1};1')"
-    # if the specification is like
-    # <NAME> @ <path/to/file>
-    # then the file content is used for completion
-    if [[ "$LINE" =~ ^[A-Z][A-Z0-9]*[[:space:]][@][[:space:]].* ]]
-    then
-      if [[ "${COMP_CWORD}" -eq $((i + 2)) ]]
-      then
-        IFS='@'; read -a PARTS <<< "$LINE"
-        PART_RIGHT=$(echo ${PARTS[1]} | awk '{$1=$1};1')
-        IFS=$'\n'
-        COMPREPLY=($(compgen -W "$(cat "${RUN_CLI_DIR}/$PART_RIGHT")" -- "${COMP_WORDS[$COMP_CWORD]}"))
-        MATCHED=yes
-        break
-      fi
-    else
-      # if no section syntax is matched
-      # then the parameter specificaton is printed
-      if [[ ! -z "${SPLIT[i]}" ]]
-      then
-        COMPREPLY=("  SPEC: $LINE" '')
-      else
-        return
-      fi
-    fi
 
-    if [[ $MATCHED -ne 'yes' ]]
-    then
-      _complit_help
-    fi
+  key=$(($COMP_CWORD - 1))
 
-  done
+  case "${LOOKUP_TYPES[key]}" in
+    from)
+      # echo "from - ${LOOKUP_VALUES[key]}; "
+      IFS=$'\n' COMPREPLY=($(compgen -W "$(cat "${RUN_CLI_DIR}/${LOOKUP_VALUES[key]}")" -- "${COMP_WORDS[$COMP_CWORD]}"))
+      ;;
+    opts)
+      # echo "opts - ${LOOKUP_VALUES[key]}; "
+
+      split_into_lines="$(echo "${LOOKUP_VALUES[key]}" | sed 's/,/\n/g')"
+      IFS=$'\n' opts_split=($(echo "$split_into_lines"))
+
+      IFS=$'\n' COMPREPLY=($(compgen -W "$(printf "%s\n" "${opts_split[@]}")" -- "${COMP_WORDS[$COMP_CWORD]}"))
+      ;;
+    date)
+      COMPREPLY=("${LOOKUP_VALUES[key]}")
+      ;;
+    integer)
+      COMPREPLY=('0123')
+      ;;
+    *)
+      ;;
+  esac
 }
 
 _run_completions() {
@@ -78,10 +115,15 @@ _run_completions() {
   else
     if [ "${COMP_CWORD}" -gt 1 ]
     then
-      # line 3 is expected to contain the argument completion spec
-      SPEC="$(cat "${RUN_CLI_DIR}/run-${COMP_WORDS[1]}.sh" | sed 's/^[#][[:space:]]*//' | head -n 3 | tail -1)"
+      # include script that may contain customizations, functions, settings
+      GLOBAL_ENV_PATH="$RUN_CLI_DIR/.env.sh"
+      [[ -f "$GLOBAL_ENV_PATH" ]] && . "$GLOBAL_ENV_PATH"
 
-      _complit "$SPEC"
+      # include the actual runnable script
+      # lib functions (e.g. assert, optin) can be invoked inside run script
+      . "$RUN_CLI_DIR/run-${COMP_WORDS[1]}.sh"
+
+      _complit2
     fi
     return
   fi
