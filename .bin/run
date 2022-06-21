@@ -37,6 +37,24 @@ function capture_match_values {
   fi
 }
 
+function capture_match_shell {
+  if $(eval "$2" | grep -q "^$1\$")
+  then
+    CAPTURED="$1"
+  else
+    MESSAGE="value [$1] is not found in output of [$2]"
+  fi
+}
+
+function capture_match_command {
+  if $(eval "$2 ${_arg_list[@]}" | grep -q "^$1\$")
+  then
+    CAPTURED="$1"
+  else
+    MESSAGE="value [$1] is not found in output of [$2]"
+  fi
+}
+
 function capture_uuid {
   if [[ "$1" =~ ^\{?[A-F0-9a-f]{8}-[A-F0-9a-f]{4}-[A-F0-9a-f]{4}-[A-F0-9a-f]{4}-[A-F0-9a-f]{12}\}?$ ]]
   then
@@ -136,6 +154,14 @@ function _one {
     opts)
       _arg_list=(${@:5})
       capture_match_values "$val"
+      ;;
+    shell)
+      RUN_SHELL_ARGS=(${args[@]:1:$index})
+      capture_match_shell "$val" "$5"
+      ;;
+    command)
+      _arg_list=(${args[@]:1:$index})
+      capture_match_command "$val" "$5"
       ;;
     uuid)
       capture_uuid "$val"

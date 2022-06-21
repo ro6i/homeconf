@@ -97,8 +97,8 @@ nnoremap <silent> <Space><Space>] :call ToggleColorColumn(160)<CR>
 nnoremap <silent> <Space>s<Space> viw"ty:call FindTextFlat(getreg('t'))<CR>
 vnoremap <silent> <Space>s<Space> "ty:call FindTextFlat(getreg('t'))<CR>
 vnoremap <silent> <Space>s        "ty:call FindTextFlat(getreg('t'))<CR>
-nnoremap <silent> <Space>sj viw"ty:call FindTextRegex('(class\\|object\\|trait\\|def\\|val\\|function\\|fun\\|fn\\|const\\|auto)\s+' . getreg('t') . '\s*[^\w]')<CR>:nohls<CR>
-nnoremap <silent> <Space>so viw"ty:call FindTextRegex('(class\\|object\\|trait\\|def\\|val\\|function\\|fun\\|fn\\|const\\|auto)\s+' . getreg('t') . '\s*[^\w]')<CR><C-w><Enter><C-w>T:nohls<CR>
+nnoremap <silent> <Space>sj viw"ty:call FindTextRegex('(class\\|struct\\|object\\|trait\\|def\\|val\\|function\\|fun\\|fn\\|const\\|auto)\s+' . getreg('t') . '\s*[^\w]')<CR>:nohls<CR>
+nnoremap <silent> <Space>so viw"ty:call FindTextRegex('(class\\|struct\\|object\\|trait\\|def\\|val\\|function\\|fun\\|fn\\|const\\|auto)\s+' . getreg('t') . '\s*[^\w]')<CR><C-w><Enter><C-w>T:nohls<CR>
 " fuzzy show usages
 nnoremap <silent> <Space>su viw"ty:call FindTextRegex('((with\s\\|extends\s\\|[\(\[])' . getreg('t') . '\\|(?<!def\s\\|val\s\\|ass\s\\|ect\s)' . getreg('t') . '[\)(\[\} ])')<CR>:nohls<CR>
 " nnoremap <silent> <Space>si :call FindTextRegex(substitute(expand('%:t'), 'Impl.scala$', '.scala''((with\s\\|extends\s\\|[\(\[])' . getreg('t') . '\\|(?<!def\s\\|val\s\\|ass\s\\|ect\s)' . getreg('t') . '[\)(\[\} ])')<CR>:nohls<CR>
@@ -152,6 +152,9 @@ call plug#end()
 
 syntax on
 colorscheme m31
+
+let g:oscyank_max_length = 1000000
+let g:oscyank_term = 'default'
 
 let g:java_highlight_all = 1
 
@@ -272,7 +275,7 @@ set mouse=a
 au TermOpen * setlocal nonumber norelativenumber
 
 " au BufRead,BufNewFile * syn match parensCustomLeft /[(]/ | hi parensCustomLeft ctermfg=6
-au BufRead,BufNewFile * syn match parensCustom /[()]/ | hi parensCustom ctermfg=15 cterm=bold
+au BufRead,BufNewFile * syn match parensCustom /[()]/ | hi parensCustom ctermfg=15
 au BufRead,BufNewFile * syn match curlyCustom /[{}]/ | hi curlyCustom ctermfg=10
 
 function! SynGroup()

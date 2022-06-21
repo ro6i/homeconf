@@ -23,25 +23,34 @@ function _one {
       LOOKUP_TYPES[$index]='opts'
       LOOKUP_VALUES[$index]=$(IFS=, ; echo "${_arg_list[*]}")
       ;;
+    shell)
+      RUN_SHELL_ARGS=(${COMP_WORDS[@]:1})
+      LOOKUP_TYPES[$index]='shell'
+      LOOKUP_VALUES[$index]="$5"
+      ;;
+    command)
+      LOOKUP_TYPES[$index]='command'
+      LOOKUP_VALUES[$index]="$5"
+      ;;
     uuid)
       LOOKUP_TYPES[$index]='uuid'
-      LOOKUP_VALUES[$index]=
+      LOOKUP_VALUES[$index]="[UUID]"
       ;;
     date)
       LOOKUP_TYPES[$index]='date'
-      LOOKUP_VALUES[$index]='YYYY-MM-DD'
+      LOOKUP_VALUES[$index]='[YYYY-MM-DD]'
       ;;
     text)
       LOOKUP_TYPES[$index]='text'
-      LOOKUP_VALUES[$index]=
+      LOOKUP_VALUES[$index]='[TEXT]'
       ;;
     regex)
       LOOKUP_TYPES[$index]='regex'
-      LOOKUP_VALUES[$index]=
+      LOOKUP_VALUES[$index]='[REGEX"]'
       ;;
     integer)
       LOOKUP_TYPES[$index]='integer'
-      LOOKUP_VALUES[$index]=
+      LOOKUP_VALUES[$index]='[INTEGER]'
       ;;
     *)
       ;;
@@ -73,22 +82,33 @@ _complit2() {
 
   case "${LOOKUP_TYPES[key]}" in
     from)
-      # echo "from - ${LOOKUP_VALUES[key]}; "
       IFS=$'\n' COMPREPLY=($(compgen -W "$(cat "${RUN_CLI_DIR}/${LOOKUP_VALUES[key]}")" -- "${COMP_WORDS[$COMP_CWORD]}"))
       ;;
     opts)
-      # echo "opts - ${LOOKUP_VALUES[key]}; "
-
       split_into_lines="$(echo "${LOOKUP_VALUES[key]}" | sed 's/,/\n/g')"
       IFS=$'\n' opts_split=($(echo "$split_into_lines"))
 
       IFS=$'\n' COMPREPLY=($(compgen -W "$(printf "%s\n" "${opts_split[@]}")" -- "${COMP_WORDS[$COMP_CWORD]}"))
       ;;
+    shell)
+      shell_code="${LOOKUP_VALUES[key]}"
+      IFS=$'\n' COMPREPLY=($(compgen -W "$(printf "%s\n" "$(eval "$shell_code")")" -- "${COMP_WORDS[$COMP_CWORD]}"))
+      ;;
+    command)
+      IFS=' ' command_line="${LOOKUP_VALUES[key]} ${COMP_WORDS[*]:2}"
+      IFS=$'\n' COMPREPLY=($(compgen -W "$(printf "%s\n" "$(eval "$command_line")")" -- "${COMP_WORDS[$COMP_CWORD]}"))
+      ;;
+    uuid)
+      IFS=$'\n' COMPREPLY=($(compgen -W "${LOOKUP_VALUES[key]}" -- "${COMP_WORDS[$COMP_CWORD]}"))
+      ;;
     date)
-      COMPREPLY=("${LOOKUP_VALUES[key]}")
+      IFS=$'\n' COMPREPLY=($(compgen -W "${LOOKUP_VALUES[key]}" -- "${COMP_WORDS[$COMP_CWORD]}"))
+      ;;
+    text)
+      IFS=$'\n' COMPREPLY=($(compgen -W "${LOOKUP_VALUES[key]}" -- "${COMP_WORDS[$COMP_CWORD]}"))
       ;;
     integer)
-      COMPREPLY=('0123')
+      IFS=$'\n' COMPREPLY=($(compgen -W "${LOOKUP_VALUES[key]}" -- "${COMP_WORDS[$COMP_CWORD]}"))
       ;;
     *)
       ;;
