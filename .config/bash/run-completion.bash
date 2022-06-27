@@ -3,11 +3,12 @@
 function _one {
   local mode="$1"
   local index="$2"
-  local val="${COMP_WORDS[$index]}"
+  local val="${COMP_WORDS[$(($index + 1))]}"
   local var="$3"
   local type="$4"
 
   LOOKUP_VARS[$index]="$var"
+  CURRENT_VALS[$index]="$val"
 
   case "$type" in
     from)
@@ -67,7 +68,6 @@ function optin {
 _complit2() {
   # if available argument completion is exhausted
   # then ignore the completion request
-  # echo "${COMP_CWORD} -> ${!LOOKUP_TYPES[@]} -> ${#LOOKUP_TYPES[@]}"
 
   max_key=-1; for k in "${!LOOKUP_TYPES[@]}"; do (($k > max_key)) && max_key=$k; done
   if [[ ${COMP_CWORD} -gt $(($max_key + 1)) ]]; then return; fi
@@ -111,12 +111,6 @@ _complit2() {
   esac
 }
 
-_complit_help() {
-  # line 2 is expected to contain the completion spec
-  HELP="$(cat "${RUN_CLI_DIR}/run-${COMP_WORDS[1]}.sh" | head -n 2 | tail -1)"
-  COMPREPLY=("${HELP}" '')
-}
-
 _complit2_help() {
   local max_key=-1; for k in "${!LOOKUP_VARS[@]}"; do (($k > max_key)) && max_key=$k; done
   local help_spec=''
@@ -135,21 +129,64 @@ _complit2_help() {
   COMPREPLY=("usage:$help_spec" '')
 }
 
+_complit2_inspect() {
+  local max_key=-1; for k in "${!LOOKUP_VARS[@]}"; do (($k > max_key)) && max_key=$k; done
+  local help_spec=''
+  local param=''
+  local val=
+
+  printf '\nusage (current):'
+
+  for key in $(seq 1 $max_key)
+  do
+    if [[ -z ${LOOKUP_VARS[key]} ]]
+    then
+      param="_"
+    else
+      param="${LOOKUP_VARS[key]}"
+    fi
+    if [[ $key -le $(($COMP_CWORD - 2)) ]]
+    then
+      val="${CURRENT_VALS[key]}"
+    else
+      val=
+    fi
+
+    local field="${key}:${param}"
+    printf '\n  %s%*s = %s' "$field" "$((20-${#field}))" '' "$val"
+  done
+  COMPREPLY=('')
+}
+
 _run_completions() {
 
   declare -a LOOKUP_VARS
   declare -a LOOKUP_TYPES
   declare -a LOOKUP_VALUES
+  declare -a CURRENT_VALS
 
-  # if the current word is a question mark '?'
-  # then the HELP line (second line in the file) is printed
-  if [ "${COMP_WORDS[$COMP_CWORD]}" == '?' ]
+  if [ "${COMP_CWORD}" -gt 1 ] && [ ! -f "$RUN_CLI_DIR/run-${COMP_WORDS[1]}.sh" ]
+  then
+    COMPREPLY=('' '')
+    return
+  fi
+
+  if [[ "${COMP_WORDS[$COMP_CWORD]}" == '?' ]]
   then
     # include the actual runnable script
     # lib functions (e.g. assert, optin) can be invoked inside run script
     . "$RUN_CLI_DIR/run-${COMP_WORDS[1]}.sh"
 
     _complit2_help
+    return
+  fi
+  if [[ "${COMP_WORDS[$COMP_CWORD]}" == '??' && $COMP_TYPE == 63 ]]
+  then
+    # include the actual runnable script
+    # lib functions (e.g. assert, optin) can be invoked inside run script
+    . "$RUN_CLI_DIR/run-${COMP_WORDS[1]}.sh"
+
+    _complit2_inspect
     return
   fi
 
