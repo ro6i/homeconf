@@ -1,17 +1,13 @@
 #!/bin/bash
 
-_complit_help() {
-  # line 2 is expected to contain the completion spec
-  HELP="$(cat "${RUN_CLI_DIR}/run-${COMP_WORDS[1]}.sh" | head -n 2 | tail -1)"
-  COMPREPLY=("${HELP}" '')
-}
-
 function _one {
   local mode="$1"
   local index="$2"
   local val="${COMP_WORDS[$index]}"
   local var="$3"
   local type="$4"
+
+  LOOKUP_VARS[$index]="$var"
 
   case "$type" in
     from)
@@ -115,13 +111,45 @@ _complit2() {
   esac
 }
 
+_complit_help() {
+  # line 2 is expected to contain the completion spec
+  HELP="$(cat "${RUN_CLI_DIR}/run-${COMP_WORDS[1]}.sh" | head -n 2 | tail -1)"
+  COMPREPLY=("${HELP}" '')
+}
+
+_complit2_help() {
+  local max_key=-1; for k in "${!LOOKUP_VARS[@]}"; do (($k > max_key)) && max_key=$k; done
+  local help_spec=''
+  local param=''
+
+  for key in $(seq 1 $max_key)
+  do
+    if [[ -z ${LOOKUP_VARS[key]} ]]
+    then
+      param='_'
+    else
+      param="${LOOKUP_VARS[key]}"
+    fi
+    help_spec="$help_spec  [${key}:${param}]"
+  done
+  COMPREPLY=("usage:$help_spec" '')
+}
+
 _run_completions() {
+
+  declare -a LOOKUP_VARS
+  declare -a LOOKUP_TYPES
+  declare -a LOOKUP_VALUES
 
   # if the current word is a question mark '?'
   # then the HELP line (second line in the file) is printed
   if [ "${COMP_WORDS[$COMP_CWORD]}" == '?' ]
   then
-    _complit_help
+    # include the actual runnable script
+    # lib functions (e.g. assert, optin) can be invoked inside run script
+    . "$RUN_CLI_DIR/run-${COMP_WORDS[1]}.sh"
+
+    _complit2_help
     return
   fi
 
@@ -135,10 +163,6 @@ _run_completions() {
   else
     if [ "${COMP_CWORD}" -gt 1 ]
     then
-      # include script that may contain customizations, functions, settings
-      GLOBAL_ENV_PATH="$RUN_CLI_DIR/.env.sh"
-      [[ -f "$GLOBAL_ENV_PATH" ]] && . "$GLOBAL_ENV_PATH"
-
       # include the actual runnable script
       # lib functions (e.g. assert, optin) can be invoked inside run script
       . "$RUN_CLI_DIR/run-${COMP_WORDS[1]}.sh"
