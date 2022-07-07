@@ -1,2 +1,5 @@
 
 export RUN_CLI_DIR=
+
+export CONF_CF_ACCESS_TCP_PATH=
+export CONF_CF_ACCESS_LOGIN_PATH=
