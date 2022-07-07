@@ -1,0 +1,63 @@
+#!/bin/bash
+
+set -e
+
+MODE="$1"
+TOKEN="$2"
+
+function __help {
+  >&2 echo 'usage:  cf-token [login|token|env|header]  [token]'
+}
+
+case "$MODE" in
+  login|token|env|header)
+    ;;
+  *)
+    __help
+    exit 1
+    ;;
+esac
+
+if [[ -z "$TOKEN" ]]
+then
+  >&2 echo 'no token specified'
+  exit 1
+fi
+
+declare -A token_map
+
+while read -r _token _hostname
+do
+  token_map[$_token]="$_hostname"
+done < "$CONF_CF_ACCESS_LOGIN_PATH"
+
+HOST_NAME="${token_map[$TOKEN]}"
+
+if [[ -z "$HOST_NAME" ]]
+then
+  >&2 echo 'unknown token'
+  exit 1
+fi
+
+case "$MODE" in
+  login)
+    cloudflared access login "$HOST_NAME"
+    # | sed '/^[[:space:]]*$/d' | tail -n 1
+    ;;
+  token)
+    cloudflared access token -app="$HOST_NAME"
+    ;;
+  header)
+    if [[ -z "$CF_ACCESS_HTTP_HEADER" ]]
+    then
+      CF_ACCESS_TOKEN=$(cloudflared access token -app="$HOST_NAME")
+    fi
+    echo "cf-access-token: $CF_ACCESS_TOKEN"
+    ;;
+  env)
+    CF_ACCESS_TOKEN=$(cloudflared access token -app="$HOST_NAME")
+    echo "export CF_ACCESS_NAME='$TOKEN';"
+    echo "export CF_ACCESS_TOKEN='$CF_ACCESS_TOKEN';"
+    echo "export CF_ACCESS_HTTP_HEADER='cf-access-token: $CF_ACCESS_TOKEN';"
+    ;;
+esac

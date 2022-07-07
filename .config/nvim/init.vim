@@ -156,6 +156,8 @@ colorscheme m31
 let g:oscyank_max_length = 1000000
 let g:oscyank_term = 'default'
 
+let g:vim_json_conceal=1
+
 let g:java_highlight_all = 1
 
 let g:gitgutter_map_keys = 0
@@ -216,7 +218,7 @@ command! CopyPathAbs let @+ = expand('%:p') | echo '"'.@+.'"' "copied to @+"
 command! CopyPathRel let @+ = fnamemodify(expand("%"), ":~:.") | echo '"'.@+.'"' "copied to @+"
 command! CopyDirAbs let @+ = expand("%:h") | echo '"'.@+.'"' "copied to @+"
 command! CopyDirRel let @+ = expand("%:h") | echo '"'.@+.'"' "copied to @+"
-command! FormatJSON %!python -m json.tool
+command! FormatJSON %!python -m json.tool --indent=2
 command! AsJSON set syntax=json | FormatJSON
 
 command! Pipe :w !tmux-pipe-to-next-pane

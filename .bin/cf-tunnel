@@ -1,0 +1,132 @@
+#!/bin/bash
+
+MODE="$1"
+TOKEN="$2"
+
+function __help {
+  >&2 echo 'usage:  cf-tunnel [state|switch]  [token]'
+}
+
+case "$MODE" in
+  state | switch)
+    ;;
+  *)
+    __help
+    exit 1
+    ;;
+esac
+
+declare -A port_map
+declare -A token_map
+
+while read -r _port _token _hostname
+do
+  port_map[$_port]="$_token"
+  token_map[$_token]="$_hostname"
+done < "$CONF_CF_ACCESS_TCP_PATH"
+
+declare -A port_enum
+
+function enumPorts {
+  for p in "${!port_map[@]}"
+  do
+    local pid="$(fuser $p/tcp 2>/dev/null)"
+    if [[ ! -z "$pid" ]]
+    then
+      port_enum["$p"]="$pid"
+    fi
+  done
+}
+
+function mkTokens {
+  local result=''
+  for p in "${!port_enum[@]}"
+  do
+    result="$result ${port_map[$p]}"
+  done
+  echo "${result:1}"
+}
+
+function findPortByToken {
+  local value="$1"
+  local result=
+  for p in "${!port_map[@]}"
+  do
+    if [[ "${port_map[$p]}" == "$value" ]]
+    then
+      result="$p"
+    fi
+  done
+  echo "$result"
+}
+
+function stopAll {
+  for p in "${!port_enum[@]}"
+  do
+    fuser $p/tcp --kill > /dev/null
+  done
+}
+
+case "$MODE" in
+  state)
+    enumPorts
+
+    if [[ -z "${!port_enum[*]}" ]]
+    then
+      exit 0
+    else
+      if [[ -z "$TOKEN" ]]
+      then
+        echo "$(mkTokens)"
+      else
+        PORT_EXPECTED="$(findPortByToken "$TOKEN")"
+        if [[ ! -z "${port_enum[$PORT_EXPECTED]}" ]]
+        then
+          echo 'connected'
+        else
+          echo 'disconnected'
+        fi
+      fi
+    fi
+    ;;
+  switch)
+
+    enumPorts
+
+    if [[ -z "$TOKEN" ]]
+    then
+      stopAll
+      exit 0
+    else
+      PORT_EXPECTED="$(findPortByToken "$TOKEN")"
+
+      if [[ -z "$PORT_EXPECTED" ]]
+      then
+        >&2 echo 'unknown token'
+        exit 1
+      fi
+
+      if [[ ! -z "${port_enum[$PORT_EXPECTED]}" ]]
+      then
+        >&2 echo 'skipping, already connected'
+        exit 0
+      else
+        if [[ ! -z "${!port_enum[*]}" ]]
+        then
+          >&2 echo "stopped $(mkTokens)"
+          stopAll
+        fi
+
+        HOST_NAME="${token_map[$TOKEN]}"
+
+        if [[ -z "$HOST_NAME" ]]
+        then
+          >&2 echo 'no host name for token'
+          exit 1
+        fi
+
+        cloudflared access tcp --hostname $HOST_NAME --url localhost:$PORT_EXPECTED &
+      fi
+    fi
+    ;;
+esac

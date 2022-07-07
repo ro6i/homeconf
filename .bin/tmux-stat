@@ -1,0 +1,159 @@
+#!/bin/bash
+
+function batteryState {
+  case $(uname -s) in
+    'Darwin')
+      ioreg -c AppleSmartBattery -w0 | \
+      grep -o '"[^"]*" = [^ ]*' | \
+      sed -e 's/= //g' -e 's/"//g' | \
+      sort |
+      {
+      while read key value; do
+          case "$key" in
+              'MaxCapacity') _MAX_CAP=$value; ;;
+              'CurrentCapacity') _CURR_CAP=$value; ;;
+              'ExternalConnected') if [ "$value" = 'Yes' ]; then _CONN_CHAR='▲'; else _CONN_CHAR='▼'; fi ;;
+          esac
+      done
+      echo "${_CONN_CHAR} $(( 100 * $_CURR_CAP / $_MAX_CAP ))%"
+      }
+      ;;
+    *)
+      ;;
+  esac
+}
+
+function inputSource {
+  case $(uname -s) in
+    'Darwin')
+      defaults read ~/Library/Preferences/com.apple.HIToolbox.plist AppleSelectedInputSources | egrep -w 'KeyboardLayout Name' | awk -F '=' '{print $2}' | sed -E 's/[^a-zA-Z ]//g' | awk '{$1=$1};1' | cut -c 1-3 | tr '[:lower:]' '[:upper:]'
+      ;;
+    'Linux')
+      setxkbmap -print | grep xkb_symbols | awk '{print $4}' | awk -F"+" '{print $2}' | tr '[:lower:]' '[:upper:]'
+      ;;
+  esac
+}
+
+function isTerminalAppActive {
+  _app=
+
+  case $(uname -s) in
+    'Darwin')
+      _app="$(osascript << 'EOF'
+global frontApp, frontAppName
+
+tell application "System Events"
+    set frontApp to first application process whose frontmost is true
+    set frontAppName to name of frontApp
+end tell
+
+return frontAppName
+EOF
+  )"
+      ;;
+    'Linux')
+      if [[ -z "$WAYLAND_DISPLAY" ]]
+      then
+        _app="$(xdotool getactivewindow getwindowname)"
+      else
+        _app="$(gdbus call \
+          --session \
+          --dest org.gnome.Shell \
+          --object-path /org/gnome/Shell \
+          --method org.gnome.Shell.Eval "
+            global
+              .get_window_actors()
+              .map(a=>a.meta_window)
+              .find(w=>w.has_focus())
+              .get_wm_class()" \
+          | cut -d'"' -f 2)"
+      fi
+      ;;
+  esac
+
+  _app_lower_case="${_app,,}"
+  if [[ "$_app_lower_case" == 'alacritty' || "$_app_lower_case" == 'iterm2' ]]
+  then
+    echo '1'
+  fi
+}
+
+function k8sState {
+  _context="$(kubectl config current-context)"
+  _namespace="$(kubectl config view --minify --output 'jsonpath={..namespace}')"
+  if [[ ! -z "$_namespace" ]]
+  then
+    echo "${_namespace}@${_context##*_}"
+  else
+    echo "${_context##*_}"
+  fi
+}
+
+function kbState {
+  case $(uname -s) in
+    'Darwin')
+      _summary="$(/usr/bin/python -c 'import Cocoa; print Cocoa.NSEvent.modifierFlags() & Cocoa.NSAlphaShiftKeyMask ')"
+      if [[ (($_summary > 0)) ]]
+      then
+        echo 'CAPS'
+      fi
+      ;;
+
+    'Linux')
+      if [[ -z "$WAYLAND_DISPLAY" ]]
+      then
+        _value="$(xset -q 2>/dev/null | grep 'Caps' | awk '{print $4}')"
+        if [[ ! "$_value" == 'off' ]]
+        then
+          echo 'CAPS'
+        fi
+      fi
+      ;;
+  esac
+}
+
+function wireguardState {
+  case $(uname -s) in
+    'Darwin')
+      _session_artifact_name="$(find -f /var/run/wireguard/*.name)"
+      if [[ ! -z "$_session_artifact_name" ]]
+      then
+        _file_name="${_session_artifact_name##*/}"
+        _profile_name="${_file_name%.name}"
+        echo "$_profile_name"
+      fi
+      ;;
+    'Linux')
+      echo "$(systemctl list-units --type=service --state=active | grep -oP 'WireGuard via wg-quick.* for \K.*' | xargs)"
+  esac
+}
+
+case "$1" in
+  battery)
+    batteryState
+    ;;
+  cloudflare)
+    cf-tunnel state
+    ;;
+  input-source)
+    inputSource
+    ;;
+  is-terminal-app-active)
+    isTerminalAppActive
+    ;;
+  k8s)
+    k8sState
+    ;;
+  kb)
+    # kbState
+    ;;
+  wireguard)
+    wireguardState
+    ;;
+  is-remote-session)
+    if [[ ! -z "$(tmux showenv | grep '^SSH_CONNECTION')" ]]
+    then
+      echo '1'
+    fi
+    ;;
+esac
