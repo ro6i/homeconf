@@ -1,0 +1,302 @@
+#!/bin/bash
+
+set -e
+
+__warn()
+{
+  local message="$1"
+  if [ -t 1 ]
+  then
+    >&2 echo -e "$(tput setaf 9)WARN: $(tput setaf 3)${message}$(tput sgr0)"
+  else
+    >&2 echo -e "WARN $message"
+  fi
+}
+
+__error()
+{
+  __warn "$1"
+  exit 1
+}
+
+__capture_match_file()
+{
+  if $(cat "$RUN_CLI_DIR/$2" | grep -q "^$1\$")
+  then
+    CAPTURED="$1"
+  else
+    MESSAGE="value [$1] is not at [$2]"
+  fi
+}
+
+__capture_match_values()
+{
+  local val="$1"
+  for el in "${_arg_list[@]}";
+  do
+    [[ "$el" == "$val" ]] && CAPTURED="$val"
+  done
+  if [[ -z "$CAPTURED" ]]
+  then
+    MESSAGE="value [$val] is not in [${_arg_list[@]}]"
+  fi
+}
+
+__capture_match_shell()
+{
+  if $(eval "$2" | grep -q "^$1\$")
+  then
+    CAPTURED="$1"
+  else
+    MESSAGE="value [$1] is not found in output of [$2]"
+  fi
+}
+
+__capture_match_command()
+{
+  if $(eval "$2 ${_arg_list[@]}" | grep -q "^$1\$")
+  then
+    CAPTURED="$1"
+  else
+    MESSAGE="value [$1] is not found in output of [$2]"
+  fi
+}
+
+__capture_uuid()
+{
+  if [[ "$1" =~ ^\{?[A-F0-9a-f]{8}-[A-F0-9a-f]{4}-[A-F0-9a-f]{4}-[A-F0-9a-f]{4}-[A-F0-9a-f]{12}\}?$ ]]
+  then
+    CAPTURED="$1"
+  else
+    MESSAGE="[$1] not UUID"
+  fi
+}
+
+__capture_date()
+{
+  local val="$1"
+  local date_result="$(date -d "$val" '+%Y-%m-%d' 2>&1)"
+  local date_exit_code="$?"
+  [[ "$?" == 0 && "$date_result" == "$val" ]] && CAPTURED="$1" || MESSAGE="[$1] not DATE"
+}
+
+__capture_text()
+{
+  local val="$1"
+  local op="$2"
+  local len="$3"
+
+  local is_set=
+  case "$op" in
+    eq)
+      if [[ "${#val}" -eq "$len" ]]; then is_set=1; fi
+      ;;
+    lt)
+      if [[ "${#val}" -lt "$len" ]]; then is_set=1; fi
+      ;;
+    gt)
+      if [[ "${#val}" -gt "$len" ]]; then is_set=1; fi
+      ;;
+    le)
+      if [[ "${#val}" -le "$len" ]]; then is_set=1; fi
+      ;;
+    ge)
+      if [[ "${#val}" -ge "$len" ]]; then is_set=1; fi
+      ;;
+  esac
+  if [[ ! -z "$is_set" ]]
+  then
+    CAPTURED="$val"
+  else
+    MESSAGE="[$1] out of range"
+  fi
+}
+
+__capture_regex()
+{
+  if $(echo "$1" | grep -q "$2")
+  then
+    CAPTURED="$1"
+  else
+    MESSAGE="[$1] does not match /$2/"
+  fi
+}
+
+__capture_integer()
+{
+  if $(echo "$1" | grep -q '^[0-9]*$')
+  then
+    CAPTURED="$1"
+  else
+    MESSAGE="[$1] not integer"
+  fi
+}
+
+__capture_any()
+{
+  CAPTURED="$1"
+}
+
+__one()
+{
+  local index="$1"
+  local val=
+  local var="$2"
+  local type="$3"
+
+  case "$index" in
+    _)
+      val="${arg_map[$var]}"
+      ;;
+    *)
+      val="${arg_map["$index"]}"
+      if [[ -z "$val" ]]
+      then
+        __error "value [$var] must have value"
+      fi
+      ;;
+  esac
+
+  if [[ -z "$var" ]]
+  then
+    __error 'assertion must have variable name in second argument'
+  fi
+
+  CAPTURED=
+  MESSAGE=
+  IGNORE_CAPTURE=false
+
+  case "$type" in
+    from)
+      __capture_match_file "$val" "$4"
+      ;;
+    opts)
+      _arg_list=(${@:4})
+      __capture_match_values "$val"
+      ;;
+    shell)
+      # RUN_SHELL_ARGS=(${args[@]:1:$index})
+      RUN_SHELL_ARGS=()
+      __capture_match_shell "$val" "$4"
+      ;;
+    command)
+      # _arg_list=(${args[@]:1:$index})
+      _arg_list=()
+      __capture_match_command "$val" "$4"
+      ;;
+    uuid)
+      __capture_uuid "$val"
+      ;;
+    date)
+      __capture_date "$val"
+      ;;
+    text)
+      __capture_text "$val" "$4" "$5" "$6"
+      ;;
+    regex)
+      __capture_regex "$val" "$4"
+      ;;
+    integer)
+      __capture_integer "$val"
+      ;;
+    _)
+      __capture_any "$val"
+      ;;
+    *)
+      __error "unknown type [$type]"
+      ;;
+  esac
+
+  case "$index" in
+    _)
+      if [[ "$val" == '_' ]]
+      then
+        IGNORE_CAPTURE=true
+      else
+        if [[ ! -z "$val"  && ! -z "$MESSAGE" ]]
+        then
+          __error "$MESSAGE"
+        fi
+      fi
+      ;;
+    *)
+      if [[ -z "$CAPTURED" ]]
+      then
+        __error "$MESSAGE"
+      fi
+      ;;
+  esac
+
+  [[ "$IGNORE_CAPTURE" == true ]] || eval "$var='$CAPTURED'"
+}
+
+__collate_args()
+{
+  local sector=POSITIONAL
+  local option_name=
+
+  for index in "${!args[@]}"
+  do
+    local word="${args[$index]}"
+
+    if [[ "${word:0-1}" == ':' ]]
+    then
+      sector=OPTIONAL
+      if [[ ! -z "$option_name" ]]; then
+        __error 'option name must be followed by its value'
+      fi
+      option_name="${word::-1}"
+    else
+      case $sector in
+        OPTIONAL)
+          if [[ -z "$option_name" ]]; then
+            __error "no option name preceedeing its value [$word]"
+          fi
+          arg_map["$option_name"]="$word"
+          option_name=
+          ;;
+        POSITIONAL)
+          arg_map["$(($index + 1))"]="$word"
+          ;;
+      esac
+    fi
+  done
+}
+
+__script_name_to_path()
+{
+  IFS='/' read -r -a __script_name_sections <<< "$1"
+  local section_array=("${__script_name_sections[@]/#/_ }")
+  printf '/%s' "${section_array[@]}"
+}
+
+
+# high level interface
+at() { __one "$@"; }
+
+[[ -z "$RUN_CLI_DIR" ]] && __error 'RUN_CLI_DIR environment variable not specified'
+
+
+SCRIPT_NAME="$1"
+shift 1
+
+args=($@)
+
+declare -A arg_map
+
+__collate_args
+
+# include script that may contain customizations, functions, settings
+GLOBAL_ENV_PATH="$RUN_CLI_DIR/.env.sh"
+[[ -f "$GLOBAL_ENV_PATH" ]] && . "$GLOBAL_ENV_PATH"
+
+# include the actual runnable script
+# lib functions (e.g. assert) can be invoked inside run script
+SCRIPT_REL_PATH="$(__script_name_to_path "$SCRIPT_NAME")"
+SCRIPT_ABS_PATH="$RUN_CLI_DIR/${SCRIPT_REL_PATH}.sh"
+[[ -f "$SCRIPT_ABS_PATH" ]] && . "$SCRIPT_ABS_PATH" || __error 'command not found'
+
+
+[[ $(type -t main) != function ]] && __error 'main function not found'
+
+main
