@@ -1,30 +1,27 @@
 #!/bin/bash
 
-function _update_index {
-  case "$1" in
-    _)
-      if [[ ! -v OPTIONAL_ARG_VARS[$2] ]]
-      then
-        OPTIONAL_PARAM_COUNT=$(($OPTIONAL_PARAM_COUNT + 1))
-        OPTIONAL_ARG_VARS["$2"]="$2"
-      fi
-      ;;
-    *)
-      if (($POSITIONAL_PARAM_COUNT < $1))
-      then
-        POSITIONAL_PARAM_COUNT=$1
-      fi
-      POSITIONAL_ARG_VARS[$index]="$var"
-      ;;
-  esac
-}
-
-function _one {
+function __one {
   local index="$1"
   local var="$2"
   local type="$3"
 
-  _update_index "$index" "$var"
+  # update index
+  case "$index" in
+    _)
+      if [[ ! -v OPTIONAL_ARG_VARS[$var] ]]
+      then
+        OPTIONAL_PARAM_COUNT=$(($OPTIONAL_PARAM_COUNT + 1))
+        OPTIONAL_ARG_VARS["$var"]="$var"
+      fi
+      ;;
+    *)
+      if (($POSITIONAL_PARAM_COUNT < $index))
+      then
+        POSITIONAL_PARAM_COUNT=$index
+      fi
+      POSITIONAL_ARG_VARS[$index]="$var"
+      ;;
+  esac
 
   if [[ "$index" == '_' ]]; then index="$var"; fi
 
@@ -61,11 +58,15 @@ function _one {
       ;;
     regex)
       LOOKUP_TYPES["$index"]='regex'
-      LOOKUP_VALUES["$index"]='[REGEX"]'
+      LOOKUP_VALUES["$index"]='[REGEX]'
       ;;
     integer)
       LOOKUP_TYPES["$index"]='integer'
       LOOKUP_VALUES["$index"]='[INTEGER]'
+      ;;
+    _)
+      LOOKUP_TYPES["$index"]='_'
+      LOOKUP_VALUES["$index"]=
       ;;
     *)
       ;;
@@ -73,20 +74,20 @@ function _one {
 
 }
 
+function __script_name_to_path {
+  IFS='/' read -r -a __script_name_sections <<< "$1"
+  local section_array=("${__script_name_sections[@]/#/_ }")
+  printf '/%s' "${section_array[@]}"
+}
+
+
 # high level interface
-function assert {
-  _one "$@"
-}
-
-function param {
-  _one "$@"
-}
-
 function at {
-  _one "$@"
+  __one "$@"
 }
 
-_complit2() {
+
+function __complit2 {
   # if available argument completion is exhausted
   # then ignore the completion request
 
@@ -149,12 +150,15 @@ _complit2() {
     uuid | date | text | integer)
       IFS=$'\n' COMPREPLY=($(compgen -W "${LOOKUP_VALUES[$key]}" -- "${COMP_WORDS[$word_index]}"))
       ;;
+    _)
+      IFS=$'\n' COMPREPLY=($(compgen -W '_' -- "${COMP_WORDS[$word_index]}"))
+      ;;
     *)
       ;;
   esac
 }
 
-_complit2_help() {
+function __complit2_help {
   local help_spec=''
 
   for key in $(seq 1 $POSITIONAL_PARAM_COUNT)
@@ -165,7 +169,7 @@ _complit2_help() {
   COMPREPLY=("usage:$help_spec" '')
 }
 
-_complit2_inspect() {
+function __complit2_inspect {
   declare -A arg_map
   local sector=POSITIONAL
   local option_name=
@@ -174,7 +178,6 @@ _complit2_inspect() {
   do
     local word="${COMP_WORDS[$index]}"
     local word_1="${COMP_WORDS[$(($index + 1))]}"
-    local word_2="${COMP_WORDS[$(($index + 2))]}"
 
     if [[ "$word" == ':' ]]
     then
@@ -192,7 +195,14 @@ _complit2_inspect() {
           if [[ -z "$option_name" ]]; then
             return
           fi
-          arg_map["$option_name"]="$word"
+          case "$word" in
+            _)
+              arg_map["$option_name"]=
+              ;;
+            *)
+              arg_map["$option_name"]="$word"
+              ;;
+          esac
           option_name=
           ;;
         POSITIONAL)
@@ -217,7 +227,7 @@ _complit2_inspect() {
   COMPREPLY=('')
 }
 
-_run_completions() {
+function _run_completions {
 
   declare -A LOOKUP_TYPES
   declare -A LOOKUP_VALUES
@@ -230,7 +240,9 @@ _run_completions() {
   POSITIONAL_ARG_VARS[0]=
   CURRENT_VALS[0]=
 
-  if [ "${COMP_CWORD}" -gt 1 ] && [ ! -f "$RUN_CLI_DIR/run-${COMP_WORDS[1]}.sh" ]
+  SCRIPT_PATH=$(__script_name_to_path "${COMP_WORDS[1]}")
+
+  if [ "${COMP_CWORD}" -gt 1 ] && [ ! -f "$RUN_CLI_DIR/${SCRIPT_PATH}.sh" ]
   then
     COMPREPLY=('' '')
     return
@@ -239,30 +251,42 @@ _run_completions() {
   if [[ "${COMP_WORDS[$COMP_CWORD]}" == '?' ]]
   then
     # include the actual runnable script
-    . "$RUN_CLI_DIR/run-${COMP_WORDS[1]}.sh"
+    . "$RUN_CLI_DIR/${SCRIPT_PATH}.sh"
 
-    _complit2_help
+    __complit2_help
     return
+
   elif [[ "${COMP_WORDS[$COMP_CWORD]}" == '??' && $COMP_TYPE == 63 ]]
   then
     # include the actual runnable script
-    . "$RUN_CLI_DIR/run-${COMP_WORDS[1]}.sh"
+    . "$RUN_CLI_DIR/${SCRIPT_PATH}.sh"
 
-    _complit2_inspect
+    __complit2_inspect
     return
+
   elif [ "${COMP_CWORD}" -eq 1 ]
   then
     # the first section is completed with script names at the RUN_CLI_DIR
-    # in order to be listed the script file name must start with 'run-'
-    IFS=$'\n'
-    COMPREPLY=($(compgen -W "$(find "${RUN_CLI_DIR}" -type f -name 'run-*' -printf "%f\n" | sed 's/^run-//g; s/.sh$//g'| sort)" -- "${COMP_WORDS[1]}"))
+    # in order to be listed the script file name must start with '_ '
+    local IFS=$'\n'
+    local word="${COMP_WORDS[1]}"
+    local script_sub_rel="${word%/*}"
+    [[ "$word" != *'/'* ]] && script_sub_rel=
+    local script_sub_name="${word##*/}"
+    local script_sub_rel_dir="$(__script_name_to_path "${script_sub_rel}")"
+    local script_sub_abs_dir="$script_sub_rel_dir"
+    local script_dir="${RUN_CLI_DIR}${script_sub_abs_dir}"
+
+    COMPREPLY=($(compgen -W "$(find "$script_dir" -mindepth 1 -type f -name "_ ${script_sub_name}*" -printf "${script_sub_rel:+$script_sub_rel/}%f\n" -o -type d -name "_ ${script_sub_name}*" -printf "${script_sub_rel:+$script_sub_rel/}%f/\n" | sed 's/^_ //g; s/\/_ /\//g; s/.sh$//g'| sort)" -- "$word")) && compopt -o filenames
+    [[ $COMPREPLY == */ ]] && compopt -o nospace
     return
+
   elif [ "${COMP_CWORD}" -gt 1 ]
   then
       # include the actual runnable script
-      . "$RUN_CLI_DIR/run-${COMP_WORDS[1]}.sh"
+      . "$RUN_CLI_DIR/${SCRIPT_PATH}.sh"
 
-      _complit2
+      __complit2
     return
   fi
 
