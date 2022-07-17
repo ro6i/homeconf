@@ -1,6 +1,7 @@
 #!/bin/bash
 
-function __one {
+__one()
+{
   local index="$1"
   local var="$2"
   local type="$3"
@@ -74,7 +75,8 @@ function __one {
 
 }
 
-function __script_name_to_path {
+__script_name_to_path()
+{
   IFS='/' read -r -a __script_name_sections <<< "$1"
   local section_array=("${__script_name_sections[@]/#/_ }")
   printf '/%s' "${section_array[@]}"
@@ -82,12 +84,11 @@ function __script_name_to_path {
 
 
 # high level interface
-function at {
-  __one "$@"
-}
+at() { __one "$@"; }
 
 
-function __complit2 {
+__complit2()
+{
   # if available argument completion is exhausted
   # then ignore the completion request
 
@@ -158,18 +159,21 @@ function __complit2 {
   esac
 }
 
-function __complit2_help {
+__complit2_help()
+{
   local help_spec=''
 
   for key in $(seq 1 $POSITIONAL_PARAM_COUNT)
   do
     help_spec="$help_spec  [$key:${POSITIONAL_ARG_VARS[$key]}]"
   done
-  help_spec="$help_spec  (${OPTIONAL_ARG_VARS[@]})"
+  local optional_arg_spec="${OPTIONAL_ARG_VARS[@]}"
+  help_spec="$help_spec  ${optional_arg_spec:+($optional_arg_spec)}"
   COMPREPLY=("usage:$help_spec" '')
 }
 
-function __complit2_inspect {
+__complit2_inspect()
+{
   declare -A arg_map
   local sector=POSITIONAL
   local option_name=
@@ -227,7 +231,8 @@ function __complit2_inspect {
   COMPREPLY=('')
 }
 
-function _run_completions {
+_run_completions()
+{
 
   declare -A LOOKUP_TYPES
   declare -A LOOKUP_VALUES
@@ -240,7 +245,7 @@ function _run_completions {
   POSITIONAL_ARG_VARS[0]=
   CURRENT_VALS[0]=
 
-  SCRIPT_PATH=$(__script_name_to_path "${COMP_WORDS[1]}")
+  SCRIPT_PATH="$(__script_name_to_path "${COMP_WORDS[1]}")"
 
   if [ "${COMP_CWORD}" -gt 1 ] && [ ! -f "$RUN_CLI_DIR/${SCRIPT_PATH}.sh" ]
   then
@@ -268,6 +273,7 @@ function _run_completions {
   then
     # the first section is completed with script names at the RUN_CLI_DIR
     # in order to be listed the script file name must start with '_ '
+    # sub-directories are supported and must start with '_ ' as well
     local IFS=$'\n'
     local word="${COMP_WORDS[1]}"
     local script_sub_rel="${word%/*}"
@@ -277,7 +283,7 @@ function _run_completions {
     local script_sub_abs_dir="$script_sub_rel_dir"
     local script_dir="${RUN_CLI_DIR}${script_sub_abs_dir}"
 
-    COMPREPLY=($(compgen -W "$(find "$script_dir" -mindepth 1 -type f -name "_ ${script_sub_name}*" -printf "${script_sub_rel:+$script_sub_rel/}%f\n" -o -type d -name "_ ${script_sub_name}*" -printf "${script_sub_rel:+$script_sub_rel/}%f/\n" | sed 's/^_ //g; s/\/_ /\//g; s/.sh$//g'| sort)" -- "$word")) && compopt -o filenames
+    COMPREPLY=($(compgen -W "$(find "$script_dir" -mindepth 1 -maxdepth 1 -type f -name "_ ${script_sub_name}*" -printf "${script_sub_rel:+$script_sub_rel/}%f\n" -o -type d -name "_ ${script_sub_name}*" -printf "${script_sub_rel:+$script_sub_rel/}%f/\n" | sed 's/^_ //g; s/\/_ /\//g; s/.sh$//g'| sort)" -- "$word")) && compopt -o filenames
     [[ $COMPREPLY == */ ]] && compopt -o nospace
     return
 

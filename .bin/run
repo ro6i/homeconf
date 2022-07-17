@@ -2,22 +2,25 @@
 
 set -e
 
-if [ -z "$RUN_CLI_DIR" ]
-then
-  >&2 echo -e 'RUN_CLI_DIR not specified'
-  exit 1
-fi
-
-function __warn {
+__warn()
+{
+  local message="$1"
   if [ -t 1 ]
   then
-    >&2 echo -e "$(tput setaf 9)WARN: $(tput setaf 3)${1}$(tput sgr0)"
+    >&2 echo -e "$(tput setaf 9)WARN: $(tput setaf 3)${message}$(tput sgr0)"
   else
-    >&2 echo -e "WARN $1"
+    >&2 echo -e "WARN $message"
   fi
 }
 
-function __capture_match_file {
+__error()
+{
+  __warn "$1"
+  exit 1
+}
+
+__capture_match_file()
+{
   if $(cat "$RUN_CLI_DIR/$2" | grep -q "^$1\$")
   then
     CAPTURED="$1"
@@ -26,7 +29,8 @@ function __capture_match_file {
   fi
 }
 
-function __capture_match_values {
+__capture_match_values()
+{
   local val="$1"
   for el in "${_arg_list[@]}";
   do
@@ -38,7 +42,8 @@ function __capture_match_values {
   fi
 }
 
-function __capture_match_shell {
+__capture_match_shell()
+{
   if $(eval "$2" | grep -q "^$1\$")
   then
     CAPTURED="$1"
@@ -47,7 +52,8 @@ function __capture_match_shell {
   fi
 }
 
-function __capture_match_command {
+__capture_match_command()
+{
   if $(eval "$2 ${_arg_list[@]}" | grep -q "^$1\$")
   then
     CAPTURED="$1"
@@ -56,7 +62,8 @@ function __capture_match_command {
   fi
 }
 
-function __capture_uuid {
+__capture_uuid()
+{
   if [[ "$1" =~ ^\{?[A-F0-9a-f]{8}-[A-F0-9a-f]{4}-[A-F0-9a-f]{4}-[A-F0-9a-f]{4}-[A-F0-9a-f]{12}\}?$ ]]
   then
     CAPTURED="$1"
@@ -65,14 +72,16 @@ function __capture_uuid {
   fi
 }
 
-function __capture_date {
+__capture_date()
+{
   local val="$1"
   local date_result="$(date -d "$val" '+%Y-%m-%d' 2>&1)"
   local date_exit_code="$?"
   [[ "$?" == 0 && "$date_result" == "$val" ]] && CAPTURED="$1" || MESSAGE="[$1] not DATE"
 }
 
-function __capture_text {
+__capture_text()
+{
   local val="$1"
   local op="$2"
   local len="$3"
@@ -103,7 +112,8 @@ function __capture_text {
   fi
 }
 
-function __capture_regex {
+__capture_regex()
+{
   if $(echo "$1" | grep -q "$2")
   then
     CAPTURED="$1"
@@ -112,7 +122,8 @@ function __capture_regex {
   fi
 }
 
-function __capture_integer {
+__capture_integer()
+{
   if $(echo "$1" | grep -q '^[0-9]*$')
   then
     CAPTURED="$1"
@@ -121,11 +132,13 @@ function __capture_integer {
   fi
 }
 
-function __capture_any {
+__capture_any()
+{
   CAPTURED="$1"
 }
 
-function __one { # ($arg_map)
+__one()
+{
   local index="$1"
   local val=
   local var="$2"
@@ -139,16 +152,14 @@ function __one { # ($arg_map)
       val="${arg_map["$index"]}"
       if [[ -z "$val" ]]
       then
-        __warn "value [$var] must have value"
-        exit 1
+        __error "value [$var] must have value"
       fi
       ;;
   esac
 
   if [[ -z "$var" ]]
   then
-    __warn 'assertion must have variable name in second argument'
-    exit 1
+    __error 'assertion must have variable name in second argument'
   fi
 
   CAPTURED=
@@ -192,8 +203,7 @@ function __one { # ($arg_map)
       __capture_any "$val"
       ;;
     *)
-      __warn "unknown type [$type]"
-      exit 1
+      __error "unknown type [$type]"
       ;;
   esac
 
@@ -205,16 +215,14 @@ function __one { # ($arg_map)
       else
         if [[ ! -z "$val"  && ! -z "$MESSAGE" ]]
         then
-          __warn "$MESSAGE"
-          exit 1
+          __error "$MESSAGE"
         fi
       fi
       ;;
     *)
       if [[ -z "$CAPTURED" ]]
       then
-        __warn "$MESSAGE"
-        exit 1
+        __error "$MESSAGE"
       fi
       ;;
   esac
@@ -222,7 +230,8 @@ function __one { # ($arg_map)
   [[ "$IGNORE_CAPTURE" == true ]] || eval "$var='$CAPTURED'"
 }
 
-function __collate_args {
+__collate_args()
+{
   local sector=POSITIONAL
   local option_name=
 
@@ -234,16 +243,14 @@ function __collate_args {
     then
       sector=OPTIONAL
       if [[ ! -z "$option_name" ]]; then
-        __warn 'option name must be followed by its value'
-        exit 1
+        __error 'option name must be followed by its value'
       fi
       option_name="${word::-1}"
     else
       case $sector in
         OPTIONAL)
           if [[ -z "$option_name" ]]; then
-            __warn "no option name preceedeing its value [$word]"
-            exit 1
+            __error "no option name preceedeing its value [$word]"
           fi
           arg_map["$option_name"]="$word"
           option_name=
@@ -256,7 +263,8 @@ function __collate_args {
   done
 }
 
-function __script_name_to_path {
+__script_name_to_path()
+{
   IFS='/' read -r -a __script_name_sections <<< "$1"
   local section_array=("${__script_name_sections[@]/#/_ }")
   printf '/%s' "${section_array[@]}"
@@ -264,9 +272,9 @@ function __script_name_to_path {
 
 
 # high level interface
-function at {
-  __one "$@"
-}
+at() { __one "$@"; }
+
+[[ -z "$RUN_CLI_DIR" ]] && __error 'RUN_CLI_DIR environment variable not specified'
 
 
 SCRIPT_NAME="$1"
@@ -284,10 +292,11 @@ GLOBAL_ENV_PATH="$RUN_CLI_DIR/.env.sh"
 
 # include the actual runnable script
 # lib functions (e.g. assert) can be invoked inside run script
-SCRIPT_PATH=$(__script_name_to_path "$SCRIPT_NAME")
-. "$RUN_CLI_DIR/${SCRIPT_PATH}.sh"
+SCRIPT_REL_PATH="$(__script_name_to_path "$SCRIPT_NAME")"
+SCRIPT_ABS_PATH="$RUN_CLI_DIR/${SCRIPT_REL_PATH}.sh"
+[[ -f "$SCRIPT_ABS_PATH" ]] && . "$SCRIPT_ABS_PATH" || __error 'command not found'
 
 
-[[ $(type -t main) != function ]] && __warn 'main function not found' && exit 1
+[[ $(type -t main) != function ]] && __error 'main function not found'
 
 main
