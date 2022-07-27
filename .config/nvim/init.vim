@@ -33,12 +33,12 @@ nnoremap <silent> <Leader>r  :Ranger<CR>
 nnoremap <silent> <Leader>rr :tabnew<CR>:term<CR>iranger<CR>
 nnoremap <silent> <Leader>t  :call SetNvimPipe('NVIM_PIPE')<CR>
 vnoremap <silent> <Leader>y  y<cr>:call system("tmux load-buffer -", @0)<cr>
-nnoremap  <leader>p  :let @0 = system("tmux save-buffer -")<cr>"0p<cr>g;
+nnoremap          <Leader>p  :let @0 = system("tmux save-buffer -")<cr>"0p<cr>g;
 
 vnoremap          <Leader>np :w !tmux-pipe-to-next-pane<CR>
 nnoremap          <Leader>ex :w !bash<CR>
 
-nnoremap <silent> <Leader><Leader> :Files<CR>
+nnoremap <silent> <Leader><Leader> :Files<CR><C-_>
 nnoremap <silent> <Leader><Bar> :Buffers<CR>
 
 nnoremap <silent> <Space> <nop>
@@ -276,7 +276,6 @@ set mouse=a
 
 au TermOpen * setlocal nonumber norelativenumber
 
-" au BufRead,BufNewFile * syn match parensCustomLeft /[(]/ | hi parensCustomLeft ctermfg=6
 au BufRead,BufNewFile * syn match parensCustom /[()]/ | hi parensCustom ctermfg=15
 au BufRead,BufNewFile * syn match curlyCustom /[{}]/ | hi curlyCustom ctermfg=10
 
