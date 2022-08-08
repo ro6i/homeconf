@@ -94,13 +94,26 @@ nnoremap <silent> <Space><Space>[ :call ToggleColorColumn(120)<CR>
 nnoremap <silent> <Space><Space>] :call ToggleColorColumn(160)<CR>
 
 " fuzzy go-to definition
+function GoToDefinitionAware(target)
+  let l:findValue = '(def\|val\|function\|fun\|fn\|const\|auto)\s+' . a:target . '\s*[^\w]'
+  let l:findType  = '(class\|struct\|object\|trait)\s+' . a:target . '\s*[^\w]'
+  let l:targetPattern = ''
+  if a:target =~ '\C^[A-Z].*'
+    let l:targetPattern = l:findType
+  else
+    let l:targetPattern = l:findValue
+  endif
+  call FindTextRegex(l:targetPattern)
+endfunction
+
 nnoremap <silent> <Space>s<Space> viw"ty:call FindTextFlat(getreg('t'))<CR>
 vnoremap <silent> <Space>s<Space> "ty:call FindTextFlat(getreg('t'))<CR>
 vnoremap <silent> <Space>s        "ty:call FindTextFlat(getreg('t'))<CR>
-nnoremap <silent> <Space>sj viw"ty:call FindTextRegex('(class\\|struct\\|object\\|trait\\|def\\|val\\|function\\|fun\\|fn\\|const\\|auto)\s+' . getreg('t') . '\s*[^\w]')<CR>:nohls<CR>
-nnoremap <silent> <Space>so viw"ty:call FindTextRegex('(class\\|struct\\|object\\|trait\\|def\\|val\\|function\\|fun\\|fn\\|const\\|auto)\s+' . getreg('t') . '\s*[^\w]')<CR><C-w><Enter><C-w>T:nohls<CR>
+nnoremap <silent> <Space>sl       viw"ty:call GoToDefinitionAware(getreg('t'))<CR>:nohls<CR>
+nmap     <silent> <Space>sj       <Space>sl<C-w><Enter>:call ToggleQuickfixList()<CR><C-w>T:nohls<CR>:silent! exe '/' . @t<CR>N
+
 " fuzzy show usages
-nnoremap <silent> <Space>su viw"ty:call FindTextRegex('((with\s\\|extends\s\\|[\(\[])' . getreg('t') . '\\|(?<!def\s\\|val\s\\|ass\s\\|ect\s)' . getreg('t') . '[\)(\[\} ])')<CR>:nohls<CR>
+nnoremap <silent> <Space>su  viw"ty:call FindTextRegex('((with\s\\|extends\s\\|[\(\[])' . getreg('t') . '\\|(?<!def\s\\|val\s\\|ass\s\\|ect\s)' . getreg('t') . '[\)(\[\} ])')<CR>:nohls<CR>
 " nnoremap <silent> <Space>si :call FindTextRegex(substitute(expand('%:t'), 'Impl.scala$', '.scala''((with\s\\|extends\s\\|[\(\[])' . getreg('t') . '\\|(?<!def\s\\|val\s\\|ass\s\\|ect\s)' . getreg('t') . '[\)(\[\} ])')<CR>:nohls<CR>
 
 vnoremap r "_dP
@@ -112,6 +125,8 @@ tnoremap <silent> <C-\><C-]> <C-\><C-n>:GotoLastTab<CR>
 call plug#begin()
 
 let g:polyglot_disabled = ['csv', 'csv.plugin'] 
+
+let g:toggle_list_no_mappings = 1
 
 let g:plug_url_format = "https://git::@github.com/%s.git"
 Plug 'itchyny/lightline.vim'
