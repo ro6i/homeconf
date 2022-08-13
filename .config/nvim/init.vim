@@ -85,6 +85,7 @@ nnoremap <silent> <Space><Space>f :call ToggleQuickfixList()<CR>
 nnoremap <silent> <Space><Space>w :set wrap!<CR>
 nnoremap <silent> <Space><Space>cl :set cursorline!<CR>
 nnoremap <silent> <Space><Space>cc :set cursorcolumn!<CR>
+nnoremap <silent> <Space><Space>l  :setlocal cursorbind!<CR>:setlocal scrollbind!<CR>:call lightline#update()<CR>
 nnoremap <silent> <Space><Space>lc :setlocal cursorbind!<CR>:call lightline#update()<CR>
 nnoremap <silent> <Space><Space>ls :setlocal scrollbind!<CR>:call lightline#update()<CR>
 nnoremap <silent> <Space><Space>r :set list!<CR>
@@ -191,16 +192,15 @@ function! LightlineKeymap()
   return !exists("b:keymap_name") ? "" : toupper(b:keymap_name)
 endfunction
 function! LightlineBindings()
-  let value = (&cursorbind ? "C" : "") . (&scrollbind ? "S" : "")
-  return (&cursorbind || &scrollbind) ? ('● ' . value) : ''
+  let value = (&cursorbind ? '>' : '') . (&scrollbind ? 'v' : '')
+  return (&cursorbind || &scrollbind) ? ('[' . value . ']') : ''
 endfunction
 function! LightlineSnugfind()
   return GetFindSettingsSettings() . " |"
 endfunction
 
 function! LightlineLineinfo()
-  "%3p%%
-  return "%12{line('.') . ':' . col('.') . ' /' . line('$')}"
+  return "%12{line('.') . ':' . charcol('.') . ' /' . line('$')}"
 endfunction
 let g:lightline = { 'colorscheme': 'm31', 'filename': "%f", 'tabline': { 'left': [ [ 'tabs' ] ], 'right': [ ] }, 'mode_map': { 'n' : 'N', 'i' : 'I', 'R' : 'R', 'v' : 'V', 'V' : 'L', "\<C-v>": 'B', 'c' : 'C', 's' : 'S', 'S' : 'S-L', "\<C-s>": 'S-B', 't': 'T' }, 'component_expand': { 'keymap': 'LightlineKeymap', 'env': 'LightlineEnv', 'snugfind': 'LightlineSnugfind', 'bindings': 'LightlineBindings', 'lineinfo': 'LightlineLineinfo' }, 'component_type': { 'keymap': 'warning', 'bindings': 'warning' }, 'active': { 'right': [ [], [ 'lineinfo' ], [ 'fileformat', 'fileencoding', 'filetype' ], ['keymap', 'bindings', 'env', 'snugfind' ] ] }, 'inactive': { 'right': [ [ 'lineinfo' ] ] }, 'subseparator': { 'left': '', 'right': '|' } }
 
