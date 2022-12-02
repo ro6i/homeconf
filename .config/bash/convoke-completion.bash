@@ -1,10 +1,13 @@
 #!/bin/bash
 
-__one()
-{
+__one() {
   local index="$1"
   local var="$2"
   local type="$3"
+
+  if [[ "$index" != '_' && "$var" != '_' ]]; then
+    eval "$var='${COMP_WORDS[$(($index + 1))]}'"
+  fi
 
   # update index
   case "$index" in
@@ -69,14 +72,17 @@ __one()
       LOOKUP_TYPES["$index"]='_'
       LOOKUP_VALUES["$index"]=
       ;;
+    ...)
+      LOOKUP_TYPES["$index"]=
+      LOOKUP_VALUES["$index"]=
+      ;;
     *)
       ;;
   esac
 
 }
 
-__script_name_to_path()
-{
+__script_name_to_path() {
   IFS='/' read -r -a __script_name_sections <<< "$1"
   local section_array=("${__script_name_sections[@]/#/_ }")
   printf '/%s' "${section_array[@]}"
@@ -84,11 +90,12 @@ __script_name_to_path()
 
 
 # high level interface
-at() { __one "$@"; }
+at() {
+  __one "$@"
+}
 
 
-__complit2()
-{
+__complit2() {
   # if available argument completion is exhausted
   # then ignore the completion request
 
@@ -131,14 +138,15 @@ __complit2()
 
   case "${LOOKUP_TYPES[$key]}" in
     from)
-      IFS=$'\n' COMPREPLY=($(compgen -W "$(cat "${RUN_CLI_DIR}/${LOOKUP_VALUES[$key]}")" -- "${COMP_WORDS[$word_index]}"))
+      if [[ -f "${RUN_CLI_DIR}/${LOOKUP_VALUES[$key]}" ]]; then
+        IFS=$'\n' COMPREPLY=($(compgen -W "$(cat "${RUN_CLI_DIR}/${LOOKUP_VALUES[$key]}")" -- "${COMP_WORDS[$word_index]}"))
+      fi
       ;;
     opts)
       split_into_lines="$(echo "${LOOKUP_VALUES[$key]}" | sed 's/,/\n/g')"
       IFS=$'\n' opts_split=($(echo "$split_into_lines"))
 
       IFS=$'\n' COMPREPLY=($(compgen -W "$(printf "%s\n" "${opts_split[@]}")" -- "${COMP_WORDS[$word_index]}"))
-
       ;;
     shell)
       shell_code="${LOOKUP_VALUES[$key]}"
@@ -159,21 +167,26 @@ __complit2()
   esac
 }
 
-__complit2_help()
-{
+__complit2_help() {
   local help_spec=''
 
   for key in $(seq 1 $POSITIONAL_PARAM_COUNT)
   do
-    help_spec="$help_spec  [$key:${POSITIONAL_ARG_VARS[$key]}]"
+    local spec=
+    local var_name="${POSITIONAL_ARG_VARS[$key]}"
+    if [[ "$var_name" == '_' ]]; then
+      spec='...'
+    else
+      spec="$key:$var_name"
+    fi
+    help_spec="$help_spec  [$spec]"
   done
   local optional_arg_spec="${OPTIONAL_ARG_VARS[@]}"
   help_spec="$help_spec  ${optional_arg_spec:+($optional_arg_spec)}"
   COMPREPLY=("usage:$help_spec" '')
 }
 
-__complit2_inspect()
-{
+__complit2_inspect() {
   declare -A arg_map
   local sector=POSITIONAL
   local option_name=
@@ -231,8 +244,7 @@ __complit2_inspect()
   COMPREPLY=('')
 }
 
-_convoke_completion()
-{
+_convoke_completion() {
 
   declare -A LOOKUP_TYPES
   declare -A LOOKUP_VALUES
@@ -272,8 +284,8 @@ _convoke_completion()
   elif [ "${COMP_CWORD}" -eq 1 ]
   then
     # the first section is completed with script names at the RUN_CLI_DIR
-    # in order to be listed the script file name must start with '_ '
-    # sub-directories are supported and must start with '_ ' as well
+    # in order to be listed the script file name must start with '_<SPACE>'
+    # sub-directories are supported and must start with '_<SPACE>' as well
     local IFS=$'\n'
     local word="${COMP_WORDS[1]}"
     local script_sub_rel="${word%/*}"

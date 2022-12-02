@@ -2,8 +2,7 @@
 
 set -e
 
-__warn()
-{
+__warn() {
   local message="$1"
   if [ -t 1 ]
   then
@@ -13,14 +12,12 @@ __warn()
   fi
 }
 
-__error()
-{
+__error() {
   __warn "$1"
   exit 1
 }
 
-__capture_match_file()
-{
+__capture_match_file() {
   if $(cat "$RUN_CLI_DIR/$2" | grep -q "^$1\$")
   then
     CAPTURED="$1"
@@ -29,8 +26,7 @@ __capture_match_file()
   fi
 }
 
-__capture_match_values()
-{
+__capture_match_values() {
   local val="$1"
   for el in "${_arg_list[@]}";
   do
@@ -42,8 +38,7 @@ __capture_match_values()
   fi
 }
 
-__capture_match_shell()
-{
+__capture_match_shell() {
   if $(eval "$2" | grep -q "^$1\$")
   then
     CAPTURED="$1"
@@ -52,8 +47,7 @@ __capture_match_shell()
   fi
 }
 
-__capture_match_command()
-{
+__capture_match_command() {
   if $(eval "$2 ${_arg_list[@]}" | grep -q "^$1\$")
   then
     CAPTURED="$1"
@@ -62,8 +56,7 @@ __capture_match_command()
   fi
 }
 
-__capture_uuid()
-{
+__capture_uuid() {
   if [[ "$1" =~ ^\{?[A-F0-9a-f]{8}-[A-F0-9a-f]{4}-[A-F0-9a-f]{4}-[A-F0-9a-f]{4}-[A-F0-9a-f]{12}\}?$ ]]
   then
     CAPTURED="$1"
@@ -72,16 +65,14 @@ __capture_uuid()
   fi
 }
 
-__capture_date()
-{
+__capture_date() {
   local val="$1"
   local date_result="$(date -d "$val" '+%Y-%m-%d' 2>&1)"
   local date_exit_code="$?"
   [[ "$?" == 0 && "$date_result" == "$val" ]] && CAPTURED="$1" || MESSAGE="[$1] not DATE"
 }
 
-__capture_text()
-{
+__capture_text() {
   local val="$1"
   local op="$2"
   local len="$3"
@@ -112,8 +103,7 @@ __capture_text()
   fi
 }
 
-__capture_regex()
-{
+__capture_regex() {
   if $(echo "$1" | grep -q "$2")
   then
     CAPTURED="$1"
@@ -122,8 +112,7 @@ __capture_regex()
   fi
 }
 
-__capture_integer()
-{
+__capture_integer() {
   if $(echo "$1" | grep -q '^[0-9]*$')
   then
     CAPTURED="$1"
@@ -132,17 +121,18 @@ __capture_integer()
   fi
 }
 
-__capture_any()
-{
+__capture_any() {
   CAPTURED="$1"
 }
 
-__one()
-{
+__one() {
   local index="$1"
   local val=
   local var="$2"
   local type="$3"
+
+  # '_' in variable name is a bypass marker
+  [[ "$var" == '_' ]] && return 0
 
   case "$index" in
     _)
@@ -202,6 +192,8 @@ __one()
     _)
       __capture_any "$val"
       ;;
+    ...)
+      ;;
     *)
       __error "unknown type [$type]"
       ;;
@@ -230,8 +222,12 @@ __one()
   [[ "$IGNORE_CAPTURE" == true ]] || eval "$var='$CAPTURED'"
 }
 
-__collate_args()
-{
+# Builds `arg_map` dictionary where keys are names of positional or optional variables,
+# that will be used by `at` command to validate based on its expectation.
+# Argument parsing is based on the convention:
+# * first go positional arguments
+# * when the ':' in the argument is met it marks the beginning of the optional section
+__collate_args() {
   local sector=POSITIONAL
   local option_name=
 
@@ -263,8 +259,7 @@ __collate_args()
   done
 }
 
-__script_name_to_path()
-{
+__script_name_to_path() {
   IFS='/' read -r -a __script_name_sections <<< "$1"
   local section_array=("${__script_name_sections[@]/#/_ }")
   printf '/%s' "${section_array[@]}"
@@ -272,7 +267,9 @@ __script_name_to_path()
 
 
 # high level interface
-at() { __one "$@"; }
+at() {
+  __one "$@";
+}
 
 [[ -z "$RUN_CLI_DIR" ]] && __error 'RUN_CLI_DIR environment variable not specified'
 
