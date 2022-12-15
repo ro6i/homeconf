@@ -57,13 +57,14 @@ nnoremap <silent> <Space>b :b#<CR>
 nnoremap <silent> <Space>d :bd<CR>
 nnoremap <silent><expr> <Space>h (&hls && v:hlsearch ? ':nohls' : ':set hls')."\n"
 nnoremap <silent> <Space>j *
+nnoremap <silent> <Space>k :let _vw = winsaveview()<CR>*N:call winrestview(_vw)<CR>
 nnoremap <silent> <Space>l :GotoLastTab<CR>
 nnoremap <silent> <Space>n :tabnext<CR>
 
 nnoremap <silent> <Space>rj :resize -5<CR>
 nnoremap <silent> <Space>rk :resize +5<CR>
-nnoremap <silent> <Space>rh :vertical resize -5<CR>
-nnoremap <silent> <Space>rl :vertical resize +5<CR>
+nnoremap <silent> <Space>rh :vertical resize +5<CR>
+nnoremap <silent> <Space>rl :vertical resize -5<CR>
 
 nnoremap <silent> <Space>p :tabprevious<CR>
 nnoremap <silent> <Space>t :tabnew<CR>
@@ -77,7 +78,7 @@ nnoremap <silent> <Space>wv <C-w>v
 
 nnoremap <silent> <Space>q :q<CR>
 nnoremap <silent> <Space>Q :only<CR>
-nnoremap <silent> <Space>x :Vexplore<CR>
+nnoremap <silent> <Space>x :qa<CR>
 nnoremap <silent> <Space>z :call ToggleWindowSize()<CR>
 
 nnoremap <silent> <Space><Space> za
@@ -89,6 +90,7 @@ nnoremap <silent> <Space><Space>l  :setlocal cursorbind!<CR>:setlocal scrollbind
 nnoremap <silent> <Space><Space>lc :setlocal cursorbind!<CR>:call lightline#update()<CR>
 nnoremap <silent> <Space><Space>ls :setlocal scrollbind!<CR>:call lightline#update()<CR>
 nnoremap <silent> <Space><Space>r :set list!<CR>
+nnoremap <silent> <Space><Space>x :Vexplore<CR>
 nnoremap <silent> <Space><Space>z :let &scrolloff=999-&scrolloff<CR>
 nnoremap <silent> <Space><Space>\ :call ToggleColorColumn(80)<CR>
 nnoremap <silent> <Space><Space>[ :call ToggleColorColumn(120)<CR>
