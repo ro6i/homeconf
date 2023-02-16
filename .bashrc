@@ -29,12 +29,12 @@ export CLICOLOR=1
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
 export HISTTIMEFORMAT="%Y-%m-%dT%T "
-export HISTFILESIZE=2000
+export HISTFILESIZE=20000
 export GREP_OPTIONS='--color=auto'
 
 export TZ='Asia/Tbilisi'
 
-export PATH="$PATH:$HOME/.bin:$HOME/.local/bin:~/projects/.bin"
+export PATH="$PATH:$HOME/.bin:$HOME/.local/bin:~/projects/.bin:~/projects/endowus/.bin"
 export PATH="$PATH:~/node_modules/.bin"
 # export PATH="/usr/local/sbin:$PATH"
 
@@ -54,9 +54,11 @@ alias cp="cp -i"                          # confirm before overwriting something
 alias df='df -h'                          # human-readable sizes
 alias free='free -m'                      # show sizes in MB
 # alias rm='trash'
+alias reboot='sudo reboot now; history -d $(history 1)'
 
 alias fresh="source ~/.bash_profile && tmux source-file ~/.tmux.conf"
 alias rr='ranger'
+alias tmux='systemd-run --scope --user tmux'
 
 [ -r /usr/share/bash-completion/bash_completion ] && . /usr/share/bash-completion/bash_completion
 

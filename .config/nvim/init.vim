@@ -18,6 +18,7 @@ nmap <silent> <Backspace> :call search('\u', 'bW', line("."))<CR>
 
 xmap     <silent> <Leader>a  <Plug>(EasyAlign)
 vnoremap <silent> <Leader>c  y:OSCYank<CR>
+nnoremap <silent> <Leader>d  :tab split<CR>:Gvdiffsplit develop<CR>
 nnoremap <silent> <Leader>f  :call FindTextSettings()<CR>
 nnoremap <silent> <Leader>j  :AsJSON<CR>
 nnoremap <silent> <Leader>s  :call FindTextPrompt()<CR>
@@ -54,10 +55,13 @@ nnoremap <silent> <Space>9 9gt<CR>
 
 nnoremap <silent> <Space>a <C-w>w<C-w><Bar>z999<CR>
 nnoremap <silent> <Space>b :b#<CR>
+nnoremap <silent> <Space>ct :tabclose<CR>
+nnoremap <silent> <Space>c<Space> :q<CR>
 nnoremap <silent> <Space>d :bd<CR>
 nnoremap <silent><expr> <Space>h (&hls && v:hlsearch ? ':nohls' : ':set hls')."\n"
 nnoremap <silent> <Space>j *
-nnoremap <silent> <Space>k :let _vw = winsaveview()<CR>*N:call winrestview(_vw)<CR>
+" nnoremap <silent> <Space>k :let _vw = winsaveview()<CR>*N:call winrestview(_vw)<CR>
+" vnoremap <silent> <Space>k *N
 nnoremap <silent> <Space>l :GotoLastTab<CR>
 nnoremap <silent> <Space>n :tabnext<CR>
 
@@ -109,11 +113,25 @@ function GoToDefinitionAware(target)
   call FindTextRegex(l:targetPattern)
 endfunction
 
-nnoremap <silent> <Space>s<Space> viw"ty:call FindTextFlat(getreg('t'))<CR>
-vnoremap <silent> <Space>s<Space> "ty:call FindTextFlat(getreg('t'))<CR>
-vnoremap <silent> <Space>s        "ty:call FindTextFlat(getreg('t'))<CR>
-nnoremap <silent> <Space>sl       viw"ty:call GoToDefinitionAware(getreg('t'))<CR>:nohls<CR>
-nmap     <silent> <Space>sj       <Space>sl<C-w><Enter>:call ToggleQuickfixList()<CR><C-w>T:nohls<CR>:silent! exe '/' . @t<CR>N
+function GetLineSelection()
+    normal gv
+    let [line_start, column_start] = getpos("'<")[1:2]
+    let [line_end, column_end] = getpos("'>")[1:2]
+    let lines = getline(line_start, line_end)
+    if len(lines) != 1
+        echom 'can read only in-line selection'
+        return ''
+    endif
+    let lines[-1] = lines[-1][: column_end - (&selection == 'inclusive' ? 1 : 2)]
+    let lines[0] = lines[0][column_start - 1:]
+    return join(lines, "\n")
+endfunction
+
+nnoremap <silent> <Space>s<Space> viw:<C-u>call FindTextFlat(GetLineSelection())<CR>
+vnoremap <silent> <Space>s<Space> :<C-u>call FindTextFlat(GetLineSelection())<CR>
+vnoremap <silent> <Space>s        :<C-u>call FindTextFlat(GetLineSelection())<CR>
+nnoremap <silent> <Space>sl       viw:<C-u>:let selectedValue = GetLineSelection()<CR>:call GoToDefinitionAware(selectedValue)<CR>:nohls<CR>
+nmap     <silent> <Space>sj       <Space>sl<C-w><Enter>:call ToggleQuickfixList()<CR><C-w>T:nohls<CR>:silent! exe '/' . selectedValue<CR>N
 
 " fuzzy show usages
 nnoremap <silent> <Space>su  viw"ty:call FindTextRegex('((with\s\\|extends\s\\|[\(\[])' . getreg('t') . '\\|(?<!def\s\\|val\s\\|ass\s\\|ect\s)' . getreg('t') . '[\)(\[\} ])')<CR>:nohls<CR>
@@ -155,7 +173,7 @@ Plug 'rhysd/open-pdf.vim'
 Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
 Plug 'francoiscabrol/ranger.vim'
-Plug 'haya14busa/incsearch.vim'
+Plug 'haya14busa/vim-asterisk'
 Plug 'ojroques/vim-oscyank'
 Plug 'ro6i/m31.vim'
 Plug 'ro6i/snugfind.vim'
@@ -189,6 +207,12 @@ let g:netrw_winsize = 20
 let g:ranger_map_keys = 0
 
 let g:env_variables = {}
+
+map *  <Plug>(asterisk-z*)
+map #  <Plug>(asterisk-z#)
+map g* <Plug>(asterisk-gz*)
+map g# <Plug>(asterisk-gz#)
+let g:asterisk#keeppos = 1
 
 function! LightlineKeymap()
   return !exists("b:keymap_name") ? "" : toupper(b:keymap_name)
@@ -289,12 +313,16 @@ set spelllang=en,ru_yo
 set tags=./.tags,.tags,./tags,tags
 
 set mouse=a
+set so=4
 " set clipboard=unnamedplus
 
 au TermOpen * setlocal nonumber norelativenumber
 
-au BufRead,BufNewFile * syn match parensCustom /[()]/ | hi parensCustom ctermfg=15
-au BufRead,BufNewFile * syn match curlyCustom /[{}]/ | hi curlyCustom ctermfg=10
+au BufRead,BufNewFile * syn match parensCustom /[()]/ | hi! parensCustom ctermfg=15
+au BufRead,BufNewFile * syn match curlyCustom /[{}]/ | hi! curlyCustom ctermfg=10
+au BufRead,BufNewFile * syn match underscoreCustom /[_]/ | hi! underscoreCustom ctermfg=15
+" hi! upperHi ctermfg=11
+" au BufRead,BufNewFile * call matchadd('upperHi', '[a-z]\@<=[A-Z]')
 
 function! SynGroup()
   let l:s = synID(line('.'), col('.'), 1)
