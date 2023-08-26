@@ -28,7 +28,7 @@ export EDITOR=nvim
 export CLICOLOR=1
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
-export HISTTIMEFORMAT="%Y-%m-%dT%T "
+# export HISTTIMEFORMAT="%Y-%m-%dT%T "
 export HISTFILESIZE=20000
 export GREP_OPTIONS='--color=auto'
 
@@ -45,7 +45,7 @@ done
 
 export PROMPT_CONF_TIME=on
 
-export PS1="\$(_prompt_hb)\n\$(_prompt_path)\$(_prompt_jobs)\$(_prompt_component_git)\n "
+export PS1="\$(_prompt_hb)\n\$(_prompt_path)\$(_prompt_jobs)\$(_prompt_component_git)\$(_prompt_component_env)\n "
 #export PROMPT_COMMAND="history -a; history -n; $PROMPT_COMMAND"
 
 alias cd='cd -P'
@@ -68,3 +68,13 @@ alias tmux='systemd-run --scope --user tmux'
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 export SDKMAN_DIR="$HOME/.sdkman"
 [[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
+
+export PYENV_ROOT="$HOME/.pyenv"
+command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init -)"
+
+shopt -s cmdhist
+shopt -s lithist
+HISTTIMEFORMAT='%F %T '
+
+eval "$(direnv hook bash)"

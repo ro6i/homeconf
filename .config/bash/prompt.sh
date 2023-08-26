@@ -49,12 +49,9 @@ _component() {
   then
     echo ''
   else
-    echo "  $(_fg_sw)$1$(_fg_sd)${_component_delimiter}$2$(_nof)"
+    [[ -z "$1" ]] && _delimiter= || _delimiter="$_component_delimiter"
+    echo " $(_fg_sw)$1$(_fg_sd)${_delimiter}$2$(_nof)"
   fi
-}
-
-_parse_git_branch() {
-  git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ \1/' -e 's/^[ ]*//' -e 's/[ ]*$//'
 }
 
 _parse_git_status() {
@@ -79,14 +76,14 @@ _prompt_conf_value() {
 
 _prompt_component_git() {
   local status_color=37
-  local branch="$(_parse_git_branch)"
+  local branch="$(git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ \1/' -e 's/^[ ]*//' -e 's/[ ]*$//')"
   if [[ $branch == "" ]]
   then
     echo ""
   else
     local status="$(_parse_git_status)"
     status_color=$([[ $status == "" ]] && echo 37 || echo 33)
-    echo -e "$(_component 'git' "$(_setf ${status_color})${branch}${status}$(_nof)")"
+    echo -e "$(_component ' git' "$(_setf ${status_color})${branch}${status}$(_nof)")"
   fi
 }
 
@@ -124,7 +121,7 @@ _prompt_jobs() {
   local j="$(($(jobs -p | wc -l)))"
   if [[ $j > 0 ]]
   then
-    echo -e "$(_component 'jobs' "$(_fg_sr)$j")"
+    echo -e "$(_component ' jobs' "$(_fg_sr)$j")"
   fi
 }
 
@@ -134,6 +131,21 @@ _prompt_hb() {
   local _width=$(( 80 < $_session_width ? 80 : $_session_width ))
   local _length=$(( $_width - ${#_time} ))
   echo "$(_fg_sd)$(printf "%${_length}s" | tr ' ' '-')$(_prompt_time)$(_nof)"
+}
+
+_prompt_component_env() {
+  local prefixed=0
+  env | grep 'PROMPT_CONF_ENV_' | sed 's/=.*//' | sed 's/^PROMPT_CONF_ENV_//' | sort | while read -r envVarId
+    do
+      [[ $prefixed == 0 ]] && printf '\n'
+      if [[ "$(_prompt_conf_value ENV_$envVarId)" == 'on' ]]
+      then
+        prefixed=$((prefixed + 1))
+        local value="${!envVarId}"
+        [[ "$value" =~ ^\{?[A-F0-9a-f]{8}-[A-F0-9a-f]{4}-[A-F0-9a-f]{4}-[A-F0-9a-f]{4}-[A-F0-9a-f]{12}\}?$ ]] && value="${value:0:8}..${value: -2}"
+        printf "$(_component '' "$(_fg_nd)[$(_fg_sw)$envVarId $(_setf $((91 + $prefixed)))$(_bg_nb)${value}$(_nof)$(_fg_nd)]$(_nof)")"
+      fi
+    done
 }
 
 # prompt configuration cli
@@ -148,6 +160,16 @@ prompt() {
     else
       unset $_name
     fi
+    ;;
+  on)
+    _name="PROMPT_CONF_${2^^}"
+    _val="${!_name}"
+    export $_name='on'
+    ;;
+  off)
+    _name="PROMPT_CONF_${2^^}"
+    _val="${!_name}"
+    unset $_name
     ;;
   *)
     ;;
