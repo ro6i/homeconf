@@ -51,7 +51,6 @@ export PS1="\$(_prompt_hb)\n\$(_prompt_path)\$(_prompt_jobs)\$(_prompt_component
 alias cd='cd -P'
 alias ll='ls -l'
 alias cp="cp -i"                          # confirm before overwriting something
-alias df='df -h'                          # human-readable sizes
 alias free='free -m'                      # show sizes in MB
 # alias rm='trash'
 alias reboot='sudo reboot now; history -d $(history 1)'
@@ -78,3 +77,5 @@ shopt -s lithist
 HISTTIMEFORMAT='%F %T '
 
 eval "$(direnv hook bash)"
+
+export SWAYSOCK=/run/user/$(id -u)/sway-ipc.$(id -u).$(pgrep -x sway).sock
