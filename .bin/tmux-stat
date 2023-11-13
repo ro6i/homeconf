@@ -1,8 +1,8 @@
 #!/bin/bash
 
-function batteryState {
-  case $(uname -s) in
-    'Darwin')
+batteryState() {
+  case "$(uname -s)" in
+    Darwin)
       ioreg -c AppleSmartBattery -w0 | \
       grep -o '"[^"]*" = [^ ]*' | \
       sed -e 's/= //g' -e 's/"//g' | \
@@ -23,62 +23,19 @@ function batteryState {
   esac
 }
 
-function inputSource {
-  case $(uname -s) in
-    'Darwin')
+inputSource() {
+  case "$(uname -s)" in
+    Darwin)
       defaults read ~/Library/Preferences/com.apple.HIToolbox.plist AppleSelectedInputSources | egrep -w 'KeyboardLayout Name' | awk -F '=' '{print $2}' | sed -E 's/[^a-zA-Z ]//g' | awk '{$1=$1};1' | cut -c 1-3 | tr '[:lower:]' '[:upper:]'
       ;;
-    'Linux')
-      setxkbmap -print | grep xkb_symbols | awk '{print $4}' | awk -F"+" '{print $2}' | tr '[:lower:]' '[:upper:]'
+    Linux)
+      # setxkbmap -print | grep xkb_symbols | awk '{print $4}' | awk -F"+" '{print $2}' | tr '[:lower:]' '[:upper:]'
+      swaymsg -t get_inputs urgent enable | jq -r '[.[] | select(.xkb_active_layout_name != null) | .xkb_active_layout_name][0]' | cut -c 1,2 | tr '[:lower:]' '[:upper:]'
       ;;
   esac
 }
 
-function isTerminalAppActive {
-  _app=
-
-  case $(uname -s) in
-    'Darwin')
-      _app="$(osascript << 'EOF'
-global frontApp, frontAppName
-
-tell application "System Events"
-    set frontApp to first application process whose frontmost is true
-    set frontAppName to name of frontApp
-end tell
-
-return frontAppName
-EOF
-  )"
-      ;;
-    'Linux')
-      if [[ -z "$WAYLAND_DISPLAY" ]]
-      then
-        _app="$(xdotool getactivewindow getwindowname)"
-      else
-        _app="$(gdbus call \
-          --session \
-          --dest org.gnome.Shell \
-          --object-path /org/gnome/Shell \
-          --method org.gnome.Shell.Eval "
-            global
-              .get_window_actors()
-              .map(a=>a.meta_window)
-              .find(w=>w.has_focus())
-              .get_wm_class()" \
-          | cut -d'"' -f 2)"
-      fi
-      ;;
-  esac
-
-  _app_lower_case="${_app,,}"
-  if [[ "$_app_lower_case" == 'alacritty' || "$_app_lower_case" == 'iterm2' ]]
-  then
-    echo '1'
-  fi
-}
-
-function k8sState {
+k8sState() {
   _context="$(kubectl config current-context)"
   _namespace="$(kubectl config view --minify --output 'jsonpath={..namespace}')"
   if [[ ! -z "$_namespace" ]]
@@ -89,32 +46,9 @@ function k8sState {
   fi
 }
 
-function kbState {
-  case $(uname -s) in
-    'Darwin')
-      _summary="$(/usr/bin/python -c 'import Cocoa; print Cocoa.NSEvent.modifierFlags() & Cocoa.NSAlphaShiftKeyMask ')"
-      if [[ (($_summary > 0)) ]]
-      then
-        echo 'CAPS'
-      fi
-      ;;
-
-    'Linux')
-      if [[ -z "$WAYLAND_DISPLAY" ]]
-      then
-        _value="$(xset -q 2>/dev/null | grep 'Caps' | awk '{print $4}')"
-        if [[ ! "$_value" == 'off' ]]
-        then
-          echo 'CAPS'
-        fi
-      fi
-      ;;
-  esac
-}
-
-function wireguardState {
-  case $(uname -s) in
-    'Darwin')
+wireguardState() {
+  case "$(uname -s)" in
+    Darwin)
       _session_artifact_name="$(find -f /var/run/wireguard/*.name)"
       if [[ ! -z "$_session_artifact_name" ]]
       then
@@ -123,37 +57,28 @@ function wireguardState {
         echo "$_profile_name"
       fi
       ;;
-    'Linux')
+    Linux)
       echo "$(systemctl list-units --type=service --state=active | grep -oP 'WireGuard via wg-quick.* for \K.*' | xargs)"
   esac
 }
 
+remoteSessionState() {
+  if [[ ! -z "$(tmux showenv | grep '^SSH_CONNECTION')" ]]
+  then
+    echo '1'
+  fi
+}
+
+kbState() {
+  echo
+}
+
 case "$1" in
-  battery)
-    batteryState
-    ;;
-  cloudflare)
-    cf-tunnel state
-    ;;
-  input-source)
-    inputSource
-    ;;
-  is-terminal-app-active)
-    isTerminalAppActive
-    ;;
-  k8s)
-    k8sState
-    ;;
-  kb)
-    # kbState
-    ;;
-  wireguard)
-    wireguardState
-    ;;
-  is-remote-session)
-    if [[ ! -z "$(tmux showenv | grep '^SSH_CONNECTION')" ]]
-    then
-      echo '1'
-    fi
-    ;;
+  is-remote-session) remoteSessionState ;;
+  input-source)      inputSource ;;
+  battery)           batteryState ;;
+  k8s)               k8sState ;;
+  kb)                kbState ;;
+  wireguard)         wireguardState ;;
+  cloudflare)        run cloudflare/tunnel/which ;;
 esac
