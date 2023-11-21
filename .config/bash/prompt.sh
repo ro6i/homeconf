@@ -1,5 +1,5 @@
 
-_component_delimiter=' '
+_component_delimiter=': '
 
 _component() {
   local _marker="$1"
@@ -63,14 +63,18 @@ _prompt_path() {
   local _dir="$(dirs)"
   local _separator="$(tput setaf 8)\/$(tput setaf 15)"
   local _dirname="$(dirname "$_dir")"
-  local _dirpath="$(tput setaf 7)${_dirname:0:1}$(tput setaf 15)$(echo "${_dirname:1}" | sed "s/\//$_separator/g")"
+  local _compacting_expr
+  if [[ ${#_dirname} -gt 20 && "${_dirname::10}" == '~/projects' ]]; then
+    _compacting_expr="s/\([\/_-]\)\([a-zA-Z0-9]\)[[:alpha:]]*/\1$(tput setaf 8)\2$(tput sgr0)/g;"
+  fi
+  local _slash_expr="s/\//$_separator/g;"
+  local _dirpath="$(tput setaf 7)${_dirname:0:1}$(tput setaf 15)$(echo "${_dirname:1}" | sed "$_compacting_expr $_slash_expr")"
   if [[ "$_dir" == '~' || "$_dir" == '/' ]];
   then
     echo -e "$(tput setaf 7)$_dir$(tput sgr0)"
   else
     local _decorated_base_name="$(tput setaf 7)$(basename "$_dir")"
-    if [[ -f './.dirlabel' ]]
-    then
+    if [[ -f './.dirlabel' ]]; then
       _decorated_base_name="$(tput setaf 3)$(tput setaf 11)$(cat './.dirlabel')"
     fi
     echo -e "$_dirpath$(tput setaf 8)/$_decorated_base_name$(tput sgr0)"
