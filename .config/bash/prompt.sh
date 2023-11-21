@@ -1,56 +1,14 @@
 
 _component_delimiter=' '
 
-_nof() {
-  echo -e "\001\e[m\002"
-}
-
-_setf() {
-  echo -e "\001\e[${1}m\002"
-}
-
-# _fg_n_base=30
-# _fg_s_base=90
-# _dark=0
-# _red=1
-# _green=2
-# _yellow=3
-# _blue=4
-# _magenta=5
-# _cyan=6
-# _white=7
-
-_fg_nd() { _setf 30 ; }
-_fg_nr() { _setf 31 ; }
-_fg_ng() { _setf 32 ; }
-_fg_ny() { _setf 33 ; }
-_fg_nb() { _setf 34 ; }
-_fg_nm() { _setf 35 ; }
-_fg_nc() { _setf 36 ; }
-_fg_nw() { _setf 37 ; }
-
-_fg_sd() { _setf 90 ; }
-_fg_sr() { _setf 91 ; }
-_fg_sg() { _setf 92 ; }
-_fg_sy() { _setf 93 ; }
-_fg_sb() { _setf 94 ; }
-_fg_sm() { _setf 95 ; }
-_fg_sc() { _setf 96 ; }
-_fg_sw() { _setf 97 ; }
-
-_bg_nb() { _setf 40 ; }
-_bg_nw() { _setf 47 ; }
-
-_bg_sb() { _setf 100 ; }
-_bg_sw() { _setf 107 ; }
-
 _component() {
-  if [[ -z "$2" ]];
+  local _marker="$1"
+  local _value="$2"
+  if [[ ! -z "$_value" ]];
   then
-    echo ''
-  else
-    [[ -z "$1" ]] && _delimiter= || _delimiter="$_component_delimiter"
-    echo " $(_fg_sw)$1$(_fg_sd)${_delimiter}$2$(_nof)"
+    local _delimiter
+    [[ ! -z "$1" ]] && _delimiter="$_component_delimiter"
+    echo " $(tput setaf 15)$1$(tput setaf 8)${_delimiter}$_value$(tput sgr0)"
   fi
 }
 
@@ -59,12 +17,12 @@ _parse_git_status() {
   if [[ ! -z "$_status" ]]
   then
     local _traits=()
-    if [[ ! -z "$(git diff --exit-code)" ]]; then _traits+=" $(_fg_nr)unstaged"; fi
-    if [[ ! -z "$(git ls-files --other --exclude-standard --directory --no-empty-directory)" ]]; then _traits+=" $(_fg_sr)untracked"; fi
-    if [[ ! -z "$(git diff --cached --exit-code)" ]]; then _traits+=" $(_fg_ng)staged"; fi
+    if [[ ! -z "$(git diff --exit-code)" ]]; then _traits+=" $(tput setaf 1)unstaged"; fi
+    if [[ ! -z "$(git ls-files --other --exclude-standard --directory --no-empty-directory)" ]]; then _traits+=" $(tput setaf 9)untracked"; fi
+    if [[ ! -z "$(git diff --cached --exit-code)" ]]; then _traits+=" $(tput setaf 2)staged"; fi
     _status="${_traits[@]}"
     _status="${_status:1}"
-    _status="$(_fg_sw)($_status$(_fg_sw))"
+    _status="$(tput setaf 15)($_status$(tput setaf 15))"
   fi
   echo "$_status"
 }
@@ -76,52 +34,62 @@ _prompt_conf_value() {
 
 _prompt_component_git() {
   local status_color=37
-  local branch="$(git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ \1/' -e 's/^[ ]*//' -e 's/[ ]*$//')"
-  if [[ $branch == "" ]]
+  local branch_name="$(git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ \1/' -e 's/^[ ]*//' -e 's/[ ]*$//')"
+  if [[ ! -z "$branch_name" ]]
   then
-    echo ""
-  else
+    local branch_prefix_color
+    case "${branch_name:0:4}" in
+      fix/) branch_prefix_color=1 ;;
+      feat) branch_prefix_color=13 ;;
+      main) branch_prefix_color=3 ;;
+      mast) branch_prefix_color=3 ;;
+      deve) branch_prefix_color=2 ;;
+      *)    branch_prefix_color=7 ;;
+    esac
+    local branch="$(echo "$branch_name" | sed "\
+      s/\([0-9]\+\)/$(tput setaf 14)\1$(tput sgr0)/1;\
+      s/[-]/$(tput setaf 15)-$(tput sgr0)/g;\
+      s/^\([a-z]\+\)/$(tput setaf "$branch_prefix_color")\1$(tput sgr0)/;\
+      s/[/]\([A-Z]\+\)/$(tput setaf 5)\/$(tput setaf 12)\1$(tput sgr0)/;")"
+
     local status="$(_parse_git_status)"
-    status_color=$([[ $status == "" ]] && echo 37 || echo 33)
-    echo -e "$(_component ' git' "$(_setf ${status_color})${branch}${status}$(_nof)")"
+    local status_color=$([[ -z $status ]] && echo 7 || echo 3)
+
+    echo -e "$(_component ' git' "$(tput setaf $status_color)$branch$status$(tput sgr0)")"
   fi
 }
 
 _prompt_path() {
-  local d="$(dirs)"
-  local sep="$(_fg_sd)\/$(_fg_sw)"
-  local dn="$(dirname "$d")"
-  local pdir="$(_fg_nw)${dn:0:1}$(_fg_sw)$(echo "${dn:1}" | sed "s/\//$sep/g")"
-  if [[ "$d" == '~' || "$d" == '/' ]];
+  local _dir="$(dirs)"
+  local _separator="$(tput setaf 8)\/$(tput setaf 15)"
+  local _dirname="$(dirname "$_dir")"
+  local _dirpath="$(tput setaf 7)${_dirname:0:1}$(tput setaf 15)$(echo "${_dirname:1}" | sed "s/\//$_separator/g")"
+  if [[ "$_dir" == '~' || "$_dir" == '/' ]];
   then
-    echo -e "$(_fg_nw)$d$(_nof)"
+    echo -e "$(tput setaf 7)$_dir$(tput sgr0)"
   else
-    local decorated_base_name="$(_fg_nw)$(basename "$d")"
-    if [[ -f './.alias' ]]
+    local _decorated_base_name="$(tput setaf 7)$(basename "$_dir")"
+    if [[ -f './.dirlabel' ]]
     then
-      decorated_base_name="$(_fg_ny)\$$(_fg_sy)$(cat '.alias')"
+      _decorated_base_name="$(tput setaf 3)$(tput setaf 11)$(cat './.dirlabel')"
     fi
-    echo -e "$pdir$(_fg_sd)/$decorated_base_name$(_nof)"
+    echo -e "$_dirpath$(tput setaf 8)/$_decorated_base_name$(tput sgr0)"
   fi
 }
 
 PROMPT_TIME_FORMAT='%m-%d %H:%M'
 
 _prompt_time() {
-  is_on="$(_prompt_conf_value time)"
-  if [[ "$is_on" == 'off' ]]
-  then
-    return
-  fi
-  echo -e " $(_fg_sd)$(date +"${PROMPT_TIME_FORMAT}")$(_nof)"
-  #echo -e " $(_setf '90')$(date +'%m-%d') $(_setf '97')$(date +'%H:%M')$(_nof)"
+  case "$(_prompt_conf_value time)" in
+    on) echo -e " $(tput setaf 8)$(date +"${PROMPT_TIME_FORMAT}")$(tput sgr0)" ;;
+  esac
 }
 
 _prompt_jobs() {
-  local j="$(($(jobs -p | wc -l)))"
-  if [[ $j > 0 ]]
+  local _jobs="$(($(jobs -p | wc -l)))"
+  if [[ $_jobs > 0 ]]
   then
-    echo -e "$(_component ' jobs' "$(_fg_sr)$j")"
+    echo -e "$(_component ' jobs' "$(tput setaf 9)$_jobs")"
   fi
 }
 
@@ -130,7 +98,7 @@ _prompt_hb() {
   local _session_width=$(tput cols)
   local _width=$(( 80 < $_session_width ? 80 : $_session_width ))
   local _length=$(( $_width - ${#_time} ))
-  echo "$(_fg_sd)$(printf "%${_length}s" | tr ' ' '-')$(_prompt_time)$(_nof)"
+  echo "$(tput setaf 8)$(printf "%${_length}s" | tr ' ' '-')$(_prompt_time)$(tput sgr0)"
 }
 
 _prompt_component_env() {
@@ -143,35 +111,24 @@ _prompt_component_env() {
         prefixed=$((prefixed + 1))
         local value="${!envVarId}"
         [[ "$value" =~ ^\{?[A-F0-9a-f]{8}-[A-F0-9a-f]{4}-[A-F0-9a-f]{4}-[A-F0-9a-f]{4}-[A-F0-9a-f]{12}\}?$ ]] && value="${value:0:8}..${value: -2}"
-        printf "$(_component '' "$(_fg_nd)[$(_fg_sw)$envVarId $(_setf $((91 + $prefixed)))$(_bg_nb)${value}$(_nof)$(_fg_nd)]$(_nof)")"
+        printf "$(_component '' "$(tput setaf 0)[$(tput setaf 15)$envVarId $(tput setaf $((9 + $prefixed)))$(tput setb 0)${value}$(tput sgr0)$(tput setaf 0)]$(tput sgr0)")"
       fi
     done
 }
 
 # prompt configuration cli
 prompt() {
+  local _name="PROMPT_CONF_${2^^}"
+  local _val="${!_name}"
   case "$1" in
   toggle)
-    _name="PROMPT_CONF_${2^^}"
-    _val="${!_name}"
-    if [[ "$_val" != 'on' ]]
-    then
-      export $_name='on'
-    else
-      unset $_name
-    fi
+    case "$_val" in
+      on) unset $_name ;;
+      *)  export $_name=on ;;
+    esac
     ;;
-  on)
-    _name="PROMPT_CONF_${2^^}"
-    _val="${!_name}"
-    export $_name='on'
-    ;;
-  off)
-    _name="PROMPT_CONF_${2^^}"
-    _val="${!_name}"
-    unset $_name
-    ;;
-  *)
-    ;;
+  on)  export $_name=on ;;
+  off) unset  $_name ;;
+  *) ;;
   esac
 }
