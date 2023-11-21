@@ -1,0 +1,41 @@
+__parse_git_status() {
+  local _status=$(git status --short 2> /dev/null | head)
+  if [[ ! -z "$_status" ]]
+  then
+    local _traits=()
+    [[ ! -z "$(git diff --exit-code)" ]] && _traits+=" $(tput setaf 1)unstaged"
+    [[ ! -z "$(git ls-files --other --exclude-standard --directory --no-empty-directory)" ]] && _traits+=" $(tput setaf 9)untracked"
+    [[ ! -z "$(git diff --cached --exit-code)" ]] && _traits+=" $(tput setaf 2)staged"
+    _status="${_traits[@]}"
+    _status="${_status:1}"
+    _status="$(tput setaf 15)($_status$(tput setaf 15))"
+  fi
+  echo "$_status"
+}
+
+_prompt_component_git() {
+  local status_color=37
+  local branch_name="$(git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ \1/' -e 's/^[ ]*//' -e 's/[ ]*$//')"
+  if [[ ! -z "$branch_name" ]]
+  then
+    local branch_prefix_color
+    case "${branch_name:0:4}" in
+      fix/) branch_prefix_color=1 ;;
+      feat) branch_prefix_color=13 ;;
+      main) branch_prefix_color=11 ;;
+      mast) branch_prefix_color=11 ;;
+      deve) branch_prefix_color=10 ;;
+      *)    branch_prefix_color=7 ;;
+    esac
+    local branch="$(echo "$branch_name" | sed "\
+      s/\([0-9]\+\)/$(tput setaf 14)\1$(tput sgr0)/1;\
+      s/[-]/$(tput setaf 15)-$(tput sgr0)/g;\
+      s/^\([a-z]\+\)/$(tput setaf "$branch_prefix_color")\1$(tput sgr0)/;\
+      s/[/]\([A-Z]\+\)/$(tput setaf 5)\/$(tput setaf 12)\1$(tput sgr0)/;")"
+
+    local status="$(__parse_git_status)"
+    local status_color=$([[ -z $status ]] && echo 7 || echo 3)
+
+    echo -e "$(_component ' git' "$(tput setaf $status_color)$branch$status$(tput sgr0)")"
+  fi
+}
