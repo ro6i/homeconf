@@ -1,3 +1,4 @@
+export PROJECTS_DIR='~/projects'
 
 export ARGWORK_CLI_DIR=
 

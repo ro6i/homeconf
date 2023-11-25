@@ -1,4 +1,5 @@
 
+[[ -z "$PROJECTS_DIR" ]] && PROJECTS_DIR='~/projects'
 _component_delimiter=': '
 
 _component() {
@@ -21,10 +22,10 @@ _prompt_path() {
   local _dir="$(dirs)"
   local _dirname="$(dirname "$_dir")"
   local _compacting_expr
-  if [[ ${#_dirname} -gt 25 && "${_dirname::10}" == '~/projects' ]]; then
-    _compacting_expr="s/\([\/_.-]\)\([a-zA-Z0-9]\)[a-zA-Z0-9][[:alpha:]]*/\1$(tput setaf 4)\2$(tput sgr0)/g;"
+  if [[ ${#_dirname} -gt $(( $(tput cols) / 4 )) && "${_dirname::10}" == "$PROJECTS_DIR" ]]; then
+    _compacting_expr="s/\([\/_.-]\)\([a-zA-Z]\)[a-zA-Z][[:alpha:]]*/\1$(tput setaf 59)\2$(tput sgr0)/g;"
   fi
-  local _separator_expr="s/\//$(tput setaf 8)\/$(tput setaf 15)/g;"
+  local _separator_expr="s/\//$(tput setaf 0)\/$(tput setaf 15)/g;"
   local _dirpath="$(tput setaf 7)${_dirname:0:1}$(tput setaf 15)$(echo "${_dirname:1}" | sed "$_compacting_expr $_separator_expr")"
   if [[ "${#_dir}" == 1 ]]
   then
@@ -71,8 +72,8 @@ _prompt_component_env() {
       then
         prefixed=$((prefixed + 1))
         local value="${!envVarId}"
-        [[ "$value" =~ ^\{?[A-F0-9a-f]{8}-[A-F0-9a-f]{4}-[A-F0-9a-f]{4}-[A-F0-9a-f]{4}-[A-F0-9a-f]{12}\}?$ ]] && value="${value:0:8}..${value: -2}"
-        printf "$(_component '' "$(tput setaf 0)[$(tput setaf 15)$envVarId $(tput setaf $((9 + $prefixed)))$(tput setb 0)${value}$(tput sgr0)$(tput setaf 0)]$(tput sgr0)")"
+        [[ "$value" =~ ^\{?[A-F0-9a-f]{8}-[A-F0-9a-f]{4}-[A-F0-9a-f]{4}-[A-F0-9a-f]{4}-[A-F0-9a-f]{12}\}?$ ]] && value="${value:0:8}" #..${value: -2}"
+        printf "$(_component '' "$(tput setaf 236)[$(tput setaf 15)$envVarId $(tput setaf $((9 + $prefixed)))$(tput setb 0)${value}$(tput sgr0)$(tput setaf 238)]$(tput sgr0)")"
       fi
     done
 }

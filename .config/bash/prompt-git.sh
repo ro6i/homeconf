@@ -19,13 +19,15 @@ _prompt_component_git() {
   if [[ ! -z "$branch_name" ]]
   then
     local branch_prefix_color
-    case "${branch_name:0:4}" in
-      fix/) branch_prefix_color=1 ;;
-      feat) branch_prefix_color=13 ;;
-      main) branch_prefix_color=11 ;;
-      mast) branch_prefix_color=11 ;;
-      deve) branch_prefix_color=10 ;;
-      *)    branch_prefix_color=7 ;;
+    case "${branch_name%%/*}" in
+      fix)     branch_prefix_color=1 ;;
+      feat)    branch_prefix_color=13 ;;
+      feature) branch_prefix_color=13 ;;
+      main)    branch_prefix_color=3 ;;
+      master)  branch_prefix_color=3 ;;
+      develop) branch_prefix_color=2 ;;
+      release) branch_prefix_color=10 ;;
+      *)       branch_prefix_color=7 ;;
     esac
     local branch="$(echo "$branch_name" | sed "\
       s/\([0-9]\+\)/$(tput setaf 14)\1$(tput sgr0)/1;\
