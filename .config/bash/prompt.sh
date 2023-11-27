@@ -25,7 +25,7 @@ _prompt_path() {
   if [[ ${#_dirname} -gt $(( $(tput cols) / 4 )) && "${_dirname::10}" == "$PROJECTS_DIR" ]]; then
     _compacting_expr="s/\([\/_.-]\)\([a-zA-Z]\)[a-zA-Z][[:alpha:]]*/\1$(tput setaf 59)\2$(tput sgr0)/g;"
   fi
-  local _separator_expr="s/\//$(tput setaf 0)\/$(tput setaf 15)/g;"
+  local _separator_expr="s/\//$(tput setaf 8)\/$(tput setaf 15)/g;"
   local _dirpath="$(tput setaf 7)${_dirname:0:1}$(tput setaf 15)$(echo "${_dirname:1}" | sed "$_compacting_expr $_separator_expr")"
   if [[ "${#_dir}" == 1 ]]
   then
@@ -43,7 +43,7 @@ PROMPT_TIME_FORMAT='%m-%d %H:%M'
 
 _prompt_time() {
   case "$(_prompt_conf_value time)" in
-    on) echo -e " $(tput setaf 8)$(date +"$PROMPT_TIME_FORMAT")$(tput sgr0)" ;;
+    yes) echo -e " $(tput setaf 8)$(date +"$PROMPT_TIME_FORMAT")$(tput sgr0)" ;;
   esac
 }
 
@@ -63,18 +63,27 @@ _prompt_hb() {
   echo "$(tput setaf 8)$(printf "%${_length}s" | tr ' ' '-')$(_prompt_time)$(tput sgr0)"
 }
 
-_prompt_component_env() {
-  local prefixed=0
-  env | grep 'PROMPT_CONF_ENV_' | sed 's/=.*//' | sed 's/^PROMPT_CONF_ENV_//' | sort | while read -r envVarId
+export __PROMPT_ENV_COUNTER=0
+
+__prompt_env_by_tag() {
+  env | grep 'PROMPT_ENV__' | grep ":$tag:" | sort -t ':' -k3 | sed 's/=.*//' | sed 's/^PROMPT_ENV__//' | while read -r envVarId
     do
-      [[ $prefixed == 0 ]] && printf '\n'
-      if [[ "$(_prompt_conf_value ENV_$envVarId)" == 'on' ]]
-      then
-        prefixed=$((prefixed + 1))
-        local value="${!envVarId}"
-        [[ "$value" =~ ^\{?[A-F0-9a-f]{8}-[A-F0-9a-f]{4}-[A-F0-9a-f]{4}-[A-F0-9a-f]{4}-[A-F0-9a-f]{12}\}?$ ]] && value="${value:0:8}" #..${value: -2}"
-        printf "$(_component '' "$(tput setaf 236)[$(tput setaf 15)$envVarId $(tput setaf $((9 + $prefixed)))$(tput setb 0)${value}$(tput sgr0)$(tput setaf 238)]$(tput sgr0)")"
-      fi
+      local keyName="PROMPT_ENV__$envVarId" separator
+      IFS=':' read -r _name _tag _sort <<<"${!keyName}"
+      local value="${!envVarId}"
+      [[ "$value" =~ ^\{?[A-F0-9a-f]{8}-[A-F0-9a-f]{4}-[A-F0-9a-f]{4}-[A-F0-9a-f]{4}-[A-F0-9a-f]{12}\}?$ ]] && value="${value:0:8}" #..${value: -2}"
+
+      [[ -z "$_name" ]] || separator=' '
+      __PROMPT_ENV_COUNTER="$((1 + $__PROMPT_ENV_COUNTER))"
+      [[ "$__PROMPT_ENV_COUNTER" -eq 1 ]] && printf '\n'
+      printf "$(_component '' "$(tput setaf 236)[$(tput setaf 15)$_name$separator$(tput setaf $((9 + $__PROMPT_ENV_COUNTER)))$(tput setb 0)$value$(tput sgr0)$(tput setaf 238)]$(tput sgr0)")"
+    done
+}
+
+_prompt_component_env() {
+  env | grep 'PROMPT_ENV__' | awk -F':' '{print $2}' | sort | uniq | while read -r tag
+    do
+      __prompt_env_by_tag "$tag"
     done
 }
 
@@ -85,12 +94,12 @@ prompt() {
   case "$1" in
   toggle)
     case "$_val" in
-      on) unset $_name ;;
+      yes) unset $_name ;;
       *)  export $_name=on ;;
     esac
     ;;
-  on)  export $_name=on ;;
-  off) unset  $_name ;;
+  yes)  export $_name=on ;;
+  no) unset  $_name ;;
   *) ;;
   esac
 }
