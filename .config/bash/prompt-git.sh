@@ -14,11 +14,12 @@ __parse_git_status() {
 }
 
 _prompt_component_git() {
-  local status_color=37
   local branch_name="$(git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ \1/' -e 's/^[ ]*//' -e 's/[ ]*$//')"
-  if [[ ! -z "$branch_name" ]]
+  [[ -z "$branch_name" ]] && return 0
+  local branch_prefix_color
+  local branch
+  if [[ "${branch_name:0:1}" =~ [a-zA-Z0-9] ]];
   then
-    local branch_prefix_color
     case "${branch_name%%/*}" in
       fix)     branch_prefix_color=1 ;;
       feat)    branch_prefix_color=13 ;;
@@ -29,15 +30,18 @@ _prompt_component_git() {
       release) branch_prefix_color=10 ;;
       *)       branch_prefix_color=7 ;;
     esac
-    local branch="$(echo "$branch_name" | sed "\
+    branch="$(echo "$branch_name" | sed "\
       s/\([0-9]\+\)/$(tput setaf 14)\1$(tput sgr0)/1;\
       s/[-]/$(tput setaf 15)-$(tput sgr0)/g;\
       s/^\([a-z]\+\)/$(tput setaf "$branch_prefix_color")\1$(tput sgr0)/;\
       s/[/]\([A-Z]\+\)/$(tput setaf 5)\/$(tput setaf 12)\1$(tput sgr0)/;")"
-
-    local status="$(__parse_git_status)"
-    local status_color=$([[ -z $status ]] && echo 7 || echo 3)
-
-    echo -e "$(_component ' git' "$(tput setaf $status_color)$branch$status$(tput sgr0)")"
+  else
+    branch="$branch_name"
   fi
+
+  local status="$(__parse_git_status)"
+  local status_color=7
+  [[ -z "$status" ]] && status_color=3
+
+  echo -e "$(_component ' git' "$(tput setaf $status_color)$branch$status$(tput sgr0)")"
 }
