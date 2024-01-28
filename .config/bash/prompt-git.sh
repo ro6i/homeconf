@@ -1,23 +1,24 @@
 __parse_git_status() {
-  local _status=$(git status --short 2> /dev/null | head)
+  local _status=$(git status --short 2> /dev/null | head -n 1)
   if [[ ! -z "$_status" ]]
   then
-    local _traits=()
-    [[ ! -z "$(git diff --exit-code)" ]] && _traits+=" $(tput setaf 1)unstaged"
-    [[ ! -z "$(git ls-files --other --exclude-standard --directory --no-empty-directory)" ]] && _traits+=" $(tput setaf 9)untracked"
-    [[ ! -z "$(git diff --cached --exit-code)" ]] && _traits+=" $(tput setaf 2)staged"
-    _status="${_traits[@]}"
-    _status="${_status:1}"
-    _status="$(tput setaf 15)($_status$(tput setaf 15))"
+    local unstaged_count="$(git diff --numstat | wc -l)" #"$(git diff --exit-code)"
+    local untracked_count="$(git ls-files --other --exclude-standard --directory --no-empty-directory | wc -l)"
+    local staged_count="$(git diff --cached --numstat | wc -l)"
+    if [[ "$unstaged_count" -gt 0 || "$untracked_count" -gt 0 || "$staged_count" -gt 0 ]]
+    then
+      [[ "$unstaged_count"  -eq 0 ]] && unstaged='--'  || unstaged=$(printf %02d "$unstaged_count")
+      [[ "$untracked_count" -eq 0 ]] && untracked='--' || untracked=$(printf %02d "$untracked_count")
+      [[ "$staged_count"    -eq 0 ]] && staged='--'    || staged=$(printf %02d "$staged_count")
+      echo -e "$(tput setaf 238)($(tput setaf 3)$unstaged$(tput sgr0):$(tput setaf 9)$untracked$(tput sgr0):$(tput setaf 2)$staged$(tput sgr0)$(tput setaf 238))"
+    fi
   fi
-  echo "$_status"
 }
 
 _prompt_component_git() {
   local branch_name="$(git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ \1/' -e 's/^[ ]*//' -e 's/[ ]*$//')"
   [[ -z "$branch_name" ]] && return 0
-  local branch_prefix_color
-  local branch
+  local branch_prefix_color branch status_color status
   if [[ "${branch_name:0:1}" =~ [a-zA-Z0-9] ]];
   then
     case "${branch_name%%/*}" in
@@ -35,13 +36,12 @@ _prompt_component_git() {
       s/[-]/$(tput setaf 15)-$(tput sgr0)/g;\
       s/^\([a-z]\+\)/$(tput setaf "$branch_prefix_color")\1$(tput sgr0)/;\
       s/[/]\([A-Z]\+\)/$(tput setaf 5)\/$(tput setaf 12)\1$(tput sgr0)/;")"
+    status_color=3
   else
     branch="$branch_name"
+    status_color=5
   fi
 
-  local status="$(__parse_git_status)"
-  local status_color=7
-  [[ -z "$status" ]] && status_color=3
-
+  status="$(__parse_git_status)"
   echo -e "$(_component ' git' "$(tput setaf $status_color)$branch$status$(tput sgr0)")"
 }
