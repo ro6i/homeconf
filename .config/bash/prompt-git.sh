@@ -7,10 +7,10 @@ __parse_git_status() {
     local staged_count="$(git diff --cached --numstat | wc -l)"
     if [[ "$unstaged_count" -gt 0 || "$untracked_count" -gt 0 || "$staged_count" -gt 0 ]]
     then
-      [[ "$unstaged_count"  -eq 0 ]] && unstaged='--'  || unstaged=$(printf %02d "$unstaged_count")
-      [[ "$untracked_count" -eq 0 ]] && untracked='--' || untracked=$(printf %02d "$untracked_count")
-      [[ "$staged_count"    -eq 0 ]] && staged='--'    || staged=$(printf %02d "$staged_count")
-      echo -e "$(tput setaf 238)($(tput setaf 3)$unstaged$(tput sgr0):$(tput setaf 9)$untracked$(tput sgr0):$(tput setaf 2)$staged$(tput sgr0)$(tput setaf 238))"
+      [[ "$staged_count"    -eq 0 ]] && staged='--'    || staged="$staged_count"
+      [[ "$unstaged_count"  -eq 0 ]] && unstaged='--'  || unstaged="$unstaged_count"
+      [[ "$untracked_count" -eq 0 ]] && untracked='--' || untracked="$untracked_count"
+      echo -e "$(tput setaf 238)($(tput setaf 2)$staged$(tput setaf 8):$(tput setaf 1)$unstaged$(tput setaf 8):$(tput setaf 9)$untracked$(tput setaf 238))"
     fi
   fi
 }
