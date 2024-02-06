@@ -18,25 +18,41 @@ __parse_git_status() {
 _prompt_component_git() {
   local branch_name="$(git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ \1/' -e 's/^[ ]*//' -e 's/[ ]*$//')"
   [[ -z "$branch_name" ]] && return 0
-  local branch_prefix_color branch status_color status
-  if [[ "${branch_name:0:1}" =~ [a-zA-Z0-9] ]];
+  local prefix_color branch status_color status scope scope_num
+  if [[ "${branch_name:0:1}" =~ [a-zA-Z0-9] ]]
   then
-    case "${branch_name%%/*}" in
-      fix)     branch_prefix_color=1 ;;
-      feat)    branch_prefix_color=13 ;;
-      feature) branch_prefix_color=13 ;;
-      main)    branch_prefix_color=3 ;;
-      master)  branch_prefix_color=3 ;;
-      develop) branch_prefix_color=2 ;;
-      release) branch_prefix_color=10 ;;
-      *)       branch_prefix_color=7 ;;
-    esac
-    branch="$(echo "$branch_name" | sed "\
-      s/\([0-9]\+\)/$(tput setaf 14)\1$(tput sgr0)/1;\
-      s/[-]/$(tput setaf 15)-$(tput sgr0)/g;\
-      s/^\([a-z]\+\)/$(tput setaf "$branch_prefix_color")\1$(tput sgr0)/;\
-      s/[/]\([A-Z]\+\)/$(tput setaf 5)\/$(tput setaf 12)\1$(tput sgr0)/;")"
-    status_color=3
+    if [[ ! "$branch_name" =~ / ]]
+    then
+      case "$branch_name" in
+        main|master) prefix_color=3 ;;
+        develop)     prefix_color=2 ;;
+        *)           prefix_color=5 ;;
+      esac
+      branch="$(tput setaf "$prefix_color")$branch_name$(tput sgr0)"
+    else
+      local prefix="${branch_name%%/*}"
+      branch_name="$(echo "$branch_name" | cut -c $(( ${#prefix} + 2))-)"
+      case "$prefix" in
+        fix)     prefix_color=1 ;;
+        feat)    prefix_color=13 ;;
+        feature) prefix_color=13 ;;
+        release) prefix_color=10 ;;
+        *)       prefix_color=7 ;;
+      esac
+      if [[ "$branch_name" =~ ^[A-Z]+[-] ]]
+      then
+        scope="${branch_name%%-*}"
+        branch_name="$(echo "$branch_name" | cut -c $(( ${#scope} + 2))-)"
+      fi
+      if [[ "$branch_name" =~ ^[0-9]+[-] ]]
+      then
+        scope_num="${branch_name%%-*}"
+        branch_name="$(echo "$branch_name" | cut -c $(( ${#scope_num} + 1))-)"
+      fi
+
+      branch="$(tput setaf "$prefix_color")$prefix$(tput setaf 5)/$(tput setaf 12)$scope$(tput setaf 5)-$(tput setaf 14)$scope_num$(tput sgr0)$(tput setaf 7)$branch_name"
+    fi
+    status_color=7
   else
     branch="$branch_name"
     status_color=5
