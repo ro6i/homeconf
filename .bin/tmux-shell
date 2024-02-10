@@ -4,12 +4,11 @@ case $1 in
 
   new-session)
     _name="$2"
-#   _name_padded=$(printf '%-20s ' "$_name" | tr '[:lower:]' '[:upper:]')
-    _name_padded=$(echo "$_name" | tr '[:lower:]' '[:upper:]')
+    _name_padded=$(printf '%-100s ' "$_name" | tr '[:lower:]' '[:upper:]')
 
     if [[ ! -z "$_name" ]]
     then
-      tmux new -s "${_name_padded}" -d
+      tmux new -s "${_name_padded}" -d -A -c "~/"
       tmux switch -t "${_name_padded}"
     fi
     ;;
@@ -42,6 +41,67 @@ case $1 in
     if [ $? -ne 0 ]
     then
       tmux swap-window -s :$_index -t :1
+    fi
+    ;;
+
+  sbt-prompt)
+    tmux select-window -t :1
+    tmux select-pane -t .2
+    tmux send-keys -t .2 Up # 'Test/compile'
+    ;;
+
+  sbt-build)
+    tmux select-window -t :1
+    tmux select-pane -t .2
+    tmux send-keys -R
+    tmux clear-history
+    sleep 0.2
+    tmux send-keys Enter
+    sleep 0.2
+    tmux send-keys Enter
+    sleep 0.2
+    tmux send-keys Up Enter
+    ;;
+
+  sbt-prompt-hook)
+    tmux select-window -t :1
+    tmux select-pane -t .2
+    tmux copy-mode
+    tmux send-keys g
+    ;;
+
+  sbt-jump-to-line)
+    # 1) jump to second window's first pane (where usually project at focus is getting edited)
+    # 2) in case the process is [nvim] parse the input (which is typical [sbt] error line)
+    #    [error] /path/to/file:<line number>:<charactrer index>: <description>
+    # 3) task [nvim] to
+    #     (a) switch to "normal" mode
+    #     (b) open the file
+    #     (c) jump to the specific position denoted by error message
+    read -r content
+    if [[ ! "$content" =~ ^\[error\][[:space:]]\/home\/ ]]
+    then
+      tmux display-message '#[fg=yellow]Current line must start with #[fg=red][error] #[fg=white]/'
+    else
+      current_program=$(tmux display -p -t 2.1 '#{pane_current_command}')
+      if [[ "$current_program" == nvim ]]
+      then
+        full_path="$(echo "$content" | grep '^\[error\]' | sed 's/^\[error\][[:space:]]//; s/:.*$//')"
+        line_nr="$(echo "$content" | grep '^\[error\]' | sed 's/[^\:]\+://; s/:.*//')"
+        col_nr="$(echo "$content" | grep '^\[error\]' | sed 's/[^\:]\+:[^\:]\+://; s/:.\+//')"
+        tmux select-window -t :2
+        tmux select-pane -t .1
+        tmux send-keys -t .1 Escape
+        sleep 0.2
+        tmux send-keys -t .1 ":e $full_path"
+        sleep 0.2
+        tmux send-keys -t .1 Enter
+        sleep 0.1
+        tmux send-keys -t .1 "${line_nr}G${col_nr}|"
+      else
+        tmux display-message '#[fg=yellow]Can only jump on to [nvim] process on pane [2.1] --'
+      fi
+      # tmux pipe-pane -o -t .1 ":e $full_path+$line_nr"
     fi
     ;;
 
