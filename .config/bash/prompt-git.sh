@@ -1,4 +1,4 @@
-__parse_git_status() {
+__prompt_parse_git_status() {
   local _status=$(git status --short 2> /dev/null | head -n 1)
   if [[ ! -z "$_status" ]]
   then
@@ -15,8 +15,8 @@ __parse_git_status() {
   fi
 }
 
-_prompt_component_git() {
-  local branch_name="$(git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ \1/' -e 's/^[ ]*//' -e 's/[ ]*$//')"
+__prompt_git_color_branch() {
+  local branch_name="$1"
   [[ -z "$branch_name" ]] && return 0
   local prefix_color branch status_color status scope scope_num
   if [[ "${branch_name:0:1}" =~ [a-zA-Z0-9] ]]
@@ -28,7 +28,7 @@ _prompt_component_git() {
         develop)     prefix_color=2 ;;
         *)           prefix_color=5 ;;
       esac
-      branch="$(tput setaf "$prefix_color")$branch_name$(tput sgr0)"
+      branch="$(tput setab "$prefix_color")$(tput setaf 0)$branch_name$(tput sgr0)"
     else
       local prefix="${branch_name%%/*}"
       branch_name="$(echo "$branch_name" | cut -c $(( ${#prefix} + 2))-)"
@@ -50,14 +50,29 @@ _prompt_component_git() {
         branch_name="$(echo "$branch_name" | cut -c $(( ${#scope_num} + 1))-)"
       fi
 
-      branch="$(tput setaf "$prefix_color")$prefix$(tput setaf 5)/$(tput setaf 12)$scope$(tput setaf 5)-$(tput setaf 14)$scope_num$(tput sgr0)$(tput setaf 7)$branch_name"
+      branch="$(tput setaf "$prefix_color")$prefix$(tput setaf 5)/$(tput setaf 12)$scope$(tput setaf 5)-$(tput setaf 14)$scope_num$(tput sgr0)$(tput setaf 243)$branch_name"
     fi
     status_color=7
   else
     branch="$branch_name"
     status_color=5
   fi
+  echo -e "$(tput setaf $status_color)$branch$(tput sgr0)"
+}
 
-  status="$(__parse_git_status)"
-  echo -e "$(_component ' git' "$(tput setaf $status_color)$branch$status$(tput sgr0)")"
+__prompt_git_base_branch() {
+  if [[ -f '.gitbase' ]]
+  then
+    local base_branch_name="$(cat .gitbase)"
+    if [[ ! -z "$base_branch_name" ]]
+    then
+      echo " $(tput setaf 94) -> $(tput setaf 240)[$(__prompt_git_color_branch "$base_branch_name")$(tput setaf 240)]$(tput sgr0)"
+    fi
+  fi
+}
+
+_prompt__git() {
+  local branch_name="$(git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ \1/' -e 's/^[ ]*//' -e 's/[ ]*$//')"
+
+  echo -e "$(__prompt_component "\n$(tput setaf 240)|$(tput setaf 236)/  $(__prompt_git_color_branch "$branch_name")$(__prompt_parse_git_status)")$(__prompt_git_base_branch)"
 }
