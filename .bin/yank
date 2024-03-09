@@ -1,0 +1,13 @@
+#!/bin/bash
+
+subject="$1"
+
+case "$subject" in
+  branch)
+    branch_name="$(git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ \1/' -e 's/^[ ]*//' -e 's/[ ]*$//')"
+    [[ -z "$branch_name" ]] && exit 1
+    wl-copy "$branch_name"
+    ;;
+  *)
+    ;;
+esac

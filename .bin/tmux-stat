@@ -80,5 +80,6 @@ case "$1" in
   k8s)               k8sState ;;
   kb)                kbState ;;
   wireguard)         wireguardState ;;
-  cloudflare)        run cloudflare/tunnel/which ;;
+  cloudflare-env)    export SILVER_ASSERTED=yes; run cloudflare/tunnel/which env ;;
+  cloudflare-region) export SILVER_ASSERTED=yes; run cloudflare/tunnel/which region ;;
 esac

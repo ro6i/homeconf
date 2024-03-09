@@ -1,0 +1,19 @@
+#!/bin/bash
+
+_target="$1"
+if [[ -z "$_target" ]]
+then
+  >&2 echo 'No target'
+  exit 1
+fi
+
+# _path="$PWD/.view/$_target"
+_path="$(find ~+ . -mindepth 0 -maxdepth 2 -type d -name '.dbMigration' -prune -false -o -name "${_target}" | head -n 1)"
+
+if [[ -d "$_path" ]]
+then
+  tmux new-window -c "$_path" -n $(echo "${_target^^}")
+else
+  >&2 echo "Directory [$_path] does not exist"
+  exit 1
+fi

@@ -8,11 +8,12 @@ export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
 # export HISTTIMEFORMAT="%Y-%m-%dT%T "
 export HISTFILESIZE=20000
+export HISTCONTROL=ignoreboth
 export GREP_OPTIONS='--color=auto'
 
 export TZ='Asia/Tbilisi'
 
-export PATH="$PATH:$HOME/.bin:$HOME/.local/bin:~/projects/.bin:~/projects/endowus/.bin"
+export PATH="$PATH:$HOME/.bin:$HOME/.local/bin:~/projects/endowus/.bin"
 export PATH="$PATH:~/node_modules/.bin"
 # export PATH="/usr/local/sbin:$PATH"
 
@@ -21,17 +22,23 @@ do
   [[ -r "$BASH_CONFIG" ]] && . "$BASH_CONFIG"
 done
 
-export PROMPT_CONF_TIME=on
+export PROMPT_CONF_TIME=yes
 
-export PS1="\$(_prompt_hb)\n\$(_prompt_path)\$(_prompt_jobs)\$(_prompt_component_git)\$(_prompt_component_env)\n "
+eval "$(dircolors ~/.dir_colors)"
+
+export PS1="\$(_prompt_hb)\n\n\$(_prompt_path)\$(_prompt_jobs)\$(_prompt__git)\$(_prompt_env)\$(tput sgr0)\n\n "
 #export PROMPT_COMMAND="history -a; history -n; $PROMPT_COMMAND"
 
 alias cd='cd -P'
-alias ll='ls -l'
+alias ll='ls -l --color=auto'
 alias cp="cp -i"                          # confirm before overwriting something
 alias free='free -m'                      # show sizes in MB
 # alias rm='trash'
 alias reboot='sudo reboot now; history -d $(history 1)'
+
+mkdircd() {
+  mkdir "$1" && cd "$1"
+}
 
 alias fresh="source ~/.bash_profile && tmux source-file ~/.tmux.conf"
 alias rr='ranger'
