@@ -62,8 +62,10 @@ input * {
 # Read `man 5 sway-input` for more information about this section.
 
 input type:keyboard {
-  xkb_layout  us,ru(phonetic)
-  xkb_options grp:rctrl_toggle
+  xkb_layout    us,ru(phonetic)
+  xkb_options   grp:rctrl_toggle
+  repeat_delay  240
+  repeat_rate   35
 }
 
 ### Key bindings
@@ -210,11 +212,11 @@ bindsym $mod+r mode "resize"
 # default_border none
 # default_floating_border none
 hide_edge_borders smart
-titlebar_padding 20 5
-client.focused          #444444 #1e2024 #aaaaaa #000000
-client.focused_inactive #20202f #14181c #606060 #000000
-client.unfocused        #444444 #101010 #606060 #000000
-font "sans bold 11"
+titlebar_padding 20 4
+client.focused          #404040 #1e2024e0 #aaaaaa #000000
+client.focused_inactive #402040 #14181c   #606060 #000000
+client.unfocused        #202020 #101010   #606060 #000000
+font "sans bold 12"
 title_align left
 
 #
@@ -224,8 +226,8 @@ title_align left
 bar {
   position bottom
 
-  font "M42 10"
-  tray_padding 10
+  font "M42 12"
+  tray_padding 2
 
   # When the status_command prints a new line to stdout, swaybar updates.
   # The default just shows the current date and time.
@@ -233,8 +235,8 @@ bar {
   status_command while date +'%d %l:%M'; do sleep 20; done
 
   colors {
-    statusline #aaaaaa
-    background #1a2028
+    statusline         #aaaaaa
+    background         #1a202880
     focused_workspace  #505f55 #4a4048 #bbbbbb
     active_workspace   #323232 #1a2038 #5c5c5c
     inactive_workspace #323232 #1a2028 #5c5c5c

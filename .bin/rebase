@@ -7,7 +7,22 @@ then
   then
     >&2 echo 'no target branch'
   else
-    >&2 echo "-> $base_branch_name"
+    >&2 echo "$(tput setaf 3)-> $(tput sgr0)[$base_branch_name]"
+
+    current_branch="$(git rev-parse --abbrev-ref HEAD)"
+    pushd "$PWD" > /dev/null
+    # cd to main worktree
+    cd "$(git rev-parse --path-format=absolute --git-common-dir)/.."
+    echo "$(git status)" | grep -q '^Your branch is up to date with'
+    if [[ $? -ne 0 ]]
+    then
+      >&2 echo "[$base_branch_name] $(tput setaf 1)diverges from upstream$(tput sgr0)"
+      exit 1
+    fi
+
+    popd > /dev/null
     git rebase -i "$base_branch_name"
   fi
+else
+  >&2 echo '.gitbase file not found'
 fi
