@@ -1,5 +1,14 @@
 stty -ixon
 
+# override color codes 16-20 in ANSI 256 table
+# by default those colors are dark shades of blue
+# those codes can be used for background
+echo -en "\e]4;16;#301010\e\\" # red
+echo -en "\e]4;17;#102e10\e\\" # green
+echo -en "\e]4;18;#382d1a\e\\" # yellow
+echo -en "\e]4;19;#101a40\e\\" # blue
+echo -en "\e]4;20;#301030\e\\" # magenta
+
 shopt -s histappend
 
 export EDITOR=nvim

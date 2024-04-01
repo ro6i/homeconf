@@ -1,28 +1,80 @@
 #!/bin/bash
 
-if [[ -f .gitbase ]]
-then
-  base_branch_name=$(cat .gitbase | head -n 1)
-  if [[ -z "$base_branch_name" ]]
-  then
-    >&2 echo 'no target branch'
-  else
-    >&2 echo "$(tput setaf 3)-> $(tput sgr0)[$base_branch_name]"
+DEFAULT_TARGET_BRANCH='develop'
 
-    current_branch="$(git rev-parse --abbrev-ref HEAD)"
-    pushd "$PWD" > /dev/null
-    # cd to main worktree
-    cd "$(git rev-parse --path-format=absolute --git-common-dir)/.."
-    echo "$(git status)" | grep -q '^Your branch is up to date with'
-    if [[ $? -ne 0 ]]
+echo_msg() {
+  >&2 echo "$(tput setaf 15)==> $(tput setaf 3)$1$(tput sgr0)"
+}
+
+try_pull() {
+  git fetch
+  echo "$(git status)" | grep -q '^Your branch is up to date with'
+  if [[ $? -ne 0 ]]
+  then
+    echo_msg "branch [$base_branch_name] diverges from upstream"
+    read -p "    $(tput setaf 2)git pull$(tput setaf 3) the target branch? (Y/n): " -r
+    if [[ $REPLY =~ ^[Yy]$ ]]
     then
-      >&2 echo "[$base_branch_name] $(tput setaf 1)diverges from upstream$(tput sgr0)"
+      git pull
+    else
       exit 1
     fi
-
-    popd > /dev/null
-    git rebase -i "$base_branch_name"
   fi
-else
-  >&2 echo '.gitbase file not found'
-fi
+}
+
+main() {
+  local base_branch_name target_branch_dir
+  if [[ ! -f .gitbase ]]
+  then
+    echo_msg "[.gitbase] file not found, using target branch [$DEFAULT_TARGET_BRANCH]"
+    base_branch_name="$DEFAULT_TARGET_BRANCH"
+    target_branch_dir="$(git rev-parse --path-format=absolute --git-common-dir)/.."
+  else
+    base_branch_name=$(cat .gitbase | head -n 1)
+    target_branch_dir="$(git worktree list | grep "\\[$(cat .gitbase)\\]" | awk '{print $1}')"
+    if [[ -z "$target_branch_dir" ]]
+    then
+      echo_msg 'could not locate target branch worktree'
+      exit  1
+    fi
+    if [[ -z "$base_branch_name" ]]
+    then
+      echo_msg 'no target branch found in file [.gitbase]'
+      exit  1
+    fi
+  fi
+
+  local current_branch="$(git rev-parse --abbrev-ref HEAD)"
+
+  # We need to switch to base branch's own directory
+  # in order to check its status,
+  # but before that we must push the current directory
+  # so we can jump back later to perform the actual `git rebase`
+  pushd "$PWD" > /dev/null
+
+  # cd to the directory of main worktree
+  echo_msg 'inspecting the target branch ...'
+  cd "$target_branch_dir"
+
+  # Current branch in main worktree may be different from the base branch
+  # which we want to check status for
+  local selected_branch_at_main_worktree="$(git rev-parse --abbrev-ref HEAD)"
+
+  if [[ "$selected_branch_at_main_worktree" == "$base_branch_name" ]]
+  then
+    try_pull
+  else
+    echo_msg 'selected branch in main worktree is not base branch'
+    git switch "$base_branch_name"
+    try_pull
+    #restore the previously selected branch at main worktree
+    git switch "$selected_branch_at_main_worktree"
+  fi
+  echo
+  popd > /dev/null
+
+  echo_msg 'now rebasing ...'
+  git rebase -i "$base_branch_name"
+}
+
+main

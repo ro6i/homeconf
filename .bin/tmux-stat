@@ -82,4 +82,5 @@ case "$1" in
   wireguard)         wireguardState ;;
   cloudflare-env)    export SILVER_ASSERTED=yes; run cloudflare/tunnel/which env ;;
   cloudflare-region) export SILVER_ASSERTED=yes; run cloudflare/tunnel/which region ;;
+  cloudflare-system) export SILVER_ASSERTED=yes; run cloudflare/tunnel/which system ;;
 esac
