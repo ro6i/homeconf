@@ -31,16 +31,18 @@ main() {
     target_branch_dir="$(git rev-parse --path-format=absolute --git-common-dir)/.."
   else
     base_branch_name=$(cat .gitbase | head -n 1)
-    target_branch_dir="$(git worktree list | grep "\\[$(cat .gitbase)\\]" | awk '{print $1}')"
-    if [[ -z "$target_branch_dir" ]]
-    then
-      echo_msg 'could not locate target branch worktree'
-      exit  1
-    fi
     if [[ -z "$base_branch_name" ]]
     then
       echo_msg 'no target branch found in file [.gitbase]'
       exit  1
+    fi
+    target_branch_dir="$(git worktree list | grep "\\[$base_branch_name\\]" | awk '{print $1}')"
+    if [[ -z "$target_branch_dir" ]]
+    then
+      # local main_tree_search="$(git branch | awk "$1 == \"$base_branch_name\" {print \$1}")"
+      echo_msg 'target worktree must have other branch selected'
+      target_branch_dir="$(git rev-parse --path-format=absolute --git-common-dir)/.."
+      echo_msg "target branch dir [$target_branch_dir]"
     fi
   fi
 
@@ -64,7 +66,7 @@ main() {
   then
     try_pull
   else
-    echo_msg 'selected branch in main worktree is not base branch'
+    echo_msg "selected branch [$selected_branch_at_main_worktree] in target worktree is not base"
     git switch "$base_branch_name"
     try_pull
     #restore the previously selected branch at main worktree
