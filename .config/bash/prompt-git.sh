@@ -10,7 +10,7 @@ __prompt_parse_git_status() {
       [[ "$staged_count"    -eq 0 ]] && staged='--'    || staged="$staged_count"
       [[ "$unstaged_count"  -eq 0 ]] && unstaged='--'  || unstaged="$unstaged_count"
       [[ "$untracked_count" -eq 0 ]] && untracked='--' || untracked="$untracked_count"
-      echo -e "$(tput setaf 238)($(tput setaf 2)$staged$(tput setaf 8):$(tput setaf 1)$unstaged$(tput setaf 8):$(tput setaf 9)$untracked$(tput setaf 238))"
+      echo -e "$(tput setaf 15)[$(tput setaf 2)$staged$(tput setaf 8):$(tput setaf 1)$unstaged$(tput setaf 8):$(tput setaf 9)$untracked$(tput setaf 15)]"
     fi
   fi
 }
@@ -24,16 +24,16 @@ __prompt_git_color_branch() {
     if [[ ! "$branch_name" =~ / ]]
     then
       case "$branch_name" in
-        main|master) prefix_color=3 ;;
-        develop)     prefix_color=2 ;;
+        main|master) prefix_color=18 ;;
+        develop)     prefix_color=17 ;;
         *)           prefix_color=5 ;;
       esac
-      branch="$(tput setab "$prefix_color")$(tput setaf 0)$branch_name$(tput sgr0)"
+      branch="$(tput setab "$prefix_color") $(tput setaf 3)$branch_name $(tput sgr0)"
     else
       local prefix="${branch_name%%/*}"
       branch_name="$(echo "$branch_name" | cut -c $(( ${#prefix} + 2))-)"
       case "$prefix" in
-        fix)     prefix_color=1 ;;
+        fix)     prefix_color=3 ;;
         feat)    prefix_color=13 ;;
         feature) prefix_color=13 ;;
         release) prefix_color=10 ;;
@@ -50,7 +50,7 @@ __prompt_git_color_branch() {
         branch_name="$(echo "$branch_name" | cut -c $(( ${#scope_num} + 1))-)"
       fi
 
-      branch="$(tput setaf "$prefix_color")$prefix$(tput setaf 5)/$(tput setaf 12)$scope$(tput setaf 5)-$(tput setaf 14)$scope_num$(tput sgr0)$(tput setaf 243)$branch_name"
+      branch="$(tput setaf "$prefix_color")$prefix$(tput setaf 5)/$(tput setaf 12)$scope$(tput setaf 5)-$(tput setaf 14)$scope_num$(tput sgr0)$(tput setaf 7)$branch_name"
     fi
     status_color=7
   else
@@ -66,13 +66,14 @@ __prompt_git_base_branch() {
     local base_branch_name="$(cat .gitbase)"
     if [[ ! -z "$base_branch_name" ]]
     then
-      echo " $(tput setaf 94) -> $(tput setaf 240)[$(__prompt_git_color_branch "$base_branch_name")$(tput setaf 240)]$(tput sgr0)"
+      echo "  $(tput setaf 162)\u25B6$(tput sgr0)  $(__prompt_git_color_branch "$base_branch_name")$(tput sgr0)"
     fi
   fi
 }
 
 _prompt__git() {
   local branch_name="$(git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ \1/' -e 's/^[ ]*//' -e 's/[ ]*$//')"
+  [[ -z "$branch_name" ]] && return 0
 
-  echo -e "$(__prompt_component "\n$(tput setaf 240)|$(tput setaf 236)/  $(__prompt_git_color_branch "$branch_name")$(__prompt_parse_git_status)")$(__prompt_git_base_branch)"
+  echo -e "$(__prompt_component "\n  $(__prompt_git_color_branch "$branch_name")$(__prompt_parse_git_status)")$(__prompt_git_base_branch)"
 }
