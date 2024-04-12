@@ -62,10 +62,12 @@ case $1 in
     ;;
 
   sbt-prompt-hook)
-    tmux select-window -t :1
-    tmux select-pane -t .2
-    tmux copy-mode
-    tmux send-keys g
+    # tmux select-window -t :1
+    # tmux select-pane -t 1.2
+    # selecting a pane is too intrusive, send a bell instead
+    tmux send-keys -t 1.2 C-g
+    tmux copy-mode -t 1.2
+    tmux send-keys -t 1.2 g
     ;;
 
   sbt-jump-to-line)
