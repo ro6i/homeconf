@@ -2,47 +2,29 @@
 
 DEFAULT_TARGET_BRANCH='develop'
 
-echo_msg() {
-  >&2 echo "$(tput setaf 15)==> $(tput setaf 3)$1$(tput sgr0)"
-}
-
-try_pull() {
-  git fetch
-  echo "$(git status)" | grep -q '^Your branch is up to date with'
-  if [[ $? -ne 0 ]]
-  then
-    echo_msg "branch [$base_branch_name] diverges from upstream"
-    read -p "    $(tput setaf 2)git pull$(tput setaf 3) the target branch? (Y/n): " -r
-    if [[ $REPLY =~ ^[Yy]$ ]]
-    then
-      git pull
-    else
-      exit 1
-    fi
-  fi
-}
-
 main() {
+  _assert_root
+
   local base_branch_name target_branch_dir
   if [[ ! -f .gitbase ]]
   then
-    echo_msg "[.gitbase] file not found, using target branch [$DEFAULT_TARGET_BRANCH]"
+    _echo_msg "[.gitbase] file not found, using target branch [$DEFAULT_TARGET_BRANCH]"
     base_branch_name="$DEFAULT_TARGET_BRANCH"
     target_branch_dir="$(git rev-parse --path-format=absolute --git-common-dir)/.."
   else
     base_branch_name=$(cat .gitbase | head -n 1)
     if [[ -z "$base_branch_name" ]]
     then
-      echo_msg 'no target branch found in file [.gitbase]'
+      _echo_msg 'no target branch found in file [.gitbase]'
       exit  1
     fi
     target_branch_dir="$(git worktree list | grep "\\[$base_branch_name\\]" | awk '{print $1}')"
     if [[ -z "$target_branch_dir" ]]
     then
       # local main_tree_search="$(git branch | awk "$1 == \"$base_branch_name\" {print \$1}")"
-      echo_msg 'target worktree must have other branch selected'
+      _echo_msg 'target worktree must have other branch selected'
       target_branch_dir="$(git rev-parse --path-format=absolute --git-common-dir)/.."
-      echo_msg "target branch dir [$target_branch_dir]"
+      _echo_msg "target branch dir [$target_branch_dir]"
     fi
   fi
 
@@ -55,7 +37,7 @@ main() {
   pushd "$PWD" > /dev/null
 
   # cd to the directory of main worktree
-  echo_msg 'inspecting the target branch ...'
+  _echo_msg 'inspecting the target branch ...'
   cd "$target_branch_dir"
 
   # Current branch in main worktree may be different from the base branch
@@ -66,7 +48,7 @@ main() {
   then
     try_pull
   else
-    echo_msg "selected branch [$selected_branch_at_main_worktree] in target worktree is not base"
+    _echo_msg "selected branch [$selected_branch_at_main_worktree] in target worktree is not base"
     git switch "$base_branch_name"
     try_pull
     #restore the previously selected branch at main worktree
@@ -75,8 +57,36 @@ main() {
   echo
   popd > /dev/null
 
-  echo_msg 'now rebasing ...'
+  _echo_msg 'now rebasing ...'
   git rebase -i "$base_branch_name"
+}
+
+_echo_msg() {
+  >&2 echo "$(tput setaf 15)==> $(tput setaf 3)$1$(tput sgr0)"
+}
+
+_assert_root() {
+  if [[ ! -d '.git' ]]
+  then
+    _echo_msg 'must be run from branch root'
+    exit 1
+  fi
+}
+
+try_pull() {
+  git fetch
+  echo "$(git status)" | grep -q '^Your branch is up to date with'
+  if [[ $? -ne 0 ]]
+  then
+    _echo_msg "branch [$base_branch_name] diverges from upstream"
+    read -p "    $(tput setaf 2)git pull$(tput setaf 3) the target branch? (Y/n): " -r
+    if [[ $REPLY =~ ^[Yy]$ ]]
+    then
+      git pull
+    else
+      exit 1
+    fi
+  fi
 }
 
 main
