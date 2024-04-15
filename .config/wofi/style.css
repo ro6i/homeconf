@@ -1,0 +1,28 @@
+#window {
+  background-color: #282828;
+  color: #a0a0a0;
+  font-family: M51;
+  font-size: 20;
+}
+
+#outer-box {
+  border-style: solid;
+  border-color: #555555;
+  border-width: 2px;
+}
+
+#entry:selected {
+  background-color: #202020;
+  color: #8a8a8a;
+}
+
+#input {
+  background-color: #242424;
+  font-weight: bold;
+  color: #cccccc;
+}
+
+#text {
+  color: #aaaaaa;
+  padding: 5px
+}

@@ -1,0 +1,9 @@
+#!/bin/bash
+
+while true
+do
+  _time="$(date +'%l:%M')"
+  _date="$(date +'%a, %d')"
+  echo "    <span foreground='#aaaaaa'>${_time}</span>  <span foreground='#70a0e0'>${_date}</span>    "
+  sleep 10
+done
