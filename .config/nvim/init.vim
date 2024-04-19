@@ -13,85 +13,80 @@ inoremap <Up> <C-o>gk
 nnoremap <Enter> ;
 vnoremap <Enter> ;
 
-nmap <silent> <Tab> :call search('\u', 'W', line("."))<CR>
-nmap <silent> <Backspace> :call search('\u', 'bW', line("."))<CR>
+xmap     <silent> <Leader>a         <Plug>(EasyAlign)
+vnoremap <silent> <Leader>c         y:OSCYankVisual<CR>
+nnoremap <silent> <Leader>d         :windo diffthis<CR>
+nnoremap <silent> <Leader>g         :tab split<CR>:Gvdiffsplit<CR>
+nnoremap <silent> <Leader>gd        :tab split<CR>:Gvdiffsplit develop<CR>
+nnoremap <silent> <Leader>gb        :Git blame<CR>
+nnoremap <silent> <Leader>f         :call FindTextSettings()<CR>
+nnoremap <silent> <Leader>hc        /=======<CR>
+nnoremap <silent> <Leader>j         :AsJSON<CR>
+nnoremap <silent> <Leader>s         :call FindTextPrompt()<CR>
+nnoremap <silent> <Leader>l         :call NextKeymap()<CR>:call lightline#update()<CR>
+nnoremap <silent> <Leader>wp        "+p
+vnoremap <silent> <Leader>wp        "+p
+nnoremap <silent> <Leader>wP        "+P
+vnoremap <silent> <Leader>wP        "+P
+vnoremap <silent> <Leader>wy        "+y
+inoremap <silent> <M-v>             <C-o>"+p
+nnoremap <silent> <Leader>r         :Ranger<CR>
+nnoremap <silent> <Leader>rr        :tabnew<CR>:term<CR>iranger<CR>
+nnoremap <silent> <Leader>rw        :RangerWorkingDirectory<CR>
+nnoremap <silent> <Leader>rt        :RangerCurrentFileNewTab<CR>
+nnoremap <silent> <Leader>t         :call SetNvimPipe('NVIM_PIPE')<CR>
+vnoremap <silent> <Leader>y         y<cr>:call system("tmux load-buffer -", @0)<cr>
+nnoremap          <Leader>p         :let @0 = system("tmux save-buffer -")<cr>"0p<cr>g;
 
-xmap     <silent> <Leader>a   <Plug>(EasyAlign)
-vnoremap <silent> <Leader>c   y:OSCYankVisual<CR>
-nnoremap <silent> <Leader>d   :windo diffthis<CR>
-nnoremap <silent> <Leader>g   :tab split<CR>:Gvdiffsplit<CR>
-nnoremap <silent> <Leader>gd  :tab split<CR>:Gvdiffsplit develop<CR>
-nnoremap <silent> <Leader>gb  :Git blame<CR>
-nnoremap <silent> <Leader>f   :call FindTextSettings()<CR>
-nnoremap <silent> <Leader>hc  /=======<CR>
-nnoremap <silent> <Leader>j   :AsJSON<CR>
-nnoremap <silent> <Leader>s   :call FindTextPrompt()<CR>
-nnoremap <silent> <Leader>l   :call NextKeymap()<CR>:call lightline#update()<CR>
-nnoremap <silent> <Leader>wp  "+p
-vnoremap <silent> <Leader>wp  "+p
-nnoremap <silent> <Leader>wP  "+P
-vnoremap <silent> <Leader>wP  "+P
-vnoremap <silent> <Leader>wy  "+y
-inoremap <silent> <M-v>       <C-o>"+p
-nnoremap <silent> <Leader>r   :Ranger<CR>
-nnoremap <silent> <Leader>rr  :tabnew<CR>:term<CR>iranger<CR>
-nnoremap <silent> <Leader>rw  :RangerWorkingDirectory<CR>
-nnoremap <silent> <Leader>rt  :RangerCurrentFileNewTab<CR>
-nnoremap <silent> <Leader>t   :call SetNvimPipe('NVIM_PIPE')<CR>
-vnoremap <silent> <Leader>y   y<cr>:call system("tmux load-buffer -", @0)<cr>
-nnoremap          <Leader>p   :let @0 = system("tmux save-buffer -")<cr>"0p<cr>g;
+vnoremap          <Leader>np        :w !tmux-pipe-to-next-pane<CR>
+nnoremap          <Leader>ex        :w !bash<CR>
 
-vnoremap          <Leader>np  :w !tmux-pipe-to-next-pane<CR>
-nnoremap          <Leader>ex  :w !bash<CR>
+nnoremap <silent> <Leader><Leader>  :Files<CR><C-_>
+nnoremap <silent> <Leader><Bar>     :Buffers<CR>
 
-nnoremap <silent> <Leader><Leader> :Files<CR><C-_>
-nnoremap <silent> <Leader><Bar>    :Buffers<CR>
+nnoremap <silent> <Space>           <nop>
+nnoremap <silent> <Space>1          1gt<CR>
+nnoremap <silent> <Space>2          2gt<CR>
+nnoremap <silent> <Space>3          3gt<CR>
+nnoremap <silent> <Space>4          4gt<CR>
+nnoremap <silent> <Space>5          5gt<CR>
+nnoremap <silent> <Space>6          6gt<CR>
+nnoremap <silent> <Space>7          7gt<CR>
+nnoremap <silent> <Space>8          8gt<CR>
+nnoremap <silent> <Space>9          9gt<CR>
 
-nnoremap <silent> <Space>   <nop>
-nnoremap <silent> <Space>1  1gt<CR>
-nnoremap <silent> <Space>2  2gt<CR>
-nnoremap <silent> <Space>3  3gt<CR>
-nnoremap <silent> <Space>4  4gt<CR>
-nnoremap <silent> <Space>5  5gt<CR>
-nnoremap <silent> <Space>6  6gt<CR>
-nnoremap <silent> <Space>7  7gt<CR>
-nnoremap <silent> <Space>8  8gt<CR>
-nnoremap <silent> <Space>9  9gt<CR>
+nnoremap <silent> <Space>.          :w<CR>
+nnoremap <silent> <Space>a          <C-w>w<C-w><Bar>z999<CR>
+nnoremap <silent> <Space>b          :b#<CR>
+nnoremap <silent> <Space>ct         :tabclose<CR>
+nnoremap <silent> <Space>c<Space>   :q<CR>
+nnoremap <silent> <Space>d          :bd<CR>
+nnoremap <silent><expr> <Space>h    (&hls && v:hlsearch ? ':nohls' : ':set hls')."\n"
+map      <silent> <Space>r          g*
+vmap     <silent> <Space>r          g*
+nnoremap <silent> <Space>l          :GotoLastTab<CR>
+nnoremap <silent> <Space>n          :tabnext<CR>
 
-nnoremap <silent> <Space>.   :w<CR>
-nnoremap <silent> <Space>a   <C-w>w<C-w><Bar>z999<CR>
-nnoremap <silent> <Space>b   :b#<CR>
-nnoremap <silent> <Space>ct  :tabclose<CR>
-nnoremap <silent> <Space>c<Space> :q<CR>
-nnoremap <silent> <Space>d   :bd<CR>
-nnoremap <silent><expr> <Space>h  (&hls && v:hlsearch ? ':nohls' : ':set hls')."\n"
-nnoremap <silent> <Space>j *
-" nnoremap <silent> <Space>k :let _vw = winsaveview()<CR>*N:call winrestview(_vw)<CR>
-" vnoremap <silent> <Space>k *N
-nnoremap <silent> <Space>l  :GotoLastTab<CR>
-nnoremap <silent> <Space>n  :tabnext<CR>
+nnoremap <silent> <Space>p          :tabprevious<CR>
+nnoremap <silent> <Space>t          :tabnew<CR>
+nnoremap <silent> <Space>T          :tabclose<CR>
 
-nnoremap <silent> <Space>rj  :resize -5<CR>
-nnoremap <silent> <Space>rk  :resize +5<CR>
-nnoremap <silent> <Space>rh  :vertical resize +5<CR>
-nnoremap <silent> <Space>rl  :vertical resize -5<CR>
+nnoremap <silent> <Space>wh         <C-w>h
+nnoremap <silent> <Space>wj         <C-w>j
+nnoremap <silent> <Space>wk         <C-w>k
+nnoremap <silent> <Space>wl         <C-w>l
+nnoremap <silent> <Space>wrj        :resize -5<CR>
+nnoremap <silent> <Space>wrk        :resize +5<CR>
+nnoremap <silent> <Space>wrh        :vertical resize +5<CR>
+nnoremap <silent> <Space>wrl        :vertical resize -5<CR>
+nnoremap <silent> <Space>ws         <C-w>s
+nnoremap <silent> <Space>wv         <C-w>v
 
-nnoremap <silent> <Space>p  :tabprevious<CR>
-nnoremap <silent> <Space>t  :tabnew<CR>
-nnoremap <silent> <Space>T  :tabclose<CR>
-
-nnoremap <silent> <Space>wh  <C-w>h
-nnoremap <silent> <Space>wj  <C-w>j
-nnoremap <silent> <Space>wk  <C-w>k
-nnoremap <silent> <Space>wl  <C-w>l
-nnoremap <silent> <Space>ws  <C-w>s
-nnoremap <silent> <Space>wv  <C-w>v
-
-nnoremap <silent> <Space>q  :q<CR>
-nnoremap <silent> <Space>Q  :only<CR>
-nnoremap <silent> <Space>x  :qa<CR>
-nnoremap <silent> <Space>X  :qa!<CR>
-nnoremap <silent> <Space>z  :call ToggleWindowSize()<CR>
+nnoremap <silent> <Space>q          :q<CR>
+nnoremap <silent> <Space>Q          :only<CR>
+nnoremap <silent> <Space>x          :qa<CR>
+nnoremap <silent> <Space>X          :qa!<CR>
+nnoremap <silent> <Space>z          :call ToggleWindowSize()<CR>
 
 nnoremap <silent> <Space><Space>    za
 nnoremap <silent> <Space><Space>f   :call ToggleQuickfixList()<CR>
@@ -110,15 +105,11 @@ nnoremap <silent> <Space><Space>]   :call ToggleColorColumn(160)<CR>
 
 " fuzzy go-to definition
 function GoToDefinitionAware(target)
-  let l:findValue = '(def\|val\|function\|fun\|fn\|const\|auto)\s+' . a:target . '\s*[^\w]'
-  let l:findType  = '(class\|struct\|object\|trait)\s+' . a:target . '\s*[^\w]'
-  let l:targetPattern = ''
-  if a:target =~ '\C^[A-Z].*'
-    let l:targetPattern = l:findType
-  else
-    let l:targetPattern = l:findValue
-  endif
-  call FindTextRegex(l:targetPattern)
+  let l:findAny  = '(def\|val\|function\|fun\|fn\|const\|auto\|class\|struct\|object\|trait)\s*' . a:target . '\s*(\W\|$)'
+  let l:tmp = g:snugfind_case_sensitive
+  let g:snugfind_case_sensitive = 1
+  call FindTextRegex(l:findAny)
+  let g:snugfind_case_sensitive = l:tmp
 endfunction
 
 function GetLineSelection()
@@ -138,13 +129,12 @@ endfunction
 nnoremap <silent> <Space>s<Space> viw:<C-u>call FindTextFlat(GetLineSelection())<CR>
 vnoremap <silent> <Space>s<Space> :<C-u>call FindTextFlat(GetLineSelection())<CR>
 vnoremap <silent> <Space>s        :<C-u>call FindTextFlat(GetLineSelection())<CR>
-nnoremap <silent> <Space>sl       viw:<C-u>:let selectedValue = GetLineSelection()<CR>:call GoToDefinitionAware(selectedValue)<CR>:nohls<CR>
-" nmap     <silent> <Space>sj       <Space>sl<C-w><Enter>:call ToggleQuickfixList()<CR><C-w>T:nohls<CR>:silent! exe '/' . selectedValue<CR>N
+nnoremap <silent> <Space>s        <NOP>
+nnoremap <silent> <Space>sl       viw:<C-u>:let selectedValue = GetLineSelection()<CR>:call GoToDefinitionAware(selectedValue)<CR>:nohls<CR>:setlocal nowrap<CR>
 nmap     <silent> <Space>sj       <Space>sl<C-w><Enter>:call ToggleQuickfixList()<CR><C-w>T
 
 " fuzzy show usages
-nnoremap <silent> <Space>su  viw"ty:call FindTextRegex('((with\s\\|extends\s\\|[\(\[])' . getreg('t') . '\\|(?<!def\s\\|val\s\\|ass\s\\|ect\s)' . getreg('t') . '[\)(\[\} ])')<CR>:nohls<CR>
-" nnoremap <silent> <Space>si :call FindTextRegex(substitute(expand('%:t'), 'Impl.scala$', '.scala''((with\s\\|extends\s\\|[\(\[])' . getreg('t') . '\\|(?<!def\s\\|val\s\\|ass\s\\|ect\s)' . getreg('t') . '[\)(\[\} ])')<CR>:nohls<CR>
+nnoremap <silent> <Space>su       viw"ty:call FindTextRegex('((with\s\\|extends\s\\|[\(\[])' . getreg('t') . '\\|(?<!def\s\\|val\s\\|ass\s\\|ect\s)' . getreg('t') . '[\)(\[\} ])')<CR>:nohls<CR>
 
 vnoremap r "_dP
 vnoremap * y/\V<C-R>"<CR>
@@ -154,37 +144,37 @@ tnoremap <silent> <C-\><C-]> <C-\><C-n>:GotoLastTab<CR>
 
 call plug#begin()
 
-let g:polyglot_disabled = ['csv', 'csv.plugin'] 
+let g:quickfix_base_dir = $NVIM_QUICKFIX_BASE_DIR
+
+let g:polyglot_disabled = ['csv', 'csv.plugin']
 
 let g:toggle_list_no_mappings = 1
 
 let g:plug_url_format = "https://git::@github.com/%s.git"
 Plug 'itchyny/lightline.vim'
 Plug 'jeetsukumaran/vim-indentwise'
-" Plug 'sheerun/vim-polyglot'
 Plug 'airblade/vim-gitgutter'
 Plug 'tpope/vim-fugitive'
 Plug 'tommcdo/vim-fugitive-blame-ext'
-" Plug 'derekwyatt/vim-scala'
+Plug 'sindrets/diffview.nvim'
+Plug 'nvim-tree/nvim-web-devicons'
 Plug 'GEverding/vim-hocon'
-" Plug 'neovimhaskell/haskell-vim'
 Plug 'bitc/vim-hdevtools'
-" Plug 'hdima/python-syntax'
-Plug 'tpope/vim-commentary'
+" Plug 'tpope/vim-commentary'
 Plug 'junegunn/vim-easy-align'
 Plug 'vim-scripts/bufkill.vim'
 Plug 'vim-scripts/BufOnly.vim'
 Plug 'milkypostman/vim-togglelist'
 Plug 'kshenoy/vim-signature'
 Plug 'rhysd/open-pdf.vim'
-" Plug 'dhruvasagar/vim-table-mode', { 'on': 'TableModeEnable' }
-" Plug '/usr/local/opt/fzf'
 Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
 Plug 'francoiscabrol/ranger.vim'
 Plug 'rbgrouleff/bclose.vim'
 Plug 'haya14busa/vim-asterisk'
 Plug 'ojroques/vim-oscyank'
+Plug 'tomtom/tcomment_vim'
+Plug 'kana/vim-textobj-user'
 Plug 'ro6i/m31.vim'
 Plug 'ro6i/snugfind.vim'
 Plug 'ro6i/gotolasttab.vim'
@@ -245,16 +235,22 @@ endfunction
 
 let g:lightline = { 'colorscheme': 'm31', 'filename': "%f", 'tabline': { 'left': [ [ 'tabs' ] ], 'right': [ ] }, 'mode_map': { 'n' : 'N', 'i' : 'I', 'R' : 'R', 'v' : 'V', 'V' : 'L', "\<C-v>": 'B', 'c' : 'C', 's' : 'S', 'S' : 'S-L', "\<C-s>": 'S-B', 't': 'T' }, 'component_function': { 'lineinfo': 'LightlineLineinfo' }, 'component_expand': { 'keymap': 'LightlineKeymap', 'env': 'LightlineEnv', 'snugfind': 'LightlineSnugfind', 'bindings': 'LightlineBindings' }, 'component_type': { 'keymap': 'warning', 'bindings': 'warning' }, 'active': { 'right': [ [], [ 'lineinfo' ], [ 'fileformat', 'fileencoding', 'filetype' ], ['keymap', 'bindings', 'env', 'snugfind' ] ] }, 'inactive': { 'right': [ [ 'lineinfo' ] ] }, 'subseparator': { 'left': '', 'right': '|' } }
 
-let g:snugfind_exclude_dirs = 'project,target,build,.git,.idea,.build,node_modules,tmp,log,frontend/tmp,__'
+let g:snugfind_dirs = ['.']
+if ! empty($NVIM_SEARCH_DIR_1)
+  let g:snugfind_dirs += [$NVIM_SEARCH_DIR_1]
+endif
+let g:snugfind_exclude_dirs = 'project/project,project/target,target,build,.git,.idea,.build,node_modules,tmp,log,frontend/tmp,__'
 let g:snugfind_exclude_files = '.tags'
+let g:snugfind_verbose = 0
 
 let g:python_highlight_all = 1
 
 if executable('ag')
-  let $FZF_DEFAULT_COMMAND = 'ag --hidden --follow --ignore={tmp,frontend/tmp,.git,.svn,build,project,target,build,__pycache__,.view,.work,__} -g ""'
+  let $FZF_DEFAULT_COMMAND = 'ag --hidden --follow --ignore={tmp,frontend/tmp,.git,.svn,build,project/project,project/target,target,build,__pycache__,.view,.work,__} -g ""'
 endif
 let g:fzf_colors = { 'fg': ['fg', 'Normal'], 'bg': ['bg', 'Normal'], 'hl': ['fg', 'Comment'], 'fg+': ['fg', 'Normal', 'Comment', 'Normal'], 'bg+': ['bg', 'Normal', 'Normal'], 'hl+': ['fg', 'Statement'], 'info': ['fg', 'PreProc'], 'border': ['fg', 'Ignore'], 'prompt': ['fg', 'Conditional'], 'pointer': ['fg', 'Exception'], 'marker':  ['fg', 'Keyword'], 'spinner': ['fg', 'Label'], 'header':  ['fg', 'Comment'] }
-let g:fzf_layout = { 'window': { 'width': 0.8, 'height': 0.6 } }
+let g:fzf_layout = { 'window': { 'width': 0.88, 'height': 0.88 } }
+let g:fzf_history_dir = '~/.local/share/fzf/history'
 
 let g:custom_colorcolumn = { "scala": 120 }
 
@@ -281,8 +277,13 @@ command! AsJSON set syntax=json | FormatJSON
 
 command! Pipe :w !tmux-pipe-to-next-pane
 
+call textobj#user#plugin('capitalsn', { 'capitaln': { 'pattern': '[A-Z]', 'move-n': ['<Tab>'] } })
+call textobj#user#plugin('capitalsb', { 'capitalb': { 'pattern': '[A-Z]', 'move-p': ['<Backspace>'] } })
+
 set virtualedit=all
-set nowrap
+" set nowrap
+set wrap
+" set linebreak
 set sidescroll=1
 set nostartofline
 set noshowmode
@@ -311,7 +312,8 @@ else
   set guicursor=n-v-c-sm:block,i-ci-ve:hor25,r-cr-o:ver20
 endif
 set cursorline
-set nocursorcolumn
+set cursorcolumn
+" set nocursorcolumn
 set showmatch
 set number
 set numberwidth=4
@@ -325,6 +327,7 @@ set colorcolumn=0
 set conceallevel=1
 set scrollopt+=hor
 set nofoldenable
+set signcolumn=yes
 
 set spelllang=en,ru_yo
 
