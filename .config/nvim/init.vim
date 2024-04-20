@@ -246,7 +246,7 @@ let g:snugfind_verbose = 0
 let g:python_highlight_all = 1
 
 if executable('ag')
-  let $FZF_DEFAULT_COMMAND = 'ag --hidden --follow --ignore={tmp,frontend/tmp,.git,.svn,build,project/project,project/target,target,build,__pycache__,.view,.work,__} -g ""'
+  let $FZF_DEFAULT_COMMAND = 'ag --hidden --follow --ignore={tmp,frontend/tmp,.git,.svn,build,project/project,project/target,target,build,__pycache__,.view,.work,__} -g "" . ' . (empty($NVIM_SEARCH_DIR_1) ? '' : "'" . $NVIM_SEARCH_DIR_1 . "'")
 endif
 let g:fzf_colors = { 'fg': ['fg', 'Normal'], 'bg': ['bg', 'Normal'], 'hl': ['fg', 'Comment'], 'fg+': ['fg', 'Normal', 'Comment', 'Normal'], 'bg+': ['bg', 'Normal', 'Normal'], 'hl+': ['fg', 'Statement'], 'info': ['fg', 'PreProc'], 'border': ['fg', 'Ignore'], 'prompt': ['fg', 'Conditional'], 'pointer': ['fg', 'Exception'], 'marker':  ['fg', 'Keyword'], 'spinner': ['fg', 'Label'], 'header':  ['fg', 'Comment'] }
 let g:fzf_layout = { 'window': { 'width': 0.88, 'height': 0.88 } }
@@ -351,6 +351,7 @@ endfun
 
 au FileType md,latex,tex,md,markdown setlocal spell
 au FileType qf nnoremap <buffer> <Space><Enter> <C-w><Enter><C-w>T
+au FileType qf nnoremap <buffer> <Enter>        <C-Enter>
 au FileType xml setlocal equalprg=xmllint\ --format\ --recover\ -\ 2>/dev/null
 au FileType yaml hi link yamlKey Label
 au FileType csv set filetype=
