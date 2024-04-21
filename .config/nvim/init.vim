@@ -130,6 +130,8 @@ nnoremap <silent> <Space>s<Space> viw:<C-u>call FindTextFlat(GetLineSelection())
 vnoremap <silent> <Space>s<Space> :<C-u>call FindTextFlat(GetLineSelection())<CR>
 vnoremap <silent> <Space>s        :<C-u>call FindTextFlat(GetLineSelection())<CR>
 nnoremap <silent> <Space>s        <NOP>
+nnoremap      <silent> <Space>sr       :call SetFindDir(1, '..')<CR>
+nnoremap      <silent> <Space>se       :call SetFindDir(1, '')<CR>
 nnoremap <silent> <Space>sl       viw:<C-u>:let selectedValue = GetLineSelection()<CR>:call GoToDefinitionAware(selectedValue)<CR>:nohls<CR>:setlocal nowrap<CR>
 nmap     <silent> <Space>sj       <Space>sl<C-w><Enter>:call ToggleQuickfixList()<CR><C-w>T
 
@@ -328,6 +330,7 @@ set conceallevel=1
 set scrollopt+=hor
 set nofoldenable
 set signcolumn=yes
+set switchbuf=useopen,usetab
 
 set spelllang=en,ru_yo
 
