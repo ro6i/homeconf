@@ -39,10 +39,10 @@ __prompt_git_color_branch() {
         release) prefix_color=10 ;;
         *)       prefix_color=7 ;;
       esac
-      if [[ "$branch_name" =~ ^[A-Z]+[-] ]]
+      if [[ "$branch_name" =~ ^[A-Za-z]+[-][0-9]+ ]]
       then
-        scope="${branch_name%%-*}"
-        branch_name="$(echo "$branch_name" | cut -c $(( ${#scope} + 2))-)"
+        scope="${branch_name%%-*}-"
+        branch_name="$(echo "$branch_name" | cut -c $(( ${#scope} + 1))-)"
       fi
       if [[ "$branch_name" =~ ^[0-9]+[-] ]]
       then
@@ -50,7 +50,7 @@ __prompt_git_color_branch() {
         branch_name="$(echo "$branch_name" | cut -c $(( ${#scope_num} + 1))-)"
       fi
 
-      branch="$(tput setaf "$prefix_color")$prefix$(tput setaf 5)/$(tput setaf 12)$scope$(tput setaf 5)-$(tput setaf 14)$scope_num$(tput sgr0)$(tput setaf 7)$branch_name"
+      branch="$(tput setaf "$prefix_color")$prefix$(tput setaf 5)/$(tput setaf 12)$scope$(tput setaf 5)$(tput setaf 14)$scope_num$(tput sgr0)$(tput setaf 7)$branch_name"
     fi
     status_color=7
   else

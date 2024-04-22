@@ -22,10 +22,6 @@ _prompt_path() {
     echo -e "$(tput setab 23)$(tput setaf 7)$_dir\033[K$(tput sgr0)"
   else
     local decorated_base_name="$(tput setaf 7)$(basename "$_dir")"
-    if [[ -f ./.dirlabel ]]
-    then
-      decorated_base_name="$(tput setaf 13)$(cat ./.dirlabel)"
-    fi
     echo -e "$(tput setab 23)$dir_path$(tput setaf 15)/$decorated_base_name\033[K$(tput sgr0)"
   fi
 }
