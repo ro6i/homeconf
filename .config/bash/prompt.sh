@@ -19,10 +19,10 @@ _prompt_path() {
   local dir_path="$(tput setaf 7)${_dirname:0:1}$(tput setaf 15)$(echo "${_dirname:1}")"
   if [[ "${#_dir}" == 1 ]]
   then
-    echo -e "$(tput setab 23)$(tput setaf 7)$_dir\033[K$(tput sgr0)"
+    echo -e "$(tput setab 16)$(tput setaf 7)$_dir\033[K$(tput sgr0)"
   else
     local decorated_base_name="$(tput setaf 7)$(basename "$_dir")"
-    echo -e "$(tput setab 23)$dir_path$(tput setaf 15)/$decorated_base_name\033[K$(tput sgr0)"
+    echo -e "$(tput setab 16)$dir_path$(tput setaf 15)/$decorated_base_name\033[K$(tput sgr0)"
   fi
 }
 
@@ -32,7 +32,7 @@ _prompt_time() {
   case "$(_prompt_conf_value time)" in
     yes)
       local current="$(date +'%H:%M:%S %m-%d')"
-      echo -e "$(tput setaf 22)[$(tput setaf 8)${current::8}$(tput setaf 22)] $(tput setaf 8)${current:9:5}$(tput sgr0)"
+      echo -e "$(tput setaf 23)[$(tput setaf 8)${current::8}$(tput setaf 23)] $(tput setaf 8)${current:9:5}$(tput sgr0)"
       ;;
   esac
 }
@@ -47,8 +47,8 @@ _prompt_jobs() {
 
 _prompt_hb() {
   case "$?" in
-    0)   last_status_color=17 ;;
-    130|141) last_status_color=18 ;;
+    0)   last_status_color=18 ;;
+    130|141) last_status_color=19 ;;
     *)   last_status_color=1 ;;
   esac
   echo -e "$(tput setab "$last_status_color") $(tput sgr0) $(_prompt_time)$(tput sgr0)"
