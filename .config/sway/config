@@ -161,6 +161,7 @@ bindsym $mod+e layout toggle split
 # Make the current focus fullscreen
 bindsym $mod+f fullscreen
 bindsym F11 fullscreen
+bindsym F12 exec 'cmus-remote -u'
 
 # Toggle the current focus between tiling and floating mode
 bindsym $mod+Shift+space floating toggle
@@ -231,7 +232,7 @@ bar {
   pango_markup enabled
   position bottom
 
-  font "M51 10"
+  font "M51 14"
   tray_padding 0
 
   # When the status_command prints a new line to stdout, swaybar updates.
@@ -243,9 +244,9 @@ bar {
   colors {
     statusline         #888888
     background         #141414
-    focused_workspace  #444444 #2a2a2a   #aaaaaa
-    active_workspace   #222222 #181818   #5c5c5c
-    inactive_workspace #202020 #1c1c1c   #5c5c5c
+    focused_workspace  #353535 #222222   #777777
+    active_workspace   #222222 #181818   #505050
+    inactive_workspace #202020 #1c1c1c   #404040
   }
 }
 

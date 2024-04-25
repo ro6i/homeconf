@@ -66,7 +66,7 @@ _echo_msg() {
 }
 
 _assert_root() {
-  if [[ ! -d '.git' ]]
+  if [[ ! -d '.git' && ! -f '.git' ]]
   then
     _echo_msg 'must be run from branch root'
     exit 1
@@ -79,7 +79,7 @@ try_pull() {
   if [[ $? -ne 0 ]]
   then
     _echo_msg "branch [$base_branch_name] diverges from upstream"
-    read -p "    $(tput setaf 2)git pull$(tput setaf 3) the target branch? (Y/n): " -r
+    read -p "    $(tput setaf 2)git pull$(tput setaf 3) the target branch? (Y/n):$(tput sgr 0) " -r
     if [[ $REPLY =~ ^[Yy]$ ]]
     then
       git pull
