@@ -3,11 +3,14 @@
 yes | cp -rf ~/.config/bash/prompt.sh     .config/bash/prompt.sh
 yes | cp -rf ~/.config/bash/prompt-git.sh .config/bash/prompt-git.sh
 yes | cp -rf ~/.config/nvim/init.vim      .config/nvim/init.vim
+yes | cp -rf ~/.config/cmus/rc            cmus/rc
 yes | cp -rf ~/.config/foot/foot.ini      foot/foot.ini
 yes | cp -rf ~/.config/sway/config        sway/config
 
 yes | cp -rf ~/.bin/rebase .bin/rebase
 
-yes | cp -rf ~/.bashrc .bashrc
+yes | cp -rf ~/.bashrc  .bashrc
+yes | cp -rf ~/.inputrc .inputrc
+yes | cp -rf ~/.profile .profile
 
 yes | cp -rf ~/M51.sfd M51.sfd

@@ -1,9 +1,12 @@
 set editing-mode vi
 
+# set vi-ins-mode-string $
+# set vi-cmd-mode-string :
+
 set vi-ins-mode-string \1\x1b[4 q\2$
 set vi-cmd-mode-string \1\x1b[2 q\2:
 
-set show-mode-in-prompt On
+set show-mode-in-prompt on
 
 
 # set vi-ins-mode-string "\001\e[0;34m\002_\001\e[m\002"
@@ -20,3 +23,6 @@ set keymap vi-command
 $endif
 
 set keyseq-timeout 0
+
+set colored-completion-prefix on
+set colored-stats on
