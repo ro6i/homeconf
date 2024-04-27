@@ -3,6 +3,7 @@
 yes | cp -rf ~/.config/bash/prompt.sh     .config/bash/prompt.sh
 yes | cp -rf ~/.config/bash/prompt-git.sh .config/bash/prompt-git.sh
 yes | cp -rf ~/.config/nvim/init.vim      .config/nvim/init.vim
+yes | cp -rf ~/.config/foot/foot.ini      foot/foot.ini
 yes | cp -rf ~/.config/sway/config        sway/config
 
 yes | cp -rf ~/.bin/rebase .bin/rebase
