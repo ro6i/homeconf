@@ -1,4 +1,4 @@
-[[ -z "$PROJECTS_DIR" ]] && PROJECTS_DIR='~/projects'
+#!/bin/bash
 
 __prompt_component() {
   local value="$1"
@@ -47,11 +47,10 @@ _prompt_jobs() {
 
 _prompt_hb() {
   case "$?" in
-    0)   last_status_color=18 ;;
-    130|141) last_status_color=19 ;;
-    *)   last_status_color=1 ;;
+    0) ;;
+    *) >&2 printf "$(tput setab $?)$(tput setaf 11) $(tput sgr0) " ;;
   esac
-  echo -e "$(tput setab "$last_status_color") $(tput sgr0) $(_prompt_time)$(tput sgr0)"
+  >&2 echo -e "$(_prompt_time)$(tput sgr0)"
 }
 
 __prompt_env_by_tag() {

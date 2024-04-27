@@ -38,7 +38,7 @@ export PROMPT_CONF_TIME=yes
 
 eval "$(dircolors ~/.dir_colors)"
 
-export PS1="\$(_prompt_hb)\n\n\$(_prompt_path)\$(_prompt_jobs)\$(_prompt__git)\$(_prompt_env)\$(tput sgr0)\n\n "
+export PS1="\$(_prompt_hb)\n\$(_prompt_path)\$(_prompt_jobs)\$(_prompt__git)\$(_prompt_env)\$(tput sgr0)\n\n "
 #export PROMPT_COMMAND="history -a; history -n; $PROMPT_COMMAND"
 
 alias cd='cd -P'

@@ -1,3 +1,5 @@
+#!/bin/bash
+
 __prompt_parse_git_status() {
   local _status=$(git status --short 2> /dev/null | head -n 1)
   if [[ ! -z "$_status" ]]

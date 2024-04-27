@@ -1,0 +1,10 @@
+#!/bin/bash
+
+yes | cp -rf ~/.config/bash/prompt.sh .config/bash/prompt.sh
+yes | cp -rf ~/.config/bash/prompt-git.sh .config/bash/prompt-git.sh
+
+yes | cp -rf ~/.bin/rebase .bin/rebase
+
+yes | cp -rf ~/.bashrc .bashrc
+
+yes | cp -rf ~/M51.sfd M51.sfd
