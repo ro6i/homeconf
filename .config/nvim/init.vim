@@ -221,8 +221,8 @@ function! LightlineKeymap()
   return !exists("b:keymap_name") ? "" : toupper(b:keymap_name)
 endfunction
 function! LightlineBindings()
-  let value = (&cursorbind ? '>' : '') . (&scrollbind ? 'v' : '')
-  return (&cursorbind || &scrollbind) ? ('[' . value . ']') : ''
+  let value = (&cursorbind ? '>' : '') . (&scrollbind ? '^' : '')
+  return (&cursorbind || &scrollbind) ? (value) : ''
 endfunction
 function! LightlineSnugfind()
   return GetFindSettingsSettings() . " |"
@@ -241,14 +241,14 @@ let g:snugfind_dirs = ['.']
 if ! empty($NVIM_SEARCH_DIR_1)
   let g:snugfind_dirs += [$NVIM_SEARCH_DIR_1]
 endif
-let g:snugfind_exclude_dirs = 'project/project,project/target,target,build,.git,.idea,.build,node_modules,tmp,log,frontend/tmp,__'
-let g:snugfind_exclude_files = '.tags'
+let g:snugfind_exclude_dirs = 'project/project,project/target,target,build,.git,.idea,.build,node_modules,tmp,log,frontend/tmp,__pycache__'
+let g:snugfind_exclude_files = '.tags,.envrc,.gitbase'
 let g:snugfind_verbose = 0
 
 let g:python_highlight_all = 1
 
 if executable('ag')
-  let $FZF_DEFAULT_COMMAND = 'ag --hidden --follow --ignore={tmp,frontend/tmp,.git,.svn,build,project/project,project/target,target,build,__pycache__,.view,.work,__} -g "" . ' . (empty($NVIM_SEARCH_DIR_1) ? '' : "'" . $NVIM_SEARCH_DIR_1 . "'")
+  let $FZF_DEFAULT_COMMAND = 'ag --hidden --follow --ignore={tmp,frontend/tmp,.git,.svn,build,project/project,project/target,target,build,__pycache__} -g "" . ' . (empty($NVIM_SEARCH_DIR_1) ? '' : "'" . $NVIM_SEARCH_DIR_1 . "'")
 endif
 let g:fzf_colors = { 'fg': ['fg', 'Normal'], 'bg': ['bg', 'Normal'], 'hl': ['fg', 'Comment'], 'fg+': ['fg', 'Normal', 'Comment', 'Normal'], 'bg+': ['bg', 'Normal', 'Normal'], 'hl+': ['fg', 'Statement'], 'info': ['fg', 'PreProc'], 'border': ['fg', 'Ignore'], 'prompt': ['fg', 'Conditional'], 'pointer': ['fg', 'Exception'], 'marker':  ['fg', 'Keyword'], 'spinner': ['fg', 'Label'], 'header':  ['fg', 'Comment'] }
 let g:fzf_layout = { 'window': { 'width': 0.88, 'height': 0.88 } }
@@ -343,9 +343,9 @@ set colorcolumn=120
 
 au TermOpen * setlocal nonumber norelativenumber
 
-au BufRead,BufNewFile * syn match parensCustom /[()]/ | hi! parensCustom ctermfg=15
-au BufRead,BufNewFile * syn match curlyCustom /[{}]/ | hi! curlyCustom ctermfg=10
-au BufRead,BufNewFile * syn match underscoreCustom /[_]/ | hi! underscoreCustom ctermfg=15
+"au BufRead,BufNewFile * syn match parensCustom /[()]/ | hi! parensCustom ctermfg=15
+"au BufRead,BufNewFile * syn match curlyCustom /[{}]/ | hi! curlyCustom ctermfg=10
+"au BufRead,BufNewFile * syn match underscoreCustom /[_]/ | hi! underscoreCustom ctermfg=15
 
 function! SynGroup()
   let l:s = synID(line('.'), col('.'), 1)
