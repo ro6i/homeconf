@@ -12,5 +12,6 @@ yes | cp -rf ~/.bin/rebase .bin/rebase
 yes | cp -rf ~/.bashrc  .bashrc
 yes | cp -rf ~/.inputrc .inputrc
 yes | cp -rf ~/.profile .profile
+yes | cp -rf ~/.tmux.conf .tmux.conf
 
 yes | cp -rf ~/M51.sfd M51.sfd
