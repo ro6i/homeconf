@@ -95,7 +95,7 @@ case $1 in
         tmux resize-pane -Z -t .1
         tmux send-keys -t .1 Escape
         sleep 0.2
-        tmux send-keys -t .1 ":e $full_path"
+        tmux send-keys -t .1 ":drop $full_path"
         sleep 0.2
         tmux send-keys -t .1 Enter
         sleep 0.1

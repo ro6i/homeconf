@@ -3,11 +3,18 @@
 yes | cp -rf ~/.config/bash/prompt.sh     .config/bash/prompt.sh
 yes | cp -rf ~/.config/bash/prompt-git.sh .config/bash/prompt-git.sh
 yes | cp -rf ~/.config/nvim/init.vim      .config/nvim/init.vim
-yes | cp -rf ~/.config/cmus/rc            cmus/rc
-yes | cp -rf ~/.config/foot/foot.ini      foot/foot.ini
-yes | cp -rf ~/.config/sway/config        sway/config
+yes | cp -rf ~/.config/cmus/rc            .config/cmus/rc
+yes | cp -rf ~/.config/foot/foot.ini      .config/foot/foot.ini
+yes | cp -rf ~/.config/sway/config        .config/sway/config
 
 yes | cp -rf ~/.bin/rebase .bin/rebase
+yes | cp -rf ~/.bin/swaybar-stat .bin/swaybar-stat
+yes | cp -rf ~/.bin/tmux-stat .bin/tmux-stat
+yes | cp -rf ~/.bin/tmux-pipe .bin/tmux-pipe
+yes | cp -rf ~/.bin/tmux-shell .bin/tmux-shell
+yes | cp -rf ~/.bin/nvim-listen .bin/nvim-listen
+yes | cp -rf ~/.bin/nvim-pipe .bin/nvim-pipe
+yes | cp -rf ~/.bin/nvim-two .bin/nvim-two
 
 yes | cp -rf ~/.bashrc  .bashrc
 yes | cp -rf ~/.inputrc .inputrc

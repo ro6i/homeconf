@@ -1,0 +1,8 @@
+#!/bin/bash
+
+set -e
+
+eval "$COMMAND_1" > tmp.left.json
+eval "$COMMAND_2" > tmp.right.json
+
+nvim -O tmp.left.json tmp.right.json
