@@ -4,12 +4,12 @@ stty -ixon
 # by default those colors are dark shades of blue
 # those codes can be used for background
 echo -en "\e]4;16;#202022\e\\" # extra bg 1
-echo -en "\e]4;17;#381414\e\\" # red
-echo -en "\e]4;18;#102e10\e\\" # green
-echo -en "\e]4;19;#322a06\e\\" # yellow
-echo -en "\e]4;20;#101a40\e\\" # blue
-echo -en "\e]4;21;#301030\e\\" # magenta
-echo -en "\e]4;22;#102e30\e\\" # cyan
+echo -en "\e]4;17;#321414\e\\" # red
+echo -en "\e]4;18;#122612\e\\" # green
+echo -en "\e]4;19;#2c2416\e\\" # yellow
+echo -en "\e]4;20;#161e3a\e\\" # blue
+echo -en "\e]4;21;#301630\e\\" # magenta
+echo -en "\e]4;22;#102426\e\\" # cyan
 echo -en "\e]4;23;#2a2a2a\e\\" # extra bg 2
 
 shopt -s histappend
