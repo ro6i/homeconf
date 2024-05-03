@@ -1,24 +1,25 @@
 #!/bin/bash
 
-yes | cp -rf ~/.config/bash/prompt.sh     .config/bash/prompt.sh
-yes | cp -rf ~/.config/bash/prompt-git.sh .config/bash/prompt-git.sh
-yes | cp -rf ~/.config/nvim/init.vim      .config/nvim/init.vim
-yes | cp -rf ~/.config/cmus/rc            .config/cmus/rc
-yes | cp -rf ~/.config/foot/foot.ini      .config/foot/foot.ini
-yes | cp -rf ~/.config/sway/config        .config/sway/config
+cp -rf ~/.config/bash/prompt.sh     .config/bash/
+cp -rf ~/.config/bash/prompt-git.sh .config/bash/
+cp -rf ~/.config/nvim/init.vim      .config/nvim/
+cp -rf ~/.config/nvim/after/*       .config/nvim/after/
+cp -rf ~/.config/cmus/rc            .config/cmus/
+cp -rf ~/.config/foot/foot.ini      .config/foot/
+cp -rf ~/.config/sway/config        .config/sway/
 
-yes | cp -rf ~/.bin/rebase .bin/rebase
-yes | cp -rf ~/.bin/swaybar-stat .bin/swaybar-stat
-yes | cp -rf ~/.bin/tmux-stat .bin/tmux-stat
-yes | cp -rf ~/.bin/tmux-pipe .bin/tmux-pipe
-yes | cp -rf ~/.bin/tmux-shell .bin/tmux-shell
-yes | cp -rf ~/.bin/nvim-listen .bin/nvim-listen
-yes | cp -rf ~/.bin/nvim-pipe .bin/nvim-pipe
-yes | cp -rf ~/.bin/nvim-two .bin/nvim-two
+cp -rf ~/.bin/rebase .bin/rebase
+cp -rf ~/.bin/swaybar-stat .bin/
+cp -rf ~/.bin/tmux-stat .bin/
+cp -rf ~/.bin/tmux-pipe .bin/
+cp -rf ~/.bin/tmux-shell .bin/
+cp -rf ~/.bin/nvim-listen .bin/
+cp -rf ~/.bin/nvim-pipe .bin/
+cp -rf ~/.bin/nvim-two .bin/
 
-yes | cp -rf ~/.bashrc  .bashrc
-yes | cp -rf ~/.inputrc .inputrc
-yes | cp -rf ~/.profile .profile
-yes | cp -rf ~/.tmux.conf .tmux.conf
+cp -rf ~/.bashrc  ./
+cp -rf ~/.inputrc ./
+cp -rf ~/.profile ./
+cp -rf ~/.tmux.conf ./
 
-yes | cp -rf ~/m51.sfd m51.sfd
+cp -rf ~/m51.sfd ./

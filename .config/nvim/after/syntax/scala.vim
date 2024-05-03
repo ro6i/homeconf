@@ -1,12 +1,23 @@
 hi def link scalaSuperCapital1 Include
 hi def link scalaSuperCapital5 Title
-hi def link scalaSuperCapital4 StorageClass
-hi def link scalaSuperCapital3 StorageClass
-hi def link scalaSuperCapital2 Title
+hi def link scalaSuperCapital4 Macro
+hi def link scalaSuperCapital3 Typedef
+hi def link scalaSuperCapital2 Type
+hi def link scalaSuperNumber Number
+" hi def link scalaSuperCapitalN Constant
 
 hi! link scalaSquareBracketsBrackets Typedef
 hi! link scalaKeywordModifier StorageClass
-hi! link scalaIstanceDeclaration Type
+hi! link scalaInstanceDeclaration Typedef
 hi! link scalaCapitalWord Typedef
 hi! link scalaInterpolation Macro
 hi! link scalaInterpolationBoundary Macro
+
+syn match post_dot        /[.,]/     | hi! post_dot ctermfg=15
+syn match post_paren      /[()]/    | hi! post_paren ctermfg=15
+syn match post_curly      /[{}]/    | hi! post_curly ctermfg=10
+syn match post_eq         /[=]/     | hi! post_eq ctermfg=9
+syn match post_eq_gt      /[=][>]/  | hi! post_eq_gt ctermfg=9
+syn match post_exc_eq     /[!][=]/  | hi! post_exc_eq ctermfg=9
+syn match post_lt_dash    /[<][\-]/ | hi! post_lt_dash ctermfg=9
+syn match post_dash_gt    /[\-][>]/ | hi! post_dash_gt ctermfg=9
