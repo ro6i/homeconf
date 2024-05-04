@@ -8,6 +8,7 @@ cp -rf ~/.config/cmus/rc            .config/cmus/
 cp -rf ~/.config/foot/*             .config/foot/
 cp -rf ~/.config/sway/config        .config/sway/
 
+cp -rf ~/.bin/colors .bin/
 cp -rf ~/.bin/rebase .bin/rebase
 cp -rf ~/.bin/swaybar-stat .bin/
 cp -rf ~/.bin/tmux-stat .bin/

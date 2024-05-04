@@ -1,17 +1,45 @@
 #!/bin/bash
 
-# color(){
-#     for c; do
-#         printf '\e[48;5;%dm%03d' $c $c
-#     done
-#     printf '\e[0m \n'
-# }
+declare -i cols=$(tput cols)
+declare -i items=$(( $cols / 12))
 
-# IFS=$' \t\n'
-# color {0..15}
-# for ((i=0;i<6;i++)); do
-#     color $(seq $((i*36+16)) $((i*36+51)))
-# done
-# color {232..255}
+print_fg() {
+  declare -i items_in_line=0
+  for c in $(seq $1 $2)
+  do
+    tput setaf $c
+    printf '%-12s' "color_$c"
+    items_in_line+=1
+    if [[ $items_in_line -ge $items ]]
+    then
+      items_in_line=0
+      echo
+    fi
+  done
+  echo
+}
 
-for c in {0..255}; do tput setaf $c; tput setaf $c | cat -v; echo =$c; done
+print_bg() {
+  local fg
+  for c in $(seq 16 23)
+  do
+    fg=$(( $c - $1 ))
+    printf "$(tput setab $c)$(tput setaf $fg) "
+    printf '%-8s' "color_${fg}"
+    printf " $(tput sgr0)  "
+  done
+  echo
+}
+
+echo "$(tput sgr0)"
+
+print_fg 0   7
+print_fg 8   15
+print_fg 16  23
+echo
+print_bg 16
+echo
+print_bg 8
+echo
+print_fg 24  231
+print_fg 232 255
