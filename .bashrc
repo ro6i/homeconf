@@ -3,7 +3,7 @@ stty -ixon
 # override color codes 16-21 in ANSI 256 table
 # by default those colors are dark shades of blue
 # those codes can be used for background
-echo -en "\e]4;16;#202022\e\\" # extra bg 1
+echo -en "\e]4;16;#1c1c1c\e\\" # extra bg 1
 echo -en "\e]4;17;#321414\e\\" # red
 echo -en "\e]4;18;#122612\e\\" # green
 echo -en "\e]4;19;#2c2416\e\\" # yellow
