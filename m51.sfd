@@ -22,7 +22,7 @@ OS2Version: 0
 OS2_WeightWidthSlopeOnly: 0
 OS2_UseTypoMetrics: 0
 CreationTime: 1229875379
-ModificationTime: 1714750372
+ModificationTime: 1714894932
 PfmFamily: 33
 TTFWeight: 500
 TTFWidth: 5
@@ -58,13 +58,13 @@ NameList: AGL For New Fonts
 DisplaySize: -36
 AntiAlias: 1
 FitToEm: 0
-WinInfo: 0 25 19
+WinInfo: 0 25 20
 BeginPrivate: 5
-BlueValues 31 [-12 0 472 480 668 680 692 700]
+BlueValues 47 [-12 0 272 280 472 480 642 650 668 680 692 700]
 StdVW 5 [150]
 StemSnapH 12 [80 100 110]
 StemSnapV 9 [140 150]
-FamilyBlues 31 [-12 0 472 488 662 680 692 700]
+FamilyBlues 39 [-12 0 472 488 642 650 662 680 692 700]
 EndPrivate
 TeXData: 1 16777216 0 629146 314573 209715 503316 1048576 209715 783286 444596 497025 792723 393216 433062 380633 303038 157286 324010 404750 52429 2506097 1059062 262144
 BeginChars: 65536 95
@@ -428,21 +428,20 @@ StartChar: comma
 Encoding: 44 44 12
 Width: 600
 GlyphClass: 2
-Flags: W
-HStem: 100 125<140 290>
-VStem: 290 160<-100 100>
+Flags: WO
+HStem: 30 120<170 261> 40 110<209 300>
+VStem: 290 160<-120 -8> 300 150<-72 40>
 LayerCount: 2
 Fore
 SplineSet
-140 100 m 1
- 140 225 l 1
- 450 225 l 1
- 450 -100 l 1
- 290 -100 l 1
- 290 100 l 1
- 140 100 l 1
+170 30 m 1x90
+ 170 150 l 1x90
+ 450 150 l 1x50
+ 450 -120 l 1
+ 290 -120 l 1x60
+ 300 40 l 5x50
+ 170 30 l 1x90
 EndSplineSet
-Validated: 1
 EndChar
 
 StartChar: hyphen
@@ -1730,7 +1729,7 @@ StartChar: Y
 Encoding: 89 89 57
 Width: 600
 GlyphClass: 2
-Flags: WO
+Flags: W
 HStem: 0 21G<225 375> 660 20G<60 210 390 540>
 VStem: 225 150<0 345>
 LayerCount: 2
@@ -1912,28 +1911,28 @@ Encoding: 97 97 65
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: 0 85<210 405> 210 80<210 390> 380 100<100 370>
-VStem: 60 150<85 210> 405 135<85 210>
+HStem: 0 100<210 390> 210 80<240 390> 380 100<130 370>
+VStem: 60 150<100 180> 390 150<100 210 290 360>
 LayerCount: 2
 Fore
 SplineSet
-405 210 m 1
- 210 210 l 5
- 210 85 l 5
- 405 85 l 1
- 405 210 l 1
+390 210 m 1
+ 240 210 l 1
+ 210 180 l 1
+ 210 100 l 1
+ 390 100 l 1
+ 390 210 l 1
 540 0 m 25
- 140 0 l 29
- 60 80 l 29
- 60 210 l 29
- 140 290 l 29
+ 160 0 l 29
+ 60 100 l 25
+ 60 190 l 25
+ 160 290 l 25
  390 290 l 25
  390 360 l 25
  370 380 l 25
- 100 380 l 29
- 100 480 l 21
- 415 480 l 1
- 493 439 l 1
+ 130 380 l 25
+ 130 480 l 17
+ 440 480 l 1
  540 380 l 1
  540 0 l 25
 EndSplineSet
@@ -2070,24 +2069,24 @@ Encoding: 102 102 70
 Width: 600
 GlyphClass: 2
 Flags: W
-HStem: 0 21G<100 250> 300 100<250 480> 571 100<340 540>
-VStem: 100 150<0 300 400 480>
+HStem: 0 21G<100 250> 300 100<250 480> 550 100<310 500>
+VStem: 100 150<0 300 400 490>
 LayerCount: 2
 Fore
 SplineSet
-540 570 m 1
- 340 571 l 1
- 250 480 l 1
+500 550 m 1
+ 310 550 l 1
+ 250 490 l 1
  250 400 l 1
- 480 400 l 5
- 480 300 l 5
+ 480 400 l 1
+ 480 300 l 1
  250 300 l 1
  250 0 l 1
  100 0 l 1
- 100 490 l 1
- 280 671 l 1
- 540 670 l 1
- 540 570 l 1
+ 100 510 l 1
+ 240 650 l 1
+ 500 650 l 1
+ 500 550 l 1
 EndSplineSet
 Validated: 1
 EndChar

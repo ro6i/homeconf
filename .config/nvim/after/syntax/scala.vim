@@ -13,7 +13,7 @@ hi! link scalaCapitalWord Typedef
 hi! link scalaInterpolation Macro
 hi! link scalaInterpolationBoundary Macro
 
-syn match post_dot        /[.,]/    | hi! post_dot ctermfg=15
+"syn match post_dot        /[.,]/    | hi! post_dot ctermfg=15
 syn match post_at         /[@]/     | hi! post_at ctermfg=14
 syn match post_paren      /[()]/    | hi! post_paren ctermfg=15
 syn match post_curly      /[{}]/    | hi! post_curly ctermfg=10
