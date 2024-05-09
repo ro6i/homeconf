@@ -91,8 +91,7 @@ nnoremap <silent> <Space>z          :call ToggleWindowSize()<CR>
 nnoremap <silent> <Space><Space>    za
 nnoremap <silent> <Space><Space>f   :call ToggleQuickfixList()<CR>
 nnoremap <silent> <Space><Space>w   :set wrap!<CR>
-nnoremap <silent> <Space><Space>cl  :set cursorline!<CR>
-nnoremap <silent> <Space><Space>cc  :set cursorcolumn!<CR>
+nnoremap <silent> <Space><Space>c   :set cursorline!<CR>:set cursorcolumn!<CR>
 nnoremap <silent> <Space><Space>l   :setlocal cursorbind!<CR>:setlocal scrollbind!<CR>:call lightline#update()<CR>
 nnoremap <silent> <Space><Space>lc  :setlocal cursorbind!<CR>:call lightline#update()<CR>
 nnoremap <silent> <Space><Space>ls  :setlocal scrollbind!<CR>:call lightline#update()<CR>
@@ -308,14 +307,13 @@ set smartcase
 " until neovim has cursorlineopt merged
 set nocursorline
 if !has('nvim')
-  set cursorline
   set cursorlineopt=number
 else
   set guicursor=n-v-c-sm:block,i-ci-ve:hor25,r-cr-o:ver20
 endif
-set cursorline
+set nocursorline
 set cursorcolumn
-" set nocursorcolumn
+set nocursorcolumn
 set showmatch
 set number
 set numberwidth=4
