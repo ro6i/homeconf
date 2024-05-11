@@ -15,6 +15,7 @@ vnoremap <Enter> ;
 
 xmap     <silent> <Leader>a         <Plug>(EasyAlign)
 vnoremap <silent> <Leader>c         y:OSCYankVisual<CR>
+nmap     <silent> <Leader>cp        :let @+ = @%<CR>
 nnoremap <silent> <Leader>d         :windo diffthis<CR>
 nnoremap <silent> <Leader>g         :tab split<CR>:Gvdiffsplit<CR>
 nnoremap <silent> <Leader>gd        :tab split<CR>:Gvdiffsplit develop<CR>

@@ -22,7 +22,7 @@ OS2Version: 0
 OS2_WeightWidthSlopeOnly: 0
 OS2_UseTypoMetrics: 0
 CreationTime: 1229875379
-ModificationTime: 1715184774
+ModificationTime: 1715355265
 PfmFamily: 33
 TTFWeight: 500
 TTFWidth: 5
@@ -428,7 +428,7 @@ StartChar: comma
 Encoding: 44 44 12
 Width: 600
 GlyphClass: 2
-Flags: WO
+Flags: W
 HStem: 40 110<212 310> 50 100<170 268>
 VStem: 300 150<-140 -14> 310 140<-86 40>
 LayerCount: 2
@@ -442,6 +442,7 @@ SplineSet
  310 40 l 1x90
  170 50 l 1x50
 EndSplineSet
+Validated: 1
 EndChar
 
 StartChar: hyphen
@@ -509,37 +510,37 @@ Width: 600
 GlyphClass: 2
 Flags: W
 HStem: 0 110<220 380> 570 110<220 380>
-VStem: 70 150<110 295 375 570> 270 60<185 505> 380 150<110 295 375 570>
+VStem: 70 150<110 300 380 570> 280 40<180 500> 380 150<110 300 380 570>
 CounterMasks: 1 38
 LayerCount: 2
 Fore
 SplineSet
-270 505 m 1
- 330 505 l 1
- 330 185 l 5
- 270 185 l 5
- 270 505 l 1
+280 500 m 5
+ 320 500 l 5
+ 320 180 l 1
+ 280 180 l 1
+ 280 500 l 5
 170 0 m 1
  70 80 l 1
- 70 295 l 1
- 220 295 l 1
+ 70 300 l 1
+ 220 300 l 1
  220 110 l 1
  380 110 l 1
- 380 295 l 1
- 530 295 l 1
+ 380 300 l 1
+ 530 300 l 1
  530 80 l 1
  430 0 l 1
  170 0 l 1
 380 570 m 1
  220 570 l 1
- 220 375 l 1
- 70 375 l 1
+ 220 380 l 1
+ 70 380 l 1
  70 600 l 1
  170 680 l 1
  430 680 l 1
  530 600 l 1
- 530 375 l 1
- 380 375 l 1
+ 530 380 l 1
+ 380 380 l 1
  380 570 l 1
 EndSplineSet
 Validated: 1
@@ -2069,25 +2070,25 @@ StartChar: f
 Encoding: 102 102 70
 Width: 600
 GlyphClass: 2
-Flags: W
-HStem: 0 21G<100 250> 300 100<250 480> 570 100<310 500>
+Flags: WO
+HStem: 0 21G<100 250> 300 100<250 520> 570 100<310 540>
 VStem: 100 150<0 300 400 510>
 LayerCount: 2
 Fore
 SplineSet
-500 570 m 1
+540 570 m 5
  310 570 l 1
  250 510 l 1
  250 400 l 1
- 480 400 l 1
- 480 300 l 1
+ 520 400 l 5
+ 520 300 l 5
  250 300 l 1
  250 0 l 1
  100 0 l 1
  100 530 l 1
  240 670 l 1
- 500 670 l 1
- 500 570 l 1
+ 540 670 l 5
+ 540 570 l 5
 EndSplineSet
 Validated: 1
 EndChar
