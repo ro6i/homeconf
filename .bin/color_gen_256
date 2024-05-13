@@ -1,0 +1,78 @@
+#!/bin/bash
+
+parse_hsl() {
+  # pastel outputs hsl in format: hsl(a, b.c%, d.e%)
+  local hsl_raw="$(pastel format hsl "$1")"
+  local hsl_1="${hsl_raw:4}"
+  local hsl_2="${hsl_1::-1}"
+  echo "$hsl_2"
+}
+
+mod_one() {
+  local base="$1"
+  local s_add="${2:-0}"
+  local l_add="${3:-0}"
+  if [[ $s_add == 0 && $l_add == 0 ]]
+  then
+    echo "#$1"
+    return
+  fi
+  local hsl_csv="$(parse_hsl "$base")"
+  local hsl_components
+  IFS=', ' hsl_components=($hsl_csv)
+  local hsl_h="${hsl_components[0]}"
+  local hsl_s="${hsl_components[1]::-1}"
+  local hsl_l="${hsl_components[2]::-1}"
+  local hsl_h_int="${hsl_h%.*}"
+  local hsl_s_int="${hsl_s%.*}"
+  local hsl_l_int="${hsl_l%.*}"
+  local hsl_s_mod="$(( $hsl_s_int + $s_add ))"
+  local hsl_l_mod="$(( $hsl_l_int + $l_add ))"
+  pastel format hex "hsl($hsl_h_int, $hsl_s_mod%, $hsl_l_mod%)"
+}
+
+block() {
+  local s_add="$1"
+  local l_add="$2"
+  shift 2
+  for color in "$@"
+  do
+    local hex="$(mod_one "$color" "$s_add" "$l_add")"
+    echo "echo -en \"\\e]4;$index;$hex\\e\\\\\""
+    index+=1
+  done
+}
+
+main() {
+  block 0 0 "${bgn[@]}"
+  block 0 0 "${bga[@]}"
+  echo
+  for s_add in 15 50
+  do
+    block $s_add 0 "${fgn[@]}"
+    block $s_add 0 "${fga[@]}"
+    echo
+  done
+  local s_add=0
+  local l_add=0
+  for l_add in -20 20
+  do
+    block $s_add 0 "${bgn[@]}"
+    block $s_add 0 "${bga[@]}"
+    for s_add in 0 15 50
+    do
+      block $s_add $l_add "${fgn[@]}"
+      block $s_add $l_add "${fga[@]}"
+      echo
+    done
+  done
+}
+
+fgn=(000000 a65c59 728c54 a6845e 4e82a2 b1597d 54969c 888888)
+fga=(3e3e3e a97660 8b8423 998a66 6174a8 82779c 5d8979 686868)
+
+bgn=(1c1c1c 371d1b 232f18 2e291f 1c2643 381a38 142c2f 2a2a2a)
+bga=(1c1c1c 35241d 312f0c 312d21 21283b 302b3b 1f2e28 2a2a2a)
+
+declare -i index=16
+main $@
