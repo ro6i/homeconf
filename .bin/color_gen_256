@@ -38,41 +38,37 @@ block() {
   for color in "$@"
   do
     local hex="$(mod_one "$color" "$s_add" "$l_add")"
-    echo "echo -en \"\\e]4;$index;$hex\\e\\\\\""
+    # echo "echo -en \"\\e]4;$index;$hex\\e\\\\\""
+    printf "\\e]4;$index;$hex\\e\\\\\n"
     index+=1
   done
 }
 
 main() {
-  block 0 0 "${bgn[@]}"
-  block 0 0 "${bga[@]}"
-  echo
-  for s_add in 15 50
-  do
-    block $s_add 0 "${fgn[@]}"
-    block $s_add 0 "${fga[@]}"
-    echo
-  done
-  local s_add=0
-  local l_add=0
-  for l_add in -20 20
-  do
-    block $s_add 0 "${bgn[@]}"
-    block $s_add 0 "${bga[@]}"
-    for s_add in 0 15 50
-    do
-      block $s_add $l_add "${fgn[@]}"
-      block $s_add $l_add "${fga[@]}"
-      echo
-    done
-  done
+  printf "echo -en \""
+  block 0   0 "${bgn[@]}"
+  block 0   0 "${bga[@]}"
+  block 0  15 "${fgn[@]}"
+  block 0  15 "${fga[@]}"
+  block 0 -15 "${fgn[@]}"
+  block 0 -15 "${fga[@]}"
+
+  block 35   0 "${fgn[@]}"
+  block 35   0 "${fga[@]}"
+  block 35   0 "${bgn[@]}"
+  block 35   0 "${bga[@]}"
+  block 35  10 "${fgn[@]}"
+  block 35  10 "${fga[@]}"
+  block 35 -15 "${fgn[@]}"
+  block 35 -15 "${fga[@]}"
+  echo '"'
 }
 
 fgn=(000000 a65c59 728c54 a6845e 4e82a2 b1597d 54969c 888888)
 fga=(3e3e3e a97660 8b8423 998a66 6174a8 82779c 5d8979 686868)
 
 bgn=(1c1c1c 371d1b 232f18 2e291f 1c2643 381a38 142c2f 2a2a2a)
-bga=(1c1c1c 35241d 312f0c 312d21 21283b 302b3b 1f2e28 2a2a2a)
+bga=(1c1c1c 35241d 312f0c 312d21 21283b 2b2636 1f2e28 2a2a2a)
 
 declare -i index=16
 main $@
