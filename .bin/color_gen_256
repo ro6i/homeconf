@@ -10,13 +10,9 @@ parse_hsl() {
 
 mod_one() {
   local base="$1"
-  local s_add="${2:-0}"
-  local l_add="${3:-0}"
-  if [[ $s_add == 0 && $l_add == 0 ]]
-  then
-    echo "#$1"
-    return
-  fi
+  local h_add="${2:-0}"
+  local s_add="${3:-0}"
+  local l_add="${4:-0}"
   local hsl_csv="$(parse_hsl "$base")"
   local hsl_components
   IFS=', ' hsl_components=($hsl_csv)
@@ -26,42 +22,69 @@ mod_one() {
   local hsl_h_int="${hsl_h%.*}"
   local hsl_s_int="${hsl_s%.*}"
   local hsl_l_int="${hsl_l%.*}"
+  local hsl_h_mod="$(( $hsl_h_int + $h_add ))"
   local hsl_s_mod="$(( $hsl_s_int + $s_add ))"
   local hsl_l_mod="$(( $hsl_l_int + $l_add ))"
-  pastel format hex "hsl($hsl_h_int, $hsl_s_mod%, $hsl_l_mod%)"
+  pastel format hex "hsl($hsl_h_mod, $hsl_s_mod%, $hsl_l_mod%)"
 }
 
-block() {
+octet() {
   local s_add="$1"
   local l_add="$2"
+  local hex
   shift 2
   for color in "$@"
   do
-    local hex="$(mod_one "$color" "$s_add" "$l_add")"
+    if [[ $s_add == 0 && $l_add == 0 ]]
+    then
+      hex="$color"
+    else
+      hex="$(mod_one "$color" 0 "$s_add" "$l_add")"
+    fi
     # echo "echo -en \"\\e]4;$index;$hex\\e\\\\\""
+    >&2 echo "$index -> $hex"
+    printf "\\e]4;$index;$hex\\e\\\\\n"
+    index+=1
+  done
+}
+
+heatmap() {
+  local h_add
+  for h_add in `seq 1 24`
+  do
+    local hue="$(printf '%.0f' "$(echo "$h_add * 15" | bc -l )")"
+    local hex="$(mod_one "$1" "$hue" 0 0)"
+    >&2 echo "$index -> $hex"
     printf "\\e]4;$index;$hex\\e\\\\\n"
     index+=1
   done
 }
 
 main() {
+  echo "if [[ \"\$TERM\" != 'linux' ]]; then"
   printf "echo -en \""
-  block 0   0 "${bgn[@]}"
-  block 0   0 "${bga[@]}"
-  block 0  15 "${fgn[@]}"
-  block 0  15 "${fga[@]}"
-  block 0 -15 "${fgn[@]}"
-  block 0 -15 "${fga[@]}"
+  octet 0   0 "${bgn[@]}"
+  octet 0   0 "${bga[@]}"
+  octet 0  15 "${fgn[@]}"
+  octet 0  15 "${fga[@]}"
+  octet 0 -15 "${fgn[@]}"
+  octet 0 -15 "${fga[@]}"
 
-  block 35   0 "${fgn[@]}"
-  block 35   0 "${fga[@]}"
-  block 35   0 "${bgn[@]}"
-  block 35   0 "${bga[@]}"
-  block 35  10 "${fgn[@]}"
-  block 35  10 "${fga[@]}"
-  block 35 -15 "${fgn[@]}"
-  block 35 -15 "${fga[@]}"
+  octet 35   0 "${fgn[@]}"
+  octet 35   0 "${fga[@]}"
+  octet 35   0 "${bgn[@]}"
+  octet 35   0 "${bga[@]}"
+  octet 35  10 "${fgn[@]}"
+  octet 35  10 "${fga[@]}"
+  octet 35 -15 "${fgn[@]}"
+  octet 35 -15 "${fga[@]}"
+
+  heatmap b04f4f
+  heatmap c63939
+  heatmap d92626
+  heatmap ec1313
   echo '"'
+  echo 'fi'
 }
 
 fgn=(000000 a65c59 728c54 a6845e 4e82a2 b1597d 54969c 888888)
