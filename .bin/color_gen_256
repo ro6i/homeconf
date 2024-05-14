@@ -50,9 +50,9 @@ octet() {
 
 heatmap() {
   local h_add
-  for h_add in `seq 1 24`
+  for h_add in `seq 0 23`
   do
-    local hue="$(printf '%.0f' "$(echo "$h_add * 15" | bc -l )")"
+    local hue="$(printf '%.0f' "$(echo "$h_add * 15 + 5" | bc -l )")"
     local hex="$(mod_one "$1" "$hue" 0 0)"
     >&2 echo "$index -> $hex"
     printf "\\e]4;$index;$hex\\e\\\\\n"
