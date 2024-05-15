@@ -37,7 +37,7 @@ octet() {
   do
     if [[ $s_add == 0 && $l_add == 0 ]]
     then
-      hex="$color"
+      hex="#$color"
     else
       hex="$(mod_one "$color" 0 "$s_add" "$l_add")"
     fi

@@ -7,6 +7,7 @@ cp -rf ~/.config/nvim/after/*       .config/nvim/after/
 cp -rf ~/.config/cmus/rc            .config/cmus/
 cp -rf ~/.config/foot/*             .config/foot/
 cp -rf ~/.config/sway/config        .config/sway/
+cp -rf ~/.config/mako/config        .config/mako/
 
 cp -rf ~/.bin/color_gen_256 .bin/
 cp -rf ~/.bin/colors .bin/

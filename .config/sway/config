@@ -272,3 +272,5 @@ mode "$screenshot" {
 bindsym $mod+y mode "$screenshot"
 
 include /etc/sway/config.d/*
+
+exec mako
