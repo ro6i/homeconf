@@ -23,8 +23,15 @@ mod_one() {
   local hsl_s_int="${hsl_s%.*}"
   local hsl_l_int="${hsl_l%.*}"
   local hsl_h_mod="$(( $hsl_h_int + $h_add ))"
-  local hsl_s_mod="$(( $hsl_s_int + $s_add ))"
-  local hsl_l_mod="$(( $hsl_l_int + $l_add ))"
+  local hsl_s_mod=0
+  local hsl_l_mod=0
+  if [[ "$hsl_s_int" == 0 && "$hsl_l_int" != 0 ]]
+  then
+    hsl_l_mod=$(( $hsl_l_int + $l_add + 10 ))
+  else
+    hsl_l_mod="$(( $hsl_l_int + $l_add ))"
+    hsl_s_mod="$(( $hsl_s_int + $s_add ))"
+  fi
   pastel format hex "hsl($hsl_h_mod, $hsl_s_mod%, $hsl_l_mod%)"
 }
 
@@ -42,7 +49,7 @@ octet() {
       hex="$(mod_one "$color" 0 "$s_add" "$l_add")"
     fi
     # echo "echo -en \"\\e]4;$index;$hex\\e\\\\\""
-    >&2 echo "$index -> $hex"
+    >&2 echo "$index: $color -> $hex"
     printf "\\e]4;$index;$hex\\e\\\\\n"
     index+=1
   done
