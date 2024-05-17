@@ -30,7 +30,7 @@ __prompt_git_color_branch() {
         develop)     prefix_color=34 ;;
         *)           prefix_color=36 ;;
       esac
-      branch="$(tput setab "$prefix_color") $(tput setaf $(($prefix_color - 16 )))$branch_name $(tput sgr0)"
+      branch="$(tput setab "$prefix_color") $(tput setaf $(($prefix_color - 32 )))$branch_name $(tput sgr0)"
     else
       local prefix="${branch_name%%/*}"
       branch_name="$(echo "$branch_name" | cut -c $(( ${#prefix} + 2))-)"
