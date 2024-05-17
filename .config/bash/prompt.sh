@@ -32,7 +32,7 @@ _prompt_time() {
   case "$(_prompt_conf_value time)" in
     yes)
       local current="$(date +'%H:%M:%S %m-%d')"
-      echo -e "$(tput setaf 23)[$(tput setaf 8)${current::8}$(tput setaf 23)] $(tput setaf 8)${current:9:5}$(tput sgr0)"
+      echo -e "$(tput setaf 39)[$(tput setaf 8)${current::8}$(tput setaf 39)] $(tput setaf 8)${current:9:5}$(tput sgr0)"
       ;;
   esac
 }
