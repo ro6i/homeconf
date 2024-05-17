@@ -70,21 +70,26 @@ heatmap() {
 main() {
   echo "if [[ \"\$TERM\" != 'linux' ]]; then"
   printf "echo -en \""
-  octet 0   0 "${bgn[@]}"
-  octet 0   0 "${bga[@]}"
-  octet 0  15 "${fgn[@]}"
-  octet 0  15 "${fga[@]}"
+  index=16
+  # octet 0  15 "${fgn[@]}"
+  # octet 0  15 "${fga[@]}"
+  # dim
   octet 0 -15 "${fgn[@]}"
   octet 0 -15 "${fga[@]}"
+  # background
+  octet 0   0 "${bgn[@]}"
+  octet 0   0 "${bga[@]}"
 
-  octet 35   0 "${fgn[@]}"
-  octet 35   0 "${fga[@]}"
-  octet 35   0 "${bgn[@]}"
-  octet 35   0 "${bga[@]}"
-  octet 35  10 "${fgn[@]}"
-  octet 35  10 "${fga[@]}"
+  octet 35   2 "${fgn[@]}"
+  octet 35   2 "${fga[@]}"
+  # octet 35  10 "${fgn[@]}"
+  # octet 35  10 "${fga[@]}"
+  # dim
   octet 35 -15 "${fgn[@]}"
   octet 35 -15 "${fga[@]}"
+  # background
+  octet 35   0 "${bgn[@]}"
+  octet 35   0 "${bga[@]}"
 
   heatmap b04f4f
   heatmap c63939
@@ -100,5 +105,5 @@ fga=(3e3e3e a97660 8b8423 998a66 6174a8 82779c 5d8979 686868)
 bgn=(1c1c1c 371d1b 232f18 2e291f 1c2643 381a38 142c2f 2a2a2a)
 bga=(1c1c1c 35241d 312f0c 312d21 21283b 2b2636 1f2e28 2a2a2a)
 
-declare -i index=16
+declare -i index=0
 main $@

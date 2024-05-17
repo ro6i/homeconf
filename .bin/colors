@@ -7,7 +7,7 @@ print_fg() {
   for c in $(seq $1 $2)
   do
     tput setaf $c
-    printf '%-12s' "color_$c"
+    printf ' color.%03d   ' "$c"
     items_in_line+=1
     if [[ $items_in_line -ge $items ]]
     then
@@ -22,24 +22,39 @@ print_bg() {
   for c in $(seq $1 $2)
   do
     fg=$(( $c - $3 ))
-    printf "$(tput setab $c)$(tput setaf $fg) "
-    printf '%-8s' "color_${fg}"
-    printf " $(tput sgr0)  "
+    printf "$(tput setab $c)$(tput setaf $fg)"
+    printf ' color.%03d ' $fg
+    printf "$(tput sgr0)  "
   done
   echo
 }
 
 echo "$(tput sgr0)"
 
-print_bg 16 23 16
-print_bg 16 23  8
-print_bg 24 31 24
-print_bg 24 31 16
-echo
-print_fg  0   7
-print_fg  8  15
-print_fg 16  23
-print_fg 24  31
-print_fg  32 207
-print_fg 208 231
-print_fg 232 255
+case "$1" in
+  table)
+    for i in {0..31}
+    do
+      print_bg  "$(( 8 * "$i" ))" "$(( "$i" * 8 + 7 ))" 0
+    done
+    ;;
+  *)
+    print_bg  32 39 32
+    print_bg  32 39 24
+    print_bg  40 47 40
+    print_bg  40 47 32
+    echo
+    print_fg   0   47
+    echo
+    print_bg  80 87 32
+    print_bg  80 87 24
+    print_bg  88 95 40
+    print_bg  88 95 32
+    echo
+    print_fg  48   95
+    echo
+    print_fg 96  223
+    echo
+    print_fg 224 255
+    ;;
+esac
