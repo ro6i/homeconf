@@ -7,7 +7,7 @@ print_fg() {
   for c in $(seq $1 $2)
   do
     tput setaf $c
-    printf ' color.%03d   ' "$c"
+    printf '[color %03d]  ' "$c"
     items_in_line+=1
     if [[ $items_in_line -ge $items ]]
     then
@@ -23,7 +23,7 @@ print_bg() {
   do
     fg=$(( $c - $3 ))
     printf "$(tput setab $c)$(tput setaf $fg)"
-    printf ' color.%03d ' $fg
+    printf ' color %03d ' $fg
     printf "$(tput sgr0)  "
   done
   echo

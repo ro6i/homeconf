@@ -68,7 +68,7 @@ __prompt_git_base_branch() {
     local base_branch_name="$(cat .gitbase)"
     if [[ ! -z "$base_branch_name" ]]
     then
-      echo "  $(tput setaf 117)\u25B6$(tput sgr0)  $(__prompt_git_color_branch "$base_branch_name")$(tput sgr0)"
+      echo "  $(tput setaf 5)\u25B6$(tput sgr0)  $(__prompt_git_color_branch "$base_branch_name")$(tput sgr0)"
     fi
   fi
 }
