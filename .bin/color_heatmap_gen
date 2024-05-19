@@ -1,0 +1,25 @@
+#!/bin/bash
+
+main() {
+  local index="$1"
+  local starting_hue="$2"
+  local scale="$3"
+  local hue_correction="${4:-0}"
+  local hue_step="$(( 360 / $scale ))"
+  for hue_add in `seq 0 $(( $scale - $1 ))`
+  do
+    local hue="$(printf '%.0f' "$(echo "$hue_add * $hue_step + $hue_correction" | bc -l )")"
+    local hex="$(color_mod "$1" "$hue" 0 0)"
+    >&2 echo "$index -> $hex"
+    echo "echo -en \"\\e]4;$index;$hex\\e\\\\\""
+    index+=1
+  done
+}
+
+# 1: index at which to start modifying the 256 color table
+# 2: starting color which also defines static S and L for the heatmap
+# 3: number of steps in which to split 360 hue range
+# 4: a number (positive or negative) added to hue at each step (default: 0)
+# Example:
+#   color_gen_heatmap b04f4f 96 24 5
+main "$@"

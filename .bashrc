@@ -13,6 +13,8 @@ export GREP_OPTIONS='--color=auto'
 
 export TZ='Asia/Tbilisi'
 
+color_super80_theme_ansi
+
 export PATH="$PATH:$HOME/.bin:$HOME/.local/bin:~/projects/endowus/.bin"
 export PATH="$PATH:~/node_modules/.bin"
 # export PATH="/usr/local/sbin:$PATH"
