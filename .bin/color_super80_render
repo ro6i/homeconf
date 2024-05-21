@@ -1,0 +1,80 @@
+#!/bin/bash
+
+adjust_octal_color_l() {
+  local octet_index="$(( $1 - 1 ))"
+  local l="$2"
+  local correction="${l_correction[$octet_index]}"
+  local r="$(( $l + $correction ))"
+  echo "$r"
+}
+
+octet() {
+  local lane_nr="$1"
+  local class="$2"
+  local s_add="$3"
+  local l_add="$4"
+  shift 4
+  local hex
+  local l_add_adjusted="$l_add"
+  for c in {1..8}
+  do
+    local color="${!c}"
+    if [[ $s_add == 0 && $l_add == 0 ]]
+    then
+      hex="#$color"
+    else
+      if [[ "$class" == 'fg' ]]
+      then
+        l_add_adjusted="$(adjust_octal_color_l "$(( $c + ($lane_nr - 1) * 8 ))" "$l_add")"
+      fi
+      hex="$(color_mod "$color" 0 "$s_add" "$l_add_adjusted")"
+    fi
+    echo "$hex"
+  done
+}
+
+main() {
+  local fg_1=($1 $2 $3 $4 $5 $6 $7 $8)
+  shift 8
+  local fg_2=($1 $2 $3 $4 $5 $6 $7 $8)
+  shift 8
+  local bg_1=($1 $2 $3 $4 $5 $6 $7 $8)
+  shift 8
+  local bg_2=($1 $2 $3 $4 $5 $6 $7 $8)
+  shift 8
+
+  # WAVE 1
+  # normal (usually covered by Terminal configuration)
+  shift 2
+
+  # dim
+  octet 1 fg $1 $2 "${fg_1[@]}"
+  octet 2 fg $1 $2 "${fg_2[@]}"
+  shift 2
+
+  # background
+  octet 1 bg $1 $2 "${bg_1[@]}"
+  octet 2 bg $1 $2 "${bg_2[@]}"
+  shift 2
+
+  # WAVE 2
+  # normal
+  octet 1 fg $1 $2 "${fg_1[@]}"
+  octet 2 fg $1 $2 "${fg_2[@]}"
+  shift 2
+
+  # dim
+  octet 1 fg $1 $2 "${fg_1[@]}"
+  octet 2 fg $1 $2 "${fg_2[@]}"
+  shift 2
+
+  # background
+  octet 1 bg $1 $2 "${bg_1[@]}"
+  octet 2 bg $1 $2 "${bg_2[@]}"
+  shift 2
+}
+
+#             1  2  3  4  5  6  7  8    9 10 11 12 13 14 15 16
+l_correction=(0  5 -2  0  5  0 -5  0    0  0  0 -4 10  8 -1  0)
+
+main "$@"

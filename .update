@@ -12,7 +12,7 @@ cp -rf ~/.config/mako/config        .config/mako/
 cp -rf ~/.bin/colors                   .bin/
 cp -rf ~/.bin/color_heatmap_gen        .bin/
 cp -rf ~/.bin/color_mod                .bin/
-cp -rf ~/.bin/color_super80_gen        .bin/
+cp -rf ~/.bin/color_super80_render     .bin/
 cp -rf ~/.bin/color_super80_theme      .bin/
 cp -rf ~/.bin/color_super80_theme_ansi .bin/
 
@@ -23,7 +23,6 @@ cp -rf ~/.bin/tmux-pipe .bin/
 cp -rf ~/.bin/tmux-shell .bin/
 cp -rf ~/.bin/nvim-listen .bin/
 cp -rf ~/.bin/nvim-pipe .bin/
-cp -rf ~/.bin/nvim-two .bin/
 
 cp -rf ~/.bashrc  ./
 cp -rf ~/.inputrc ./
