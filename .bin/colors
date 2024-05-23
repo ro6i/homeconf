@@ -1,60 +1,62 @@
 #!/bin/bash
 
-declare -i items=8
-
 print_fg() {
   declare -i items_in_line=0
+  printf '  '
   for c in $(seq $1 $2)
   do
     tput setaf $c
-    printf '[color %03d]  ' "$c"
+    printf '[%03d]  ' "$c"
     items_in_line+=1
-    if [[ $items_in_line -ge $items ]]
+    if [[ $items_in_line -ge 8 ]]
     then
       items_in_line=0
       echo
+      printf '  '
     fi
   done
 }
 
-print_bg() {
+print_bg_octet() {
   local fg
-  for c in $(seq $1 $2)
+  printf '  '
+  for c in $(seq $1 $(( $1 + 7 )) )
   do
-    fg=$(( $c - $3 ))
+    if [[ -z "$2" ]]
+    then
+      fg=0
+    else
+      fg=$(( $c + $2 ))
+    fi
     printf "$(tput setab $c)$(tput setaf $fg)"
-    printf ' color %03d ' $fg
+    printf ' %03d ' $fg
     printf "$(tput sgr0)  "
   done
   echo
 }
 
+print_bg_rel() {
+  print_bg_octet $1            $2
+  print_bg_octet $1            $(( $2 + 8 ))
+  print_bg_octet $(( $1 + 8 )) $(( $2 - 8 ))
+  print_bg_octet $(( $1 + 8 )) $2
+}
+
+print_bg_abs() {
+  print_bg_octet $1
+  print_bg_octet $1
+  print_bg_octet $(( $1 + 8 ))
+  print_bg_octet $(( $1 + 8 ))
+}
+
 echo "$(tput sgr0)"
 
-case "$1" in
-  table)
-    for i in {0..31}
-    do
-      print_bg  "$(( 8 * "$i" ))" "$(( "$i" * 8 + 7 ))" 0
-    done
-    ;;
-  *)
-    print_bg  32 39 32
-    print_bg  32 39 24
-    print_bg  40 47 40
-    print_bg  40 47 32
-    echo
-    print_fg   0   47
-    echo
-    print_bg  80 87 32
-    print_bg  80 87 24
-    print_bg  88 95 40
-    print_bg  88 95 32
-    echo
-    print_fg  48   95
-    echo
-    print_fg 96  223
-    echo
-    print_fg 224 255
-    ;;
-esac
+print_fg 0 63
+echo
+
+print_bg_rel 16 -16
+echo
+print_bg_rel 16  32
+echo
+print_bg_abs 32
+echo

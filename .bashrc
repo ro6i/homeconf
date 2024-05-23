@@ -17,7 +17,7 @@ export PATH="$PATH:$HOME/.bin:$HOME/.local/bin:~/projects/endowus/.bin"
 export PATH="$PATH:~/node_modules/.bin"
 # export PATH="/usr/local/sbin:$PATH"
 
-color_super80_theme_ansi
+super80_ansi
 
 for BASH_CONFIG in "${HOME}/.config/bash/"*
 do

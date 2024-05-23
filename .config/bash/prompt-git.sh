@@ -26,11 +26,11 @@ __prompt_git_color_branch() {
     if [[ ! "$branch_name" =~ / ]]
     then
       case "$branch_name" in
-        main|master) prefix_color=35 ;;
-        develop)     prefix_color=34 ;;
-        *)           prefix_color=36 ;;
+        main|master) prefix_color=19 ;;
+        develop)     prefix_color=18 ;;
+        *)           prefix_color=20 ;;
       esac
-      branch="$(tput setab "$prefix_color") $(tput setaf $(($prefix_color - 32 )))$branch_name $(tput sgr0)"
+      branch="$(tput setab "$prefix_color") $(tput setaf $(($prefix_color - 16 )))$branch_name $(tput sgr0)"
     else
       local prefix="${branch_name%%/*}"
       branch_name="$(echo "$branch_name" | cut -c $(( ${#prefix} + 2))-)"

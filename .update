@@ -9,12 +9,7 @@ cp -rf ~/.config/foot/*             .config/foot/
 cp -rf ~/.config/sway/config        .config/sway/
 cp -rf ~/.config/mako/config        .config/mako/
 
-cp -rf ~/.bin/colors                   .bin/
-cp -rf ~/.bin/color_heatmap_gen        .bin/
-cp -rf ~/.bin/color_mod                .bin/
-cp -rf ~/.bin/color_super80_render     .bin/
-cp -rf ~/.bin/color_super80_theme      .bin/
-cp -rf ~/.bin/color_super80_theme_ansi .bin/
+cp -rf ~/.bin/colors                .bin/
 
 cp -rf ~/.bin/rebase .bin/rebase
 cp -rf ~/.bin/swaybar-stat .bin/
