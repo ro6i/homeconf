@@ -23,5 +23,3 @@ cp -rf ~/.bashrc  ./
 cp -rf ~/.inputrc ./
 cp -rf ~/.profile ./
 cp -rf ~/.tmux.conf ./
-
-cp -rf ~/m51.sfd ./

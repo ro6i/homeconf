@@ -293,6 +293,7 @@ set tabstop=2
 set shiftwidth=2
 set expandtab
 set backspace=indent,eol,start
+set ttimeoutlen=0
 
 set list
 set listchars=tab:>-,trail:#,extends:>,precedes:<
@@ -336,7 +337,7 @@ set spelllang=en,ru_yo
 set tags=./.tags,.tags,./tags,tags
 
 set mouse=a
-set so=4
+set so=2
 " set clipboard=unnamedplus
 set colorcolumn=120
 

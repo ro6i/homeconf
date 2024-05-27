@@ -1,62 +1,58 @@
 #!/bin/bash
 
-print_fg() {
-  declare -i items_in_line=0
+print_octet() {
+  local bg_color fg_color
   printf '  '
-  for c in $(seq $1 $2)
+  for c in {0..7}
   do
-    tput setaf $c
-    printf '[%03d]  ' "$c"
-    items_in_line+=1
-    if [[ $items_in_line -ge 8 ]]
+    case "$1" in
+      from)
+        bg_color=$(( $c + $2 )) ;;
+      index)
+        case "$2" in
+          -) bg_color= ;;
+          *) bg_color="$2" ;;
+        esac
+    esac
+    case "$3" in
+      from) fg_color=$(( $c + $4 )) ;;
+      index) fg_color="$4" ;;
+    esac
+    if [[ -z "$bg_color" ]]
     then
-      items_in_line=0
-      echo
-      printf '  '
-    fi
-  done
-}
-
-print_bg_octet() {
-  local fg
-  printf '  '
-  for c in $(seq $1 $(( $1 + 7 )) )
-  do
-    if [[ -z "$2" ]]
-    then
-      fg=0
+      printf "$(tput setaf $fg_color )"
     else
-      fg=$(( $c + $2 ))
+      printf "$(tput setab $bg_color)$(tput setaf $fg_color)"
     fi
-    printf "$(tput setab $c)$(tput setaf $fg)"
-    printf ' %03d ' $fg
+    printf ' %03d ' $fg_color
     printf "$(tput sgr0)  "
   done
   echo
 }
 
-print_bg_rel() {
-  print_bg_octet $1            $2
-  print_bg_octet $1            $(( $2 + 8 ))
-  print_bg_octet $(( $1 + 8 )) $(( $2 - 8 ))
-  print_bg_octet $(( $1 + 8 )) $2
-}
-
-print_bg_abs() {
-  print_bg_octet $1
-  print_bg_octet $1
-  print_bg_octet $(( $1 + 8 ))
-  print_bg_octet $(( $1 + 8 ))
-}
-
 echo "$(tput sgr0)"
 
-print_fg 0 63
+print_octet index - from 0
+print_octet index - from 8
+print_octet index - from 16
+print_octet index - from 24
+print_octet index - from 32
+print_octet index - from 40
+print_octet index - from 48
+print_octet index - from 56
 echo
-
-print_bg_rel 16 -16
+print_octet from 16 from 0
+print_octet from 16 from 8
+print_octet from 24 from 0
+print_octet from 24 from 8
 echo
-print_bg_rel 16  32
+print_octet from 16 from 48
+print_octet from 16 from 56
+print_octet from 24 from 48
+print_octet from 24 from 56
 echo
-print_bg_abs 32
+print_octet from 32  index  0
+print_octet from 32  index 55
+print_octet from 40  index  0
+print_octet from 40  index 55
 echo
