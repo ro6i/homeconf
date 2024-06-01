@@ -12,7 +12,7 @@ __prompt_parse_git_status() {
       [[ "$staged_count"    -eq 0 ]] && staged='--'    || staged="$staged_count"
       [[ "$unstaged_count"  -eq 0 ]] && unstaged='--'  || unstaged="$unstaged_count"
       [[ "$untracked_count" -eq 0 ]] && untracked='--' || untracked="$untracked_count"
-      echo -e "$(tput setaf 15)[$(tput setaf 2)$staged$(tput setaf 8):$(tput setaf 1)$unstaged$(tput setaf 8):$(tput setaf 9)$untracked$(tput setaf 15)]"
+      echo -e "$(tput setaf 8)[$(tput setaf 2)$staged$(tput setaf 8):$(tput setaf 1)$unstaged$(tput setaf 8):$(tput setaf 9)$untracked$(tput setaf 8)]"
     fi
   fi
 }
@@ -35,11 +35,10 @@ __prompt_git_color_branch() {
       local prefix="${branch_name%%/*}"
       branch_name="$(echo "$branch_name" | cut -c $(( ${#prefix} + 2))-)"
       case "$prefix" in
-        fix)     prefix_color=3 ;;
-        feat)    prefix_color=13 ;;
-        feature) prefix_color=13 ;;
-        release) prefix_color=10 ;;
-        *)       prefix_color=7 ;;
+        fix)             prefix_color=33 ;;
+        feat | feature)  prefix_color=37 ;;
+        release)         prefix_color=2 ;;
+        *)               prefix_color=7 ;;
       esac
       if [[ "$branch_name" =~ ^[A-Za-z]+[-][0-9]+ ]]
       then
@@ -52,7 +51,7 @@ __prompt_git_color_branch() {
         branch_name="$(echo "$branch_name" | cut -c $(( ${#scope_num} + 1))-)"
       fi
 
-      branch="$(tput setaf "$prefix_color")$prefix$(tput setaf 5)/$(tput setaf 12)$scope$(tput setaf 5)$(tput setaf 14)$scope_num$(tput sgr0)$(tput setaf 7)$branch_name"
+      branch="$(tput setaf "$prefix_color")$prefix$(tput setaf 5)/$(tput setaf 4)$scope$(tput setaf 5)$(tput setaf 6)$scope_num$(tput sgr0)$(tput setaf 7)$branch_name"
     fi
     status_color=7
   else

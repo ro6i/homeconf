@@ -190,6 +190,7 @@ call plug#end()
 
 syntax on
 colorscheme m31
+set notermguicolors
 
 let g:oscyank_max_length = 10000000
 let g:oscyank_term = 'default'
@@ -306,14 +307,11 @@ set incsearch
 set ignorecase
 set smartcase
 
-" until neovim has cursorlineopt merged
-set nocursorline
-if !has('nvim')
-  set cursorlineopt=number
-else
+set cursorlineopt=line,number
+set cursorline
+if has('nvim')
   set guicursor=n-v-c-sm:block,i-ci-ve:hor25,r-cr-o:ver20
 endif
-set nocursorline
 set cursorcolumn
 set nocursorcolumn
 set showmatch

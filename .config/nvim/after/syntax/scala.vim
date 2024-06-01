@@ -15,7 +15,7 @@ hi! link scalaInterpolationBoundary Macro
 
 syn match post_at         /[@]/     | hi! post_at ctermfg=14
 " syn match post_paren      /[()]/    | hi! post_paren ctermfg=15
-syn match post_curly      /[{}]/    | hi! post_curly ctermfg=10
+" syn match post_curly      /[{}]/    | hi! post_curly ctermfg=10
 syn match post_eq         /[=]/     | hi! post_eq ctermfg=9
 syn match post_eq_gt      /[=][>]/  | hi! post_eq_gt ctermfg=9
 syn match post_exc_eq     /[!][=]/  | hi! post_exc_eq ctermfg=9
