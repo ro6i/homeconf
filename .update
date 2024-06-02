@@ -9,7 +9,7 @@ cp -rf ~/.config/foot/*             .config/foot/
 cp -rf ~/.config/sway/config        .config/sway/
 cp -rf ~/.config/mako/config        .config/mako/
 
-cp -rf ~/.bin/colors1               .bin/
+cp -rf ~/.bin/colors                .bin/
 
 cp -rf ~/.bin/rebase .bin/rebase
 cp -rf ~/.bin/swaybar-stat .bin/
