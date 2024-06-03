@@ -36,7 +36,7 @@ __prompt_git_color_branch() {
       branch_name="$(echo "$branch_name" | cut -c $(( ${#prefix} + 2))-)"
       case "$prefix" in
         fix)             prefix_color=33 ;;
-        feat | feature)  prefix_color=37 ;;
+        feat | feature)  prefix_color=6 ;;
         release)         prefix_color=2 ;;
         *)               prefix_color=7 ;;
       esac
