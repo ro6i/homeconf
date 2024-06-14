@@ -17,18 +17,16 @@ export PATH="$PATH:$HOME/.bin:$HOME/.local/bin:~/projects/endowus/.bin"
 export PATH="$PATH:~/node_modules/.bin"
 # export PATH="/usr/local/sbin:$PATH"
 
-super80_ansi
+# oktoshade_ansi
 
 for BASH_CONFIG in "${HOME}/.config/bash/"*
 do
   [[ -r "$BASH_CONFIG" ]] && . "$BASH_CONFIG"
 done
 
-export PROMPT_CONF_TIME=yes
-
 eval "$(dircolors ~/.dir_colors)"
 
-export PS1="\$(_prompt_hb)\n\$(_prompt_path)\$(_prompt_jobs)\$(_prompt__git)\$(_prompt_env)\$(tput sgr0)\n\n "
+export PS1="\$(_prompt_hb)\n\$(_prompt_path)\$(_prompt_jobs)\$(prompt-git)\$(prompt-env)\$(tput sgr0)\n\n "
 #export PROMPT_COMMAND="history -a; history -n; $PROMPT_COMMAND"
 
 alias cd='cd -P'

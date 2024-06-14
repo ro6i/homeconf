@@ -13,3 +13,5 @@ set color_win_inactive_sel_fg=15
 set color_win_inactive_sel_bg=23
 set color_statusline_bg=16
 set color_statusline_fg=7
+
+set color_win_inactive_cur_sel_bg=16

@@ -1,7 +1,6 @@
 #!/bin/bash
 
 cp -rf ~/.config/bash/prompt.sh     .config/bash/
-cp -rf ~/.config/bash/prompt-git.sh .config/bash/
 cp -rf ~/.config/nvim/init.vim      .config/nvim/
 cp -rf ~/.config/nvim/after/*       .config/nvim/after/
 cp -rf ~/.config/cmus/rc            .config/cmus/
@@ -11,13 +10,15 @@ cp -rf ~/.config/mako/config        .config/mako/
 
 cp -rf ~/.bin/colors                .bin/
 
-cp -rf ~/.bin/rebase .bin/rebase
+cp -rf ~/.bin/prompt-env   .bin/
+cp -rf ~/.bin/prompt-git   .bin/
+cp -rf ~/.bin/rebase       .bin/
 cp -rf ~/.bin/swaybar-stat .bin/
-cp -rf ~/.bin/tmux-stat .bin/
-cp -rf ~/.bin/tmux-pipe .bin/
-cp -rf ~/.bin/tmux-shell .bin/
-cp -rf ~/.bin/nvim-listen .bin/
-cp -rf ~/.bin/nvim-pipe .bin/
+cp -rf ~/.bin/tmux-stat    .bin/
+cp -rf ~/.bin/tmux-pipe    .bin/
+cp -rf ~/.bin/tmux-shell   .bin/
+cp -rf ~/.bin/nvim-listen  .bin/
+cp -rf ~/.bin/nvim-pipe    .bin/
 
 cp -rf ~/.bashrc  ./
 cp -rf ~/.inputrc ./

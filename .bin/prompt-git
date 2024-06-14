@@ -1,5 +1,13 @@
 #!/bin/bash
 
+__prompt_component() {
+  local value="$1"
+  if [[ ! -z "$value" ]]
+  then
+    echo "$value$(tput sgr0)"
+  fi
+}
+
 __prompt_parse_git_status() {
   local _status=$(git status --short 2> /dev/null | head -n 1)
   if [[ ! -z "$_status" ]]
@@ -72,9 +80,11 @@ __prompt_git_base_branch() {
   fi
 }
 
-_prompt__git() {
+main() {
   local branch_name="$(git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ \1/' -e 's/^[ ]*//' -e 's/[ ]*$//')"
   [[ -z "$branch_name" ]] && return 0
 
   echo -e "$(__prompt_component "\n  $(__prompt_git_color_branch "$branch_name")$(__prompt_parse_git_status)")$(__prompt_git_base_branch)"
 }
+
+main

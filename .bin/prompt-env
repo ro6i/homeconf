@@ -1,0 +1,34 @@
+#!/bin/bash
+
+__prompt_component() {
+  local value="$1"
+  if [[ ! -z "$value" ]]
+  then
+    echo "$value$(tput sgr0)"
+  fi
+}
+
+__prompt_env_by_tag() {
+  export __prompt_env_counter=0
+  env | grep 'PROMPT_ENV__' | grep ":$tag:" | sort -t ':' -k3 | sed 's/=.*//' | sed 's/^PROMPT_ENV__//' | while read -r envVarId
+    do
+      local keyName="PROMPT_ENV__$envVarId" separator
+      IFS=':' read -r _name _tag _sort <<<"${!keyName}"
+      local value="${!envVarId}"
+      [[ "$value" =~ ^\{?[A-F0-9a-f]{8}-[A-F0-9a-f]{4}-[A-F0-9a-f]{4}-[A-F0-9a-f]{4}-[A-F0-9a-f]{12}\}?$ ]] && value="${value:0:8}" #..${value: -2}"
+
+      [[ -z "$_name" ]] || separator=' '
+      __prompt_env_counter="$((1 + $__prompt_env_counter))"
+      [[ "$__prompt_env_counter" -eq 1 ]] && printf '\n'
+      printf "$(__prompt_component " $(tput setaf 31)[$(tput setaf 8)$_name$separator$(tput setaf $((1 + $__prompt_env_counter)))$(tput setb 0)$value$(tput sgr0)$(tput setaf 31)]$(tput sgr0)")"
+    done
+}
+
+main() {
+  env | grep 'PROMPT_ENV__' | awk -F':' '{print $2}' | sort | uniq | while read -r tag
+    do
+      __prompt_env_by_tag "$tag"
+    done
+}
+
+main
