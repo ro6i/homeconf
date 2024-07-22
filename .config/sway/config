@@ -1,5 +1,4 @@
 # Default config for sway
-#
 # Copy this to ~/.config/sway/config and edit it to your liking.
 #
 # Read `man 5 sway` for a complete reference.
@@ -24,7 +23,9 @@ set $menu dmenu_path | dmenu | xargs swaymsg exec --
 #
 # Default wallpaper (more resolutions are available in /usr/share/backgrounds/sway/)
 # output * bg /usr/share/backgrounds/sway/Sway_Wallpaper_Blue_1920x1080.png fill
-output * bg ~/Pictures/Proteus-2013-05-01-96uPuB2038678171-0020.png fill
+# output * bg ~/Pictures/Proteus-2013-05-01-96uPuB2038678171-0020.png fill
+# output * bg ~/Downloads/scanlines.dark.3.jpg fill
+output * bg ~/Downloads/crt.4.jpg tile
 output * subpixel none
 
 #
@@ -270,6 +271,8 @@ mode "$screenshot" {
 }
 
 bindsym $mod+y mode "$screenshot"
+
+# for_window [app_id="foot"] opacity 0.98
 
 include /etc/sway/config.d/*
 

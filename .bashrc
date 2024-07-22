@@ -24,7 +24,7 @@ do
   [[ -r "$BASH_CONFIG" ]] && . "$BASH_CONFIG"
 done
 
-eval "$(dircolors ~/.dir_colors)"
+eval "$(dircolors ~/.dircolors)"
 
 export PS1="\$(_prompt_hb)\n\$(_prompt_path)\$(_prompt_jobs)\$(prompt-git)\$(prompt-env)\$(tput sgr0)\n\n "
 #export PROMPT_COMMAND="history -a; history -n; $PROMPT_COMMAND"

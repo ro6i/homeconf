@@ -4,11 +4,11 @@ nnoremap <C-l> 5zl
 nnoremap <C-h> 5zh
 
 nnoremap <Down> gj
-nnoremap <Up> gk
+nnoremap <Up>   gk
 vnoremap <Down> gj
-vnoremap <Up> gk
+vnoremap <Up>   gk
 inoremap <Down> <C-o>gj
-inoremap <Up> <C-o>gk
+inoremap <Up>   <C-o>gk
 
 nnoremap <Enter> ;
 vnoremap <Enter> ;
@@ -284,8 +284,8 @@ call textobj#user#plugin('capitalsn', { 'capitaln': { 'pattern': '[A-Z]', 'move-
 call textobj#user#plugin('capitalsb', { 'capitalb': { 'pattern': '[A-Z]', 'move-p': ['<Backspace>'] } })
 
 set virtualedit=all
-" set nowrap
-set wrap
+set nowrap
+" set wrap
 " set linebreak
 set sidescroll=1
 set nostartofline
