@@ -23,6 +23,8 @@ nnoremap <silent> <Leader>gb        :Git blame<CR>
 nnoremap <silent> <Leader>f         :call FindTextSettings()<CR>
 nnoremap <silent> <Leader>hc        /=======<CR>
 nnoremap <silent> <Leader>j         :AsJSON<CR>
+nnoremap <silent> <Leader>jj        :AsJSON<CR>
+nnoremap <silent> <Leader>jl        :%s/\\n/\r/g<CR>:%s/\\t/  /g<CR>
 nnoremap <silent> <Leader>s         :call FindTextPrompt()<CR>
 nnoremap <silent> <Leader>l         :call NextKeymap()<CR>:call lightline#update()<CR>
 nnoremap <silent> <Leader>wp        "+p
