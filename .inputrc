@@ -3,7 +3,9 @@ set editing-mode vi
 # set vi-ins-mode-string $
 # set vi-cmd-mode-string :
 
+# set underscore cursor
 set vi-ins-mode-string \1\x1b[4 q\2$
+# set block cursor
 set vi-cmd-mode-string \1\x1b[2 q\2:
 
 set show-mode-in-prompt on

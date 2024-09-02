@@ -49,10 +49,7 @@ case $1 in
     ;;
 
   sbt-build)
-    tmux select-window -t :1
-    tmux select-pane -t .2
-    tmux send-keys -R
-    tmux clear-history
+    tmux select-window -t :1 \; select-pane -t .2 \; send-keys -R \; clear-history
     sleep 0.2
     tmux send-keys Enter
     sleep 0.2
@@ -62,12 +59,8 @@ case $1 in
     ;;
 
   sbt-prompt-hook)
-    # tmux select-window -t :1
-    # tmux select-pane -t 1.2
     # selecting a pane is too intrusive, send a bell instead
-    tmux send-keys -t 1.2 C-g
-    tmux copy-mode -t 1.2
-    tmux send-keys -t 1.2 g
+    tmux send-keys -t 1.2 C-g \; copy-mode -t 1.2 \; send-keys -t 1.2 g
     ;;
 
   sbt-jump-to-line)
