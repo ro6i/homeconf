@@ -11,8 +11,6 @@ export HISTFILESIZE=20000
 export HISTCONTROL=ignoreboth
 export GREP_OPTIONS='--color=auto'
 
-export TZ='Asia/Tbilisi'
-
 export PATH="$PATH:$HOME/.bin:$HOME/.local/bin:~/projects/endowus/.bin"
 export PATH="$PATH:~/node_modules/.bin"
 # export PATH="/usr/local/sbin:$PATH"
@@ -64,3 +62,7 @@ HISTTIMEFORMAT='%F %T '
 eval "$(direnv hook bash)"
 
 export SWAYSOCK=/run/user/$(id -u)/sway-ipc.$(id -u).$(pgrep -x sway).sock
+
+### MANAGED BY RANCHER DESKTOP START (DO NOT EDIT)
+export PATH="/home/robi/.rd/bin:$PATH"
+### MANAGED BY RANCHER DESKTOP END (DO NOT EDIT)

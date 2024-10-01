@@ -70,6 +70,8 @@ vmap     <silent> <Space>r          g*
 nnoremap <silent> <Space>l          :GotoLastTab<CR>
 nnoremap <silent> <Space>n          :tabnext<CR>
 
+nnoremap <silent> <Space>o          :only<CR>
+nnoremap <silent> <Space>O          :tabonly<CR>
 nnoremap <silent> <Space>p          :tabprevious<CR>
 nnoremap <silent> <Space>t          :tabnew<CR>
 nnoremap <silent> <Space>T          :tabclose<CR>
@@ -86,7 +88,6 @@ nnoremap <silent> <Space>ws         <C-w>s
 nnoremap <silent> <Space>wv         <C-w>v
 
 nnoremap <silent> <Space>q          :q<CR>
-nnoremap <silent> <Space>Q          :only<CR>
 nnoremap <silent> <Space>x          :qa<CR>
 nnoremap <silent> <Space>X          :qa!<CR>
 nnoremap <silent> <Space>z          :call ToggleWindowSize()<CR>
@@ -238,7 +239,7 @@ function! LightlineLineinfo()
   return printf('%2s', line('.')) . ':' . printf('%2s', charcol('.')) . ' /' . line('$') . ' ' . printf('%6s', charcode)
 endfunction
 
-let g:lightline = { 'colorscheme': 'm31', 'filename': "%f", 'tabline': { 'left': [ [ 'tabs' ] ], 'right': [ ] }, 'mode_map': { 'n' : 'N', 'i' : 'I', 'R' : 'R', 'v' : 'V', 'V' : 'L', "\<C-v>": 'B', 'c' : 'C', 's' : 'S', 'S' : 'S-L', "\<C-s>": 'S-B', 't': 'T' }, 'component_function': { 'lineinfo': 'LightlineLineinfo' }, 'component_expand': { 'keymap': 'LightlineKeymap', 'env': 'LightlineEnv', 'snugfind': 'LightlineSnugfind', 'bindings': 'LightlineBindings' }, 'component_type': { 'keymap': 'warning', 'bindings': 'warning' }, 'active': { 'right': [ [], [ 'lineinfo' ], [ 'fileformat', 'fileencoding', 'filetype' ], ['keymap', 'bindings', 'env', 'snugfind' ] ] }, 'inactive': { 'right': [ [ 'lineinfo' ] ] }, 'subseparator': { 'left': '', 'right': '|' } }
+let g:lightline = { 'colorscheme': 'm31', 'filename': "%f", 'tabline': { 'left': [ [ 'tabs' ] ], 'right': [ ] }, 'mode_map': { 'n' : 'N', 'i' : 'I', 'R' : 'R', 'v' : 'V', 'V' : 'L', "\<C-v>": 'B', 'c' : 'C', 's' : 'S', 'S' : 'S-L', "\<C-s>": 'S-B', 't': 'T' }, 'component_function': { 'lineinfo': 'LightlineLineinfo' }, 'component_expand': { 'keymap': 'LightlineKeymap', 'env': 'LightlineEnv', 'snugfind': 'LightlineSnugfind', 'bindings': 'LightlineBindings' }, 'component_type': { 'keymap': 'warning', 'bindings': 'warning' }, 'active': { 'right': [ [], [ 'lineinfo' ], [ 'fileformat', 'fileencoding', 'filetype' ], ['keymap', 'bindings', 'env' ] ] }, 'inactive': { 'right': [ [ 'lineinfo' ] ] }, 'subseparator': { 'left': '', 'right': '|' } }
 
 let g:snugfind_dirs = ['.']
 if ! empty($NVIM_SEARCH_DIR_1)
