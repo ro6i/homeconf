@@ -48,6 +48,7 @@ nnoremap <silent> <Leader><Leader>  :Files<CR><C-_>
 nnoremap <silent> <Leader><Bar>     :Buffers<CR>
 
 nnoremap <silent> <Space>           <nop>
+nnoremap <silent> <Space><Enter>    :w<CR>
 nnoremap <silent> <Space>1          1gt<CR>
 nnoremap <silent> <Space>2          2gt<CR>
 nnoremap <silent> <Space>3          3gt<CR>
@@ -92,7 +93,6 @@ nnoremap <silent> <Space>x          :qa<CR>
 nnoremap <silent> <Space>X          :qa!<CR>
 nnoremap <silent> <Space>z          :call ToggleWindowSize()<CR>
 
-nnoremap <silent> <Space><Space>    za
 nnoremap <silent> <Space><Space>f   :call ToggleQuickfixList()<CR>
 nnoremap <silent> <Space><Space>w   :set wrap!<CR>
 nnoremap <silent> <Space><Space>c   :set cursorline!<CR>:set cursorcolumn!<CR>
