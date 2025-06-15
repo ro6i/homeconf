@@ -25,7 +25,9 @@ set $menu dmenu_path | dmenu | xargs swaymsg exec --
 # output * bg /usr/share/backgrounds/sway/Sway_Wallpaper_Blue_1920x1080.png fill
 # output * bg ~/Pictures/Proteus-2013-05-01-96uPuB2038678171-0020.png fill
 # output * bg ~/Downloads/scanlines.dark.3.jpg fill
-output * bg ~/Downloads/crt.4.jpg tile
+# output * bg ~/Downloads/crt.4.jpg tile
+output * bg ~/Downloads/BlueNoise470Dithering-dark.png tile
+# output * bg ~/Downloads/blue-noise-colored.jpg tile
 output * subpixel none
 
 #
@@ -63,7 +65,7 @@ input * {
 # Read `man 5 sway-input` for more information about this section.
 
 input type:keyboard {
-  xkb_layout    us,ru(phonetic)
+  xkb_layout    us,ru(phonetic_winkeys)
   xkb_options   grp:rctrl_toggle
   repeat_delay  240
   repeat_rate   35
@@ -195,16 +197,16 @@ mode "resize" {
   # right will grow the containers width
   # up will shrink the containers height
   # down will grow the containers height
-  bindsym $left resize shrink width 10px
-  bindsym $down resize grow height 10px
-  bindsym $up resize shrink height 10px
-  bindsym $right resize grow width 10px
+  bindsym $left  resize shrink width  10px
+  bindsym $down  resize grow   height 10px
+  bindsym $up    resize shrink height 10px
+  bindsym $right resize grow   width  10px
 
-  # Ditto, with arrow keys
-  bindsym Left resize shrink width 10px
-  bindsym Down resize grow height 10px
-  bindsym Up resize shrink height 10px
-  bindsym Right resize grow width 10px
+  # ditto, with arrow keys
+  bindsym Left  resize shrink width  10px
+  bindsym Down  resize grow   height 10px
+  bindsym Up    resize shrink height 10px
+  bindsym Right resize grow   width  10px
 
   # Return to default mode
   bindsym Return mode "default"
@@ -233,7 +235,7 @@ bar {
   pango_markup enabled
   position bottom
 
-  font "M51 14"
+  font "m814 10"
   tray_padding 0
 
   # When the status_command prints a new line to stdout, swaybar updates.
@@ -253,7 +255,7 @@ bar {
 
 bindsym XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +2%
 bindsym XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -2%
-bindsym XF86AudioMute        exec pactl set-sink-mute @DEFAULT_SINK@ toggle
+bindsym XF86AudioMute        exec pactl set-sink-mute   @DEFAULT_SINK@ toggle
 
 #
 # Screen capture
@@ -272,7 +274,7 @@ mode "$screenshot" {
 
 bindsym $mod+y mode "$screenshot"
 
-# for_window [app_id="foot"] opacity 0.98
+# for_window [app_id="foot"] opacity 0.935
 
 include /etc/sway/config.d/*
 

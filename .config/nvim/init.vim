@@ -93,6 +93,7 @@ nnoremap <silent> <Space>x          :qa<CR>
 nnoremap <silent> <Space>X          :qa!<CR>
 nnoremap <silent> <Space>z          :call ToggleWindowSize()<CR>
 
+nnoremap <silent> <Space><Space>e          :Lexplore<CR>
 nnoremap <silent> <Space><Space>f   :call ToggleQuickfixList()<CR>
 nnoremap <silent> <Space><Space>w   :set wrap!<CR>
 nnoremap <silent> <Space><Space>c   :set cursorline!<CR>:set cursorcolumn!<CR>
@@ -225,7 +226,7 @@ function! LightlineKeymap()
   return !exists("b:keymap_name") ? "" : toupper(b:keymap_name)
 endfunction
 function! LightlineBindings()
-  let value = (&cursorbind ? '>' : '') . (&scrollbind ? '^' : '')
+  let value = (&cursorbind ? '[' . (&scrollbind ? '=' : '') . ']': '')
   return (&cursorbind || &scrollbind) ? (value) : ''
 endfunction
 function! LightlineSnugfind()

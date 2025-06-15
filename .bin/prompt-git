@@ -20,7 +20,7 @@ __prompt_parse_git_status() {
       [[ "$staged_count"    -eq 0 ]] && staged='--'    || staged="$staged_count"
       [[ "$unstaged_count"  -eq 0 ]] && unstaged='--'  || unstaged="$unstaged_count"
       [[ "$untracked_count" -eq 0 ]] && untracked='--' || untracked="$untracked_count"
-      echo -e " $(tput setab 21)$(tput setaf 2) $staged $(tput setaf 1) $unstaged $(tput setaf 5) $untracked $(tput sgr0)"
+      echo -e " $(tput setab 16)$(tput setaf 2) $staged $(tput setaf 1) $unstaged $(tput setaf 5) $untracked $(tput sgr0)"
     fi
   fi
 }
@@ -43,7 +43,7 @@ __prompt_git_color_branch() {
       local prefix="${branch_name%%/*}"
       branch_name="$(echo "$branch_name" | cut -c $(( ${#prefix} + 2))-)"
       case "$prefix" in
-        fix)             prefix_color=3 ;;
+        fix)             prefix_color=1 ;;
         feat | feature)  prefix_color=6 ;;
         release)         prefix_color=2 ;;
         *)               prefix_color=7 ;;

@@ -6,16 +6,12 @@ export EDITOR=nvim
 export CLICOLOR=1
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
-# export HISTTIMEFORMAT="%Y-%m-%dT%T "
 export HISTFILESIZE=20000
 export HISTCONTROL=ignoreboth
 export GREP_OPTIONS='--color=auto'
 
 export PATH="$PATH:$HOME/.bin:$HOME/.local/bin:~/projects/endowus/.bin"
 export PATH="$PATH:~/node_modules/.bin"
-# export PATH="/usr/local/sbin:$PATH"
-
-# oktoshade_ansi
 
 for BASH_CONFIG in "${HOME}/.config/bash/"*
 do
@@ -25,13 +21,11 @@ done
 eval "$(dircolors ~/.dircolors)"
 
 export PS1="\$(_prompt_hb)\n\$(_prompt_path)\$(_prompt_jobs)\$(prompt-git)\$(prompt-env)\$(tput sgr0)\n\n "
-#export PROMPT_COMMAND="history -a; history -n; $PROMPT_COMMAND"
 
 alias cd='cd -P'
 alias ll='ls -l --color=auto'
-alias cp="cp -i"                          # confirm before overwriting something
-alias free='free -m'                      # show sizes in MB
-# alias rm='trash'
+alias cp="cp -i"
+alias free='free -m'
 alias reboot='sudo reboot now; history -d $(history 1)'
 
 mkdircd() {

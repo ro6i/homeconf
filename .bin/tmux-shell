@@ -97,6 +97,7 @@ case $1 in
       else
         tmux display-message '#[fg=yellow]Can only jump on to [nvim] process on pane [2.1] --'
       fi
+      tmux delete-buffer
       # tmux pipe-pane -o -t .1 ":e $full_path+$line_nr"
     fi
     ;;
