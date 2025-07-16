@@ -10,15 +10,24 @@ cp -rf ~/.config/mako/config        .config/mako/
 
 cp -rf ~/.bin/colors                .bin/
 
-cp -rf ~/.bin/prompt-env   .bin/
-cp -rf ~/.bin/prompt-git   .bin/
-cp -rf ~/.bin/rebase       .bin/
-cp -rf ~/.bin/swaybar-stat .bin/
-cp -rf ~/.bin/tmux-stat    .bin/
-cp -rf ~/.bin/tmux-pipe    .bin/
-cp -rf ~/.bin/tmux-shell   .bin/
+cp -rf ~/.bin/git-base     .bin/
+cp -rf ~/.bin/git-get      .bin/
+cp -rf ~/.bin/git-update   .bin/
+cp -rf ~/.bin/git-yank     .bin/
+cp -rf ~/.bin/jump         .bin/
+cp -rf ~/.bin/nopowersave  .bin/
+cp -rf ~/.bin/now          .bin/
 cp -rf ~/.bin/nvim-listen  .bin/
 cp -rf ~/.bin/nvim-pipe    .bin/
+cp -rf ~/.bin/prompt-env   .bin/
+cp -rf ~/.bin/prompt-git   .bin/
+cp -rf ~/.bin/setdarktheme .bin/
+cp -rf ~/.bin/swaybar-stat .bin/
+cp -rf ~/.bin/tmux-pipe    .bin/
+cp -rf ~/.bin/tmux-shell   .bin/
+cp -rf ~/.bin/tmux-stat    .bin/
+cp -rf ~/.bin/today        .bin/
+cp -rf ~/.bin/ytd          .bin/
 
 cp -rf ~/.bashrc  ./
 cp -rf ~/.inputrc ./

@@ -1,0 +1,92 @@
+#!/bin/bash
+
+DEFAULT_TARGET_BRANCH='develop'
+
+main() {
+  _assert_root
+
+  local base_branch_name target_branch_dir
+  if [[ ! -f .gitbase ]]
+  then
+    _echo_msg "[.gitbase] file not found, using target branch [$DEFAULT_TARGET_BRANCH]"
+    base_branch_name="$DEFAULT_TARGET_BRANCH"
+    target_branch_dir="$(git rev-parse --path-format=absolute --git-common-dir)/.."
+  else
+    base_branch_name=$(cat .gitbase | head -n 1)
+    if [[ -z "$base_branch_name" ]]
+    then
+      _echo_msg 'no target branch found in file [.gitbase]'
+      exit  1
+    fi
+    target_branch_dir="$(git worktree list | grep "\\[$base_branch_name\\]" | awk '{print $1}')"
+    if [[ -z "$target_branch_dir" ]]
+    then
+      # local main_tree_search="$(git branch | awk "$1 == \"$base_branch_name\" {print \$1}")"
+      _echo_msg 'target worktree must have other branch selected'
+      target_branch_dir="$(git rev-parse --path-format=absolute --git-common-dir)/.."
+      _echo_msg "target branch dir [$target_branch_dir]"
+    fi
+  fi
+
+  local current_branch="$(git rev-parse --abbrev-ref HEAD)"
+
+  # We need to switch to base branch's own directory
+  # in order to check its status,
+  # but before that we must push the current directory
+  # so we can jump back later to perform the actual `git rebase`
+  pushd "$PWD" > /dev/null
+
+  # cd to the directory of main worktree
+  _echo_msg 'inspecting the target branch ...'
+  cd "$target_branch_dir"
+
+  # Current branch in main worktree may be different from the base branch
+  # which we want to check status for
+  local selected_branch_at_main_worktree="$(git rev-parse --abbrev-ref HEAD)"
+
+  if [[ "$selected_branch_at_main_worktree" == "$base_branch_name" ]]
+  then
+    try_pull
+  else
+    _echo_msg "selected branch [$selected_branch_at_main_worktree] in target worktree is not base"
+    git switch "$base_branch_name"
+    try_pull
+    #restore the previously selected branch at main worktree
+    git switch "$selected_branch_at_main_worktree"
+  fi
+  echo
+  popd > /dev/null
+
+  _echo_msg 'now rebasing ...'
+  git rebase -i "$base_branch_name"
+}
+
+_echo_msg() {
+  >&2 echo "$(tput setaf 8)==> $(tput setaf 15)$1$(tput sgr0)"
+}
+
+_assert_root() {
+  if [[ ! -d '.git' && ! -f '.git' ]]
+  then
+    _echo_msg 'must be run from branch root'
+    exit 1
+  fi
+}
+
+try_pull() {
+  git fetch
+  echo "$(git status)" | grep -q '^Your branch is up to date with'
+  if [[ $? -ne 0 ]]
+  then
+    _echo_msg "branch [$base_branch_name] diverges from upstream"
+    read -p "    $(tput setaf 2)git pull$(tput setaf 3) the target branch? (Y/n):$(tput sgr 0) " -r
+    if [[ $REPLY =~ ^[Yy]$ ]]
+    then
+      git pull
+    else
+      exit 1
+    fi
+  fi
+}
+
+main

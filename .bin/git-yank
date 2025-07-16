@@ -1,0 +1,8 @@
+#!/bin/bash
+
+branch_name="$(git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ \1/' -e 's/^[ ]*//' -e 's/[ ]*$//')"
+if [[ -z "$branch_name" ]]
+then
+  exit 1
+fi
+wl-copy "$branch_name"

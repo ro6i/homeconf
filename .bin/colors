@@ -36,15 +36,13 @@ print_octet index - from 0
 print_octet index - from 8
 print_octet index - from 16
 print_octet index - from 24
+# echo
+# print_octet index - from 32
+# print_octet index - from 40
 echo
-print_octet index - from 32
-print_octet index - from 40
-echo
+print_octet from 16 from 24
 print_octet from 16 from 0
 print_octet from 16 from 8
-echo
-print_octet from 16 from 32
-print_octet from 16 from 40
 echo
 print_octet from 24  index  0
 print_octet from 24  index 15
