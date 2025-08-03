@@ -5,7 +5,7 @@ hi! link scalaCapitalWord Typedef
 hi! link scalaInterpolation Macro
 hi! link scalaInterpolationBoundary Macro
 
-syn match scalaTodo "\vTODO|FIXME|XXX|NOTE|YANKME" contained
+syn match scalaTodo "\vTODO|FIXME|XXX|NOTE|YANKME|DELETEME" contained
 syn match post_brac       /[()]/         | hi post_brac ctermfg=8
 syn match post_bracket    /[{}]$/        | hi post_bracket ctermfg=8
 syn match post_bracket_b  /^\s*[{}]/     | hi post_bracket_b ctermfg=8

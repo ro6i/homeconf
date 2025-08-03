@@ -107,6 +107,8 @@ nnoremap <silent> <Space><Space>\   :call ToggleColorColumn(80)<CR>
 nnoremap <silent> <Space><Space>[   :call ToggleColorColumn(120)<CR>
 nnoremap <silent> <Space><Space>]   :call ToggleColorColumn(160)<CR>
 
+" vnoremap <Tab>  <Plug>(textobj-capitalchar-next)
+
 " fuzzy go-to definition
 function GoToDefinitionAware(target)
   let l:findAny  = '(def\|val\|function\|fun\|fn\|const\|auto\|class\|struct\|object\|trait)\s*' . a:target . '\s*(\W\|$)'
@@ -284,8 +286,12 @@ command! AsJSON set syntax=json | FormatJSON
 
 command! Pipe :w !tmux-pipe-to-next-pane
 
-call textobj#user#plugin('capitalsn', { 'capitaln': { 'pattern': '[A-Z]', 'move-n': ['<Tab>'] } })
-call textobj#user#plugin('capitalsb', { 'capitalb': { 'pattern': '[A-Z]', 'move-p': ['<Backspace>'] } })
+" need to unmap Tab key for textobj to work in visual mode
+unmap <Tab>
+call textobj#user#plugin('capitalchar', {
+  \  'ncap': { 'pattern': '[A-Z]', 'move-n': ['<Tab>'] },
+  \  'pcap': { 'pattern': '[A-Z]', 'move-p': ['<Backspace>'] },
+  \})
 
 set virtualedit=all
 set nowrap
