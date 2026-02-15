@@ -1,0 +1,8 @@
+#!/bin/bash
+
+if pstree -pcAaT  "$(tmux list-panes -s -F '#{window_index}.#{pane_index} #{pane_active} #{pane_pid}' | awk '$1 == 1.2 {print $3}')" | grep -q 'Dsbt.script'
+then
+  ~/.tmux.tools/sbt/build "$@"
+else
+  tmux display-message 'no build tool detected'
+fi
