@@ -137,6 +137,7 @@ linux66
 localsearch
 logrotate
 loupe
+lsof
 lvm2
 make
 mako

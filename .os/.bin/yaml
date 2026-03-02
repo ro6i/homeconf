@@ -1,0 +1,20 @@
+#!/bin/bash
+
+SEARCH_FILENAME="$1"
+SEARCH_KEY="$2"
+SEARCH_FILTER="$3"
+
+YAML_PATH="$ARGWORK_CLI_DIR/.opts/$SEARCH_FILENAME"
+# >&2 echo "==>$YAML_PATH"
+#
+# >&2 echo
+# >&2 echo "key [$SEARCH_KEY], filter [$SEARCH_FILTER]"
+
+if [[ -z "$SEARCH_FILTER" ]]
+then
+  query="$SEARCH_KEY"
+else
+  query="$SEARCH_KEY | $SEARCH_FILTER"
+fi
+
+cat "$YAML_PATH" | yq e "$query | @tsv" | tr '\t' '\n'

@@ -1,0 +1,27 @@
+black:
+  gray: light
+  white: light
+blue:
+  navy: dark
+  none: none
+coral:
+  red: same
+  crimson: dark
+crimson:
+cyan:
+fuchsia:
+gray:
+green:
+magenta:
+maroon:
+navy:
+none:
+olive:
+orange:
+pink:
+purple:
+red:
+silver:
+teal:
+white:
+yellow:

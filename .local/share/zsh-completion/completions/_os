@@ -1,0 +1,12 @@
+#compdef os
+
+if [[ "$(whence '_argwork_completion')" != 'function' ]]
+then
+  source "$(dirname "${(%):-%x}")/../argwork-completion.zsh"
+fi
+
+_os() {
+  export ARGWORK_CLI_DIR="$HOME/.os"
+  _argwork_completion
+  unset ARGWORK_CLI_DIR
+}

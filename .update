@@ -28,6 +28,8 @@ cp -f ~/.local/bin/tmux-*        .local/bin/
 
 cp -rf ~/.local/share/bash-completion/  .local/share/bash-completion/
 cp -f  ~/.local/share/bash-completion/argwork-completion.bash  .local/share/bash-completion/
+cp -rf ~/.local/share/zsh-completion/  .local/share/zsh-completion/
+cp -f  ~/.local/share/zsh-completion/argwork-completion.zsh  .local/share/zsh-completion/
 
 cp -rfa ~/.os/*      .os/
 

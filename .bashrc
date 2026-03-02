@@ -17,11 +17,6 @@ export PATH="$PATH:$HOME/projects/work/.bin"
 
 [[ -r "$HOME/.bash_prompt" ]] && . "$HOME/.bash_prompt"
 
-for BASH_CONFIG in "$HOME/.config/bash/"*
-do
-  [[ -r "$BASH_CONFIG" ]] && . "$BASH_CONFIG"
-done
-
 eval "$(dircolors ~/.dircolors)"
 
 export PS1="\$(_prompt_hb)\n\$(_prompt_path)\$(_prompt_jobs)\$(prompt-git)\$(prompt-env)\$(tput sgr0)\n\n "

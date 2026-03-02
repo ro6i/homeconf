@@ -9,15 +9,20 @@ __prompt_component() {
 }
 
 _prompt_path() {
+  local bar_color=16
+  if [[ "$(ps -o comm= -p $PPID)" == 'bash' ]]
+  then
+    bar_color=22
+  fi
   local dir="$(dirs)"
   local dirname="$(dirname "$dir")"
-  local dir_path="$(tput setaf 7)${dirname:0:1}$(echo "${dirname:1}" | sed "s/\\//$(tput sgr0)$(tput setaf 24)\\/$(tput setab 16)$(tput setaf 8)/g")"
+  local dir_path="$(tput setaf 7)${dirname:0:1}$(echo "${dirname:1}" | sed "s/\\//$(tput sgr0)$(tput setaf 24)\\/$(tput setab $bar_color)$(tput setaf 8)/g")"
   if [[ "${#dir}" == 1 ]]
   then
-    echo -e "$(tput setab 16)$(tput setaf 7)$dir\033[K$(tput sgr0)"
+    echo -e "$(tput setab $bar_color)$(tput setaf 7)$dir\033[K$(tput sgr0)"
   else
     local decorated_base_name="$(tput setaf 15)$(basename "$dir")"
-    echo -e "$(tput setab 16)$dir_path$(tput sgr0)$(tput setaf 24)/$(tput setab 16)$decorated_base_name\033[K$(tput sgr0)"
+    echo -e "$(tput setab $bar_color)$dir_path$(tput sgr0)$(tput setaf 24)/$(tput setab $bar_color)$decorated_base_name\033[K$(tput sgr0)"
   fi
 }
 
