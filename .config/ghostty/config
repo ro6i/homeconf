@@ -1,0 +1,118 @@
+# This is the configuration file for Ghostty.
+#
+# This template file has been automatically created at the following
+# path since Ghostty couldn't find any existing config files on your system:
+#
+#   /home/robi/.config/ghostty/config
+#
+# The template does not set any default options, since Ghostty ships
+# with sensible defaults for all options. Users should only need to set
+# options that they want to change from the default.
+#
+# Run `ghostty +show-config --default --docs` to view a list of
+# all available config options and their default values.
+#
+# Additionally, each config option is also explained in detail
+# on Ghostty's website, at https://ghostty.org/docs/config.
+#
+# Ghostty can reload the configuration while running by using the menu
+# options or the bound key (default: Command + Shift + comma on macOS and
+# Control + Shift + comma on other platforms). Not all config options can be
+# reloaded while running; some only apply to new windows and others may require
+# a full restart to take effect.
+
+# Config syntax crash course
+# ==========================
+# # The config file consists of simple key-value pairs,
+# # separated by equals signs.
+# font-family = Iosevka
+# window-padding-x = 2
+#
+# # Spacing around the equals sign does not matter.
+# # All of these are identical:
+# key=value
+# key= value
+# key =value
+# key = value
+#
+# # Any line beginning with a # is a comment. It's not possible to put
+# # a comment after a config option, since it would be interpreted as a
+# # part of the value. For example, this will have a value of "#123abc":
+# background = #123abc
+#
+# # Empty values are used to reset config keys to default.
+# key =
+#
+# # Some config options have unique syntaxes for their value,
+# # which is explained in the docs for that config option.
+# # Just for example:
+# resize-overlay-duration = 4s 200ms
+
+keybind = cmd+v=paste_from_clipboard
+
+background = #000000
+foreground = #ff8800
+font-family = m817
+# font-family = Menlo
+font-size = 17
+font-synthetic-style = italic,no-bold,no-bold-italic
+
+# background-opacity = 0.5
+# background-opacity-cells = true
+
+# cursor-style = block
+# cursor-style-blink = false
+
+# cursor-color = #a050e0
+cursor-color = #d1c2b2
+cursor-text  = #000000
+
+adjust-underline-position = 0
+# adjust-underline-thickness = 4
+adjust-cursor-thickness = 4
+
+mouse-hide-while-typing = true
+
+palette = 0=#000060
+palette = 1=#f00060
+palette = 2=#c29b00
+palette = 3=#eb9500
+palette = 4=#c283c3
+palette = 5=#ed5e9c
+palette = 6=#7d9159
+palette = 7=#ff8800
+
+palette =  8=#b98e6e
+palette =  9=#ff4538
+palette = 10=#d6ab00
+palette = 11=#ffac05
+palette = 12=#f38af5
+palette = 13=#ff7096
+palette = 14=#8ba758
+palette = 15=#dda488
+
+palette = 16=#2b251c
+palette = 17=#53130e
+palette = 18=#333800
+palette = 19=#583a1d
+palette = 20=#45296a
+palette = 21=#4f2749
+palette = 22=#273433
+palette = 23=#3a3127
+palette = 24=#5b4b3e
+palette = 25=#f00060
+palette = 26=#9a7f13
+palette = 27=#cc8100
+palette = 28=#b76fb8
+palette = 29=#de2192
+palette = 30=#767c6a
+palette = 31=#9f7c60
+
+
+custom-shader = ~/.config/ghostty/ghostty-shaders/bloom-custom.glsl
+
+async-backend = epoll
+
+custom-shader-animation = false
+
+shell-integration-features = no-cursor

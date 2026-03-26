@@ -1,0 +1,435 @@
+#!/bin/zsh
+
+__argwork_one() {
+  local index var="$2"
+
+  case "$1" in
+    .) index="$__argwork_counter" ;;
+    *) index="$1" ;;
+  esac
+
+  if [[ "$index" != '_' && "$var" != '_' ]]
+  then
+    eval "$var='${words[$(($index + 2))]}'"
+  fi
+
+  case "$index" in
+    _)
+      if [[ ! -v __argwork_optional_arg_vars["$var"] ]]
+      then
+        __argwork_optional_param_count+=1
+        __argwork_optional_arg_vars["$var"]="$var"
+      fi
+      index="$var"
+      ;;
+    *)
+      if (($__argwork_positional_param_count < $index))
+      then
+        __argwork_positional_param_count="$index"
+      fi
+      __argwork_positional_arg_vars[$index]="$var"
+      ;;
+  esac
+
+  shift 2
+
+  local subcommand
+  if [[ "$1" == '--' ]]
+  then
+    shift
+    subcommand="$1"
+  fi
+
+  for param in "$@"
+  do
+    if [[ "$param" == '::' ]]
+    then
+      shift
+      break
+    else
+      shift
+    fi
+  done
+
+  if (( $# == 0 ))
+  then
+    return
+  fi
+
+  local spec="$1";
+  shift
+  case "$spec" in
+    from)
+      __argwork_lookup_types["$index"]='from'
+      __argwork_lookup_values["$index"]="$1"
+      ;;
+    here)
+      local arg_list=(${@:1})
+      __argwork_lookup_types["$index"]='here'
+      __argwork_lookup_values["$index"]=$(IFS=, ; echo "${arg_list[*]}")
+      ;;
+    shell)
+      __argwork_lookup_types["$index"]='shell'
+      __argwork_lookup_values["$index"]="$1"
+      ;;
+    cmd)
+      __argwork_lookup_types["$index"]='cmd'
+      __argwork_lookup_values["$index"]="$1"
+      shift
+      local n=$#
+      for i in $(seq 1 $n)
+      do
+        eval "__argwork_command_args__${index}__${i}='${(P)i}'"
+      done
+      eval "__argwork_command_args__${index}_len=$n"
+      ;;
+    dir)
+      __argwork_lookup_types["$index"]='dir'
+      __argwork_lookup_values["$index"]='[/path/to/directory]'
+      ;;
+    file)
+      __argwork_lookup_types["$index"]='file'
+      __argwork_lookup_values["$index"]='[/path/to/file]'
+      ;;
+    *)
+      ;;
+  esac
+
+  if [[ -n "$subcommand" && -n "${(P)var}" ]]
+  then
+    local function_name="${subcommand}__${(P)var}"
+    if typeset -f "$function_name" > /dev/null 2>&1
+    then
+      "$function_name"
+    fi
+  fi
+}
+
+__argwork_one_help() {
+  local index var="$2"
+
+  case "$1" in
+    .) index="$__argwork_counter" ;;
+    *) index="$1" ;;
+  esac
+
+  if [[ "$index" != '_' && "$var" != '_' ]]
+  then
+    eval "$var='${words[$(($index + 1))]}'"
+  fi
+
+  case "$index" in
+    _)
+      HELP_SPEC+=" ($var)"
+      ;;
+    *)
+      HELP_SPEC+=" [$index:$var]"
+      ;;
+  esac
+
+  shift 2
+
+  local subcommand
+  if [[ "$1" == '--' ]]
+  then
+    shift
+    subcommand="$1"
+    for param in "$@"
+    do
+      if [[ "$param" == '::' ]]
+      then
+        shift
+        break
+      else
+        shift
+      fi
+    done
+
+    local spec="$1";
+    shift
+    case "$spec" in
+      here)
+        if [[ ! -z "$subcommand" ]]
+        then
+          __argwork_help_indent+=4
+          __argwork_counter+=1
+          for switch in "$@"
+          do
+            if [[ $(type -t ${subcommand}__${switch}) == function ]]
+            then
+              HELP_SPEC+="$(printf "\n  %s" "%${__argwork_help_indent}s")"
+              local save_counter="$__argwork_counter"
+              HELP_SPEC+="$(printf "\n  %s" "$switch")"
+              HELP_SPEC+="$(printf "\n  %s" "%$(( 10 - ${#switch} ))s")"
+              eval "${subcommand}__${switch}"
+              __argwork_counter="$save_counter"
+            fi
+          done
+          __argwork_help_indent+=-4
+        fi
+        ;;
+      *)
+        ;;
+    esac
+  fi
+}
+
+__argwork_complete() {
+  # Optionals consist of three parts and are specifired like <param>:<value>, i.e. 3 components
+  if [[ $CURRENT -gt $(($__argwork_positional_param_count + $__argwork_optional_param_count * 3 + 1 + 1)) ]]
+  then
+    return
+  fi
+
+  local sector=POSITIONAL
+  if [[ $CURRENT -gt $(( $__argwork_positional_param_count + 1 + 1 )) ]]
+  then
+    sector=OPTIONAL
+  fi
+
+  local key
+  local key_shift=0
+  case "$sector" in
+    POSITIONAL)
+      key="$(($CURRENT - 1 - 1))"
+      ;;
+    OPTIONAL)
+      if [[ "${words[$CURRENT]}" == ':' ]]
+      then
+        key="${words[$(($CURRENT - 1))]}"
+        key_shift=1
+        if [[ -z "$key" || -z "__argwork_optional_arg_vars["$key"]" ]]
+        then
+          return
+        fi
+      elif [[ "${words[$(($CURRENT - 1))][-1]}" == ':' ]]
+      then
+        key="${words[$(($CURRENT - 1))][1,-2]}"
+        key_shift=0
+        if [[ -z "$key" || -z "__argwork_optional_arg_vars["$key"]" ]]
+        then
+          return
+        fi
+      else
+        compadd -S ':' -a __argwork_optional_arg_vars
+        return
+      fi
+      ;;
+  esac
+
+  local word_index=$(($CURRENT + $key_shift))
+
+  local prefix=()
+  local visited_pattern # pattern for excluding argument value up to a comma (used in list completion)
+  local word="${words[$word_index]}"
+  local comp_word="${word}"
+  if [[ "$word" == *,* ]]
+  then
+    comp_word="${word##*,}"
+    prefix=( -P "${word%,*}," )
+    local visited=( "${(s:,:)${word%,*}}" )
+    visited_pattern="${(j:|:)visited[*]}"
+    # TODO
+    # zstyle ':autocomplete:*' add-space
+    # ZLE_REMOVE_SUFFIX_CHARS=$' \t\n;&|*'
+    # zstyle ':completion:*' add-space false
+  fi
+
+  case "${__argwork_lookup_types["$key"]}" in
+    from)
+      if [[ -f "${ARGWORK_CLI_DIR}/.opts/${__argwork_lookup_values["$key"]}" ]]
+      then
+        local opts_list=( "${(f)$(cat "${ARGWORK_CLI_DIR}/.opts/${__argwork_lookup_values["$key"]}" | grep -vwE "$visited_pattern")}" )
+        compadd -a opts_list
+      fi
+      ;;
+
+    here)
+      local opts_list_all=( ${(s:,:)__argwork_lookup_values["$key"]} )
+      local opts_list=( ${opts_list_all:#$visited_pattern} )
+      compadd ${prefix[*]} -a opts_list
+      ;;
+
+    shell)
+      local shell_code="${__argwork_lookup_values["$key"]}"
+      local opts_list=( "${(f)$(eval "$shell_code")}" )
+      compadd -a opts_list
+      ;;
+
+    cmd)
+      local command_name="${__argwork_lookup_values["$key"]}"
+      local command_path
+      if [[ -x "$ARGWORK_CLI_DIR/.bin/$command_name" ]]
+      then
+        command_path="$ARGWORK_CLI_DIR/.bin/$command_name"
+      else
+        command_path="$command_name"
+      fi
+      local command_line="'$command_path'"
+      local command_args_var="__argwork_command_args__$key"
+      local command_args_var_len="__argwork_command_args__${key}_len"
+      local n="${(P)command_args_var_len}"
+      local param_var_name
+      for i in $(seq 1 $n)
+      do
+        local param_var_name="${command_args_var}__${i}"
+        command_line+=" '${(P)param_var_name}'"
+      done
+      local opts_list=( "${(f)$(eval $command_line)}" )
+      compadd -a opts_list
+      ;;
+
+    dir)
+      _directories
+      ;;
+
+    file)
+      _files
+      ;;
+
+    _)
+      compadd '_'
+      ;;
+
+    *)
+      ;;
+  esac
+}
+
+__argwork_complete_inspect() {
+  declare -A arg_map
+  local sector=POSITIONAL
+  local option_name=
+
+  for index in $(seq 3 "$((${#words} - 1))")
+  do
+    local word="${words[$index]}"
+
+    if [[ "$word" == ':' ]]
+    then
+      continue
+    elif [[ "${word[-1]}" == ':' ]]
+    then
+    # TODO
+      sector=OPTIONAL
+      if [[ ! -z "$option_name" ]]
+      then
+        return
+      fi
+      option_name="${word[1,-2]}"
+    else
+      case $sector in
+        OPTIONAL)
+          if [[ -z "$option_name" ]]
+          then
+            return
+          fi
+          case "$word" in
+            _)
+              arg_map["$option_name"]=
+              ;;
+            *)
+              arg_map["$option_name"]="$word"
+              ;;
+          esac
+          option_name=
+          ;;
+        POSITIONAL)
+          arg_map["$(( $index - 2 ))"]="$word"
+          ;;
+      esac
+    fi
+  done
+
+  for key in $(seq 1 $__argwork_positional_param_count)
+  do
+    local field="${key}:${__argwork_positional_arg_vars[$key]}"
+    INSPECT_SPEC+="$(printf "\n  %s%*s = %s" "$field" "$((19 - ${#key} - ${#__argwork_positional_arg_vars["$key"]}))" '' "${arg_map["$key"]}")"
+  done
+  for option_name in "${(@vo)__argwork_optional_arg_vars}"
+  do
+    INSPECT_SPEC+="$(printf "\n  %s%*s = %s" "_:$option_name" "$((18 - ${#option_name}))" '' "${arg_map["$option_name"]}")"
+  done
+}
+
+_argwork_completion() {
+  declare -A __argwork_lookup_types
+  declare -A __argwork_lookup_values
+  declare -a __argwork_positional_arg_vars
+  declare -A __argwork_optional_arg_vars
+
+  declare -i __argwork_counter=0
+  declare -i __argwork_positional_param_count=0
+  declare -i __argwork_optional_param_count=0
+
+  local argwork_script_path="${words[2]}"
+  local argwork_abs_script_path="$ARGWORK_CLI_DIR/${argwork_script_path} .sh"
+
+  if [ "$CURRENT" -gt 2 ] && [ ! -f "$argwork_abs_script_path" ]
+  then
+    compadd '' ''
+    return
+  fi
+
+  local argwork_global_env_path="$ARGWORK_CLI_DIR/.env.sh"
+  [[ -f "$argwork_global_env_path" ]] && . "$argwork_global_env_path"
+
+
+  if [[ "${words[$CURRENT]}" == '?' ]]
+  then
+    ARGWORK_COMPLETION_MODE=HELP
+    declare -i __argwork_help_indent=0
+    HELP_SPEC='usage: '
+    # Include the actual runnable script
+    . "$argwork_abs_script_path"
+
+    compadd -x "$HELP_SPEC"
+    return
+
+  elif [[ "${words[$CURRENT]}" == '...' ]]
+  then
+    ARGWORK_COMPLETION_MODE=INSPECT
+    INSPECT_SPEC='inspect: '
+    # Include the actual runnable script
+    . "$argwork_abs_script_path"
+
+    __argwork_complete_inspect
+
+    compadd -x "$INSPECT_SPEC"
+    return
+
+  elif [ "$CURRENT" -eq 2 ]
+  then
+    # The first section is completed with script names located at the ARGWORK_CLI_DIR
+    local IFS=$'\n'
+    local word="${words[2]}"
+    local script_sub_rel="${word%/*}"
+    [[ "$word" != *'/'* ]] && script_sub_rel=
+    local script_sub_name="${word##*/}"
+    local script_sub_rel_dir="$script_sub_rel"
+    local script_sub_abs_dir="$script_sub_rel_dir"
+    local script_dir="$ARGWORK_CLI_DIR/$script_sub_abs_dir"
+
+    compadd $(find "$script_dir" -mindepth 1 -maxdepth 1 -not -name '.*' -type f -name "${script_sub_name}* .sh" -printf "${script_sub_rel:+$script_sub_rel/}%f\n" -o -not -name '.*' -type d -name "${script_sub_name}*" -printf "${script_sub_rel:+$script_sub_rel/}%f/\n" | sed 's/ .sh$//g'| sort | grep "^$word")
+    return
+
+  elif [ "$CURRENT" -gt 2 ]
+  then
+    ARGWORK_COMPLETION_MODE=COMPLETE
+    # Source the target argwork
+    . "$argwork_abs_script_path"
+    # eval "$(sed '/^main() {/Q')" "$argwork_abs_script_path"
+
+    __argwork_complete
+    return
+  fi
+}
+
+at() {
+  __argwork_counter+=1
+  case "$ARGWORK_COMPLETION_MODE" in
+    HELP)     __argwork_one_help "$@" ;;
+    INSPECT)  __argwork_one "$@" ;;
+    COMPLETE) __argwork_one "$@" ;;
+  esac
+}

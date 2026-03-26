@@ -26,6 +26,7 @@ cloudflared
 coreutils
 cpupower
 cronie
+crtty-git
 cryptsetup
 device-mapper
 dhclient
@@ -50,6 +51,7 @@ f2fs-tools
 fakeroot
 file-roller
 firefox
+fish
 flex
 fontforge
 foot
@@ -57,6 +59,7 @@ fprintd
 gcc
 gdm
 gedit
+ghostty
 gimp
 glibc-locales
 gnome-backgrounds
@@ -120,6 +123,8 @@ htop
 ibus
 illyria-wallpaper
 inetutils
+intel-gpu-tools
+intel-media-driver
 intel-ucode
 inxi
 iputils
@@ -131,8 +136,12 @@ lib32-libva-vdpau-driver
 lib32-mesa-demos
 lib32-vulkan-intel
 lib32-vulkan-radeon
+libva-intel-driver
+libva-utils
 libva-vdpau-driver
+libvdpau-va-gl
 lighter-gnome
+linux619
 linux66
 localsearch
 logrotate
@@ -214,6 +223,9 @@ python-pip
 qgnomeplatform-qt5
 qmk
 qt5ct
+qt5-graphicaleffects
+qt5-quickcontrols
+qtermwidget
 rancher-desktop
 reiserfsprogs
 ripgrep
@@ -255,6 +267,7 @@ usb_modeswitch
 usbutils
 uswsusp-git
 vault
+vdpauinfo
 vim
 vulkan-intel
 vulkan-radeon
@@ -284,7 +297,6 @@ xorg-server
 xorg-twm
 xorg-xinit
 yajl
-yambar
 yaourt
 yay
 yelp
