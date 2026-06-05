@@ -10,7 +10,19 @@ __argwork_one() {
 
   if [[ "$index" != '_' && "$var" != '_' ]]
   then
-    eval "$var='${COMP_WORDS[$(($index + 1))]}'"
+    local raw_word="${COMP_WORDS[$(($index + 1))]}" val_word
+    case "${raw_word: -1}${raw_word:0:1}" in
+      \'\')
+        val_word="${raw_word#\'}"
+        val_word="${val_word%\'}"
+        ;;
+      \"\")
+        val_word="${raw_word#\"}"
+        val_word="${val_word%\"}"
+        ;;
+    esac
+    # eval "$var='${COMP_WORDS[$(($index + 1))]}'"
+    eval "$var='$val_word'"
   fi
 
   case "$index" in

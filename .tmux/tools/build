@@ -4,5 +4,5 @@ if pstree -pcAaT  "$(tmux list-panes -s -F '#{window_index}.#{pane_index} #{pane
 then
   ~/.tmux/tools/sbt/build "$@"
 else
-  tmux display-message 'no build tool detected'
+  tmux display-message 'build tool not running'
 fi

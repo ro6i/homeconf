@@ -111,7 +111,6 @@ gvfs
 gvfs-afc
 gvfs-dnssd
 gvfs-goa
-gvfs-google
 gvfs-gphoto2
 gvfs-mtp
 gvfs-nfs
@@ -141,8 +140,7 @@ libva-utils
 libva-vdpau-driver
 libvdpau-va-gl
 lighter-gnome
-linux619
-linux66
+linux-meta
 localsearch
 logrotate
 loupe
@@ -232,8 +230,8 @@ ripgrep
 rsync
 rygel
 simple-scan
+slack-desktop
 s-nail
-snapd
 snapshot
 spectre-meltdown-checker
 squashfs-tools

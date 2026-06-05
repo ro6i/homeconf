@@ -112,7 +112,7 @@ nnoremap <silent> <Space><Space>]   :call ToggleColorColumn(160)<CR>
 
 " fuzzy go-to definition
 function GoToDefinitionAware(target)
-  let l:findAny  = '(def\|val\|function\|fun\|fn\|const\|auto\|class\|struct\|object\|trait)\s*' . a:target . '\s*(\W\|$)'
+  let l:findAny  = '(def\|val\|function\|fun\|fn\|const\|auto\|class\|struct\|object\|trait\|type)\s*' . a:target . '\s*(\W\|$)'
   let l:tmp = g:snugfind_case_sensitive
   let g:snugfind_case_sensitive = 1
   call FindTextRegex(l:findAny)
