@@ -1,3 +1,6 @@
+vnoremap r "_dP
+vnoremap * y/\V<C-R>"<CR>
+
 nnoremap <C-j> 5<C-e>
 nnoremap <C-k> 5<C-y>
 nnoremap <C-l> 5zl
@@ -15,12 +18,10 @@ vnoremap <Enter> ;
 
 xmap     <silent> <Leader>a         <Plug>(EasyAlign)
 nnoremap <silent> <Leader>b         :s/\\n\\t/\r/g<CR>
-vnoremap <silent> <Leader>c         y:OSCYankVisual<CR>
-nmap     <silent> <Leader>cp        :let @+ = @%<CR>
 nnoremap <silent> <Leader>d         :windo diffthis<CR>
 nnoremap <silent> <Leader>g         :tab split<CR>:Gvdiffsplit<CR>
-nnoremap <silent> <Leader>gd        :tab split<CR>:Gvdiffsplit develop<CR>
 nnoremap <silent> <Leader>gb        :Git blame<CR>
+nnoremap <silent> <Leader>gm        :tab split<CR>:Gvdiffsplit master<CR>
 nnoremap <silent> <Leader>f         :call FindTextSettings()<CR>
 nnoremap <silent> <Leader>hc        /=======<CR>
 nnoremap <silent> <Leader>j         :AsJSON<CR>
@@ -33,14 +34,19 @@ vnoremap <silent> <Leader>wp        "+p
 nnoremap <silent> <Leader>wP        "+P
 vnoremap <silent> <Leader>wP        "+P
 vnoremap <silent> <Leader>wy        "+y
-inoremap <silent> <M-v>             <C-o>"+p
 nnoremap <silent> <Leader>r         :Ranger<CR>
 nnoremap <silent> <Leader>rr        :tabnew<CR>:term<CR>iranger<CR>
 nnoremap <silent> <Leader>rw        :RangerWorkingDirectory<CR>
 nnoremap <silent> <Leader>rt        :RangerCurrentFileNewTab<CR>
 nnoremap <silent> <Leader>t         :call SetNvimPipe('NVIM_PIPE')<CR>
-vnoremap <silent> <Leader>y         y<cr>:call system("tmux load-buffer -", @0)<cr>
-nnoremap          <Leader>p         :let @0 = system("tmux save-buffer -")<cr>"0p<cr>g;
+
+vnoremap <silent> <M-y>             y<CR>:call system("tmux load-buffer -", @0)<CR>
+nnoremap <silent> <M-p>             :let @0 = system("tmux save-buffer -")<CR>"0p<CR>
+inoremap <silent> <M-p>             <C-r>=system("tmux save-buffer -")<CR>
+
+vnoremap <silent> <M-c>             y:OSCYankVisual<CR>
+inoremap <silent> <M-v>             <C-r>+
+nnoremap <silent> <M-v>             "+p
 
 vnoremap          <Leader>np        :w !tmux-pipe-to-next-pane<CR>
 nnoremap          <Leader>ex        :w !bash<CR>
@@ -48,7 +54,7 @@ nnoremap          <Leader>ex        :w !bash<CR>
 nnoremap <silent> <Leader><Leader>  :Files<CR><C-_>
 nnoremap <silent> <Leader><Bar>     :Buffers<CR>
 
-nnoremap <silent> <Space>           <nop>
+nnoremap <silent> <Space>           <NOP>
 nnoremap <silent> <Space><Enter>    :w<CR>
 nnoremap <silent> <Space>1          1gt<CR>
 nnoremap <silent> <Space>2          2gt<CR>
@@ -135,18 +141,15 @@ endfunction
 
 nnoremap <silent> <Space>s<Space> viw:<C-u>call FindTextFlat(GetLineSelection())<CR>
 vnoremap <silent> <Space>s<Space> :<C-u>call FindTextFlat(GetLineSelection())<CR>
-vnoremap <silent> <Space>s        :<C-u>call FindTextFlat(GetLineSelection())<CR>
+xnoremap          <Space>s        :<C-u>:let g:snugfind_next_text = GetLineSelection()<CR><Esc>:call FindTextPrompt()<CR>
+nnoremap          <Space>sp       :<C-u>:let g:snugfind_next_text = g:snugfind_prev_text<CR><Esc>:call FindTextPrompt()<CR>
 nnoremap <silent> <Space>s        <NOP>
-nnoremap <silent> <Space>sr       :call SetFindDir(1, '..')<CR>
-nnoremap <silent> <Space>se       :call SetFindDir(1, '')<CR>
+nnoremap <silent> <Space>sd..     :call SetFindDir(1, '..')<CR>
+nnoremap <silent> <Space>sd       :call SetFindDir(1, '')<CR>
 nnoremap <silent> <Space>sl       viw:<C-u>:let selectedValue = GetLineSelection()<CR>:call GoToDefinitionAware(selectedValue)<CR>:nohls<CR>:setlocal nowrap<CR>
 nmap     <silent> <Space>sj       <Space>sl<C-w><Enter>:call ToggleQuickfixList()<CR><C-w>T
-
 " fuzzy show usages
 nnoremap <silent> <Space>su       viw"ty:call FindTextRegex('((with\s\\|extends\s\\|[\(\[])' . getreg('t') . '\\|(?<!def\s\\|val\s\\|ass\s\\|ect\s)' . getreg('t') . '[\)(\[\} ])')<CR>:nohls<CR>
-
-vnoremap r "_dP
-vnoremap * y/\V<C-R>"<CR>
 
 tnoremap <C-\><C-\> <C-\><C-n>
 tnoremap <silent> <C-\><C-]> <C-\><C-n>:GotoLastTab<CR>
@@ -165,7 +168,8 @@ Plug 'jeetsukumaran/vim-indentwise'
 Plug 'airblade/vim-gitgutter'
 Plug 'tpope/vim-fugitive'
 Plug 'tommcdo/vim-fugitive-blame-ext'
-Plug 'sindrets/diffview.nvim'
+" Plug 'sindrets/diffview.nvim'
+Plug 'dlyongemallo/diffview-plus.nvim'
 Plug 'nvim-tree/nvim-web-devicons'
 Plug 'GEverding/vim-hocon'
 Plug 'bitc/vim-hdevtools'
@@ -336,34 +340,34 @@ set foldmethod=indent
 set foldlevel=0
 set colorcolumn=0
 set conceallevel=1
+set scrolloff=2
 set scrollopt+=hor
 set nofoldenable
 set signcolumn=yes
 set switchbuf=useopen,usetab
-
-set spelllang=en,ru_yo
-
-set tags=./.tags,.tags,./tags,tags
-
-set mouse=a
-set so=2
 " set clipboard=unnamedplus
 set colorcolumn=120
 
-au TermOpen * setlocal nonumber norelativenumber
+set spelllang=en,ru_yo
+set tags=./.tags,.tags,./tags,tags
 
-"au BufRead,BufNewFile * syn match parensCustom /[()]/ | hi! parensCustom ctermfg=15
-"au BufRead,BufNewFile * syn match curlyCustom /[{}]/ | hi! curlyCustom ctermfg=10
-"au BufRead,BufNewFile * syn match underscoreCustom /[_]/ | hi! underscoreCustom ctermfg=15
+set mouse=a
+
+autocmd TermOpen * setlocal nonumber norelativenumber
 
 function! SynGroup()
   let l:s = synID(line('.'), col('.'), 1)
   echo synIDattr(l:s, 'name') . ' -> ' . synIDattr(synIDtrans(l:s), 'name')
 endfun
 
-au FileType md,latex,tex,md,markdown setlocal spell
-au FileType qf nnoremap <buffer> <Space><Enter> <C-w><Enter><C-w>T
-au FileType qf nnoremap <buffer> <Enter>        <C-Enter>
-au FileType xml setlocal equalprg=xmllint\ --format\ --recover\ -\ 2>/dev/null
-au FileType yaml hi link yamlKey Label
-au FileType csv set filetype=
+autocmd FileType md,latex,tex,md,markdown setlocal spell
+autocmd FileType qf nnoremap <buffer> <Space><Enter> <C-w><Enter><C-w>T
+autocmd FileType qf nnoremap <buffer> <Enter>        <C-Enter>
+autocmd FileType xml setlocal equalprg=xmllint\ --format\ --recover\ -\ 2>/dev/null
+autocmd FileType yaml hi link yamlKey Label
+autocmd FileType csv set filetype=
+
+autocmd FileType * lua pcall(vim.treesitter.stop)
+
+" autocmd ModeChanged n:*     hi CursorLine ctermbg=none
+" autocmd ModeChanged *:[nN]* hi CursorLine ctermbg=16

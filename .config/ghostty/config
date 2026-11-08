@@ -3,10 +3,10 @@
 keybind = cmd+v=paste_from_clipboard
 
 background = #000000
-foreground = #ff8600
-font-family = m817
-# font-family = Menlo
-font-size = 17
+foreground = #f59f00
+font-family = m1015
+# font-family = Hack
+font-size = 15
 font-synthetic-style = italic,no-bold,no-bold-italic
 
 # background-opacity = 0.5
@@ -16,53 +16,54 @@ font-synthetic-style = italic,no-bold,no-bold-italic
 # cursor-style-blink = false
 
 # cursor-color = #a050e0
-cursor-color = #78a800
-cursor-text  = #000000
+cursor-color = #374d00
+cursor-text  = #ffffff
 
 adjust-underline-position = -3
-# adjust-underline-thickness = 4
+adjust-underline-thickness = -1
 adjust-cursor-thickness = 5
 
 mouse-hide-while-typing = true
 
-palette = 0=#000060
-palette = 1=#f00060
-palette = 2=#c29500
-palette = 3=#ec9100
-palette = 4=#d568df
-palette = 5=#ff5ca3
-palette = 6=#7d9159
-palette = 7=#ff8600
+palette = 0=#000050
+palette = 1=#ff5833
+palette = 2=#c0a611
+palette = 3=#eba800
+palette = 4=#ea7bbc
+palette = 5=#f881a1
+palette = 6=#a8a34d
+palette = 7=#f59f00
 palette = 8=#b98e6e
-palette = 9=#ff4538
-palette = 10=#d6a400
-palette = 11=#ffa805
-palette = 12=#f370ff
-palette = 13=#ff85a5
-palette = 14=#8ba758
-palette = 15=#dda488
-palette = 16=#2b251c
-palette = 17=#53130e
-palette = 18=#333800
-palette = 19=#583a1d
-palette = 20=#45296a
-palette = 21=#4f2749
-palette = 22=#273433
-palette = 23=#3a3127
-palette = 24=#5b4b3e
-palette = 25=#d10054
-palette = 26=#9a7b13
-palette = 27=#cc7e00
-palette = 28=#cf52da
-palette = 29=#ea3ea5
-palette = 30=#767c6a
+palette = 9=#ff5e4d
+palette = 10=#bbcd13
+palette = 11=#ffc105
+palette = 12=#ff85cc
+palette = 13=#ffa59e
+palette = 14=#77b054
+palette = 15=#e3b7a0
+palette = 16=#13100c
+palette = 17=#340d04
+palette = 18=#191a09
+palette = 19=#25170e
+palette = 20=#221028
+palette = 21=#290f1a
+palette = 22=#0c1311
+palette = 23=#2e241f
+palette = 24=#40312b
+palette = 25=#db4d00
+palette = 26=#a3990f
+palette = 27=#d69a00
+palette = 28=#c775c7
+palette = 29=#dd6499
+palette = 30=#8f8b42
 palette = 31=#9f7c60
 
-
-custom-shader = ~/.config/ghostty/ghostty-shaders/bloom-custom.glsl
+custom-shader = ~/.config/ghostty/ghostty-shaders/custom-bloom-inward.2.glsl
+custom-shader = ~/.config/ghostty/ghostty-shaders/custom-cursor.glsl
 
 async-backend = epoll
 
 custom-shader-animation = false
 
 shell-integration-features = no-cursor
+app-notifications = no-clipboard-copy,config-reload

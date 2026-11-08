@@ -5,6 +5,8 @@ set mixer.alsa.channel=Master
 
 set progress_bar=color
 
+set color_win_bg=-1
+set color_cmdline_bg=-1
 set color_cmdline_fg=gray
 set color_separator=22
 set color_statusline_bg=16

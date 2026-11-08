@@ -49,6 +49,32 @@ keyring-unlock() {
   unset _pass
 }
 
+pin() {
+  local name="$1"
+  if [[ -z "$1" ]]
+  then
+    >&2 echo 'no name'
+    return 1
+  fi
+  local val="$2"
+  if [[ -z "$val" ]]
+  then
+    eval "unset PROMPT_ENV__${name^^}"
+    eval "unset ${name^^}"
+  else
+    eval "export PROMPT_ENV__${name^^}='${name,,}:X:x'"
+    eval "export ${name^^}='$val'"
+  fi
+}
+
+unpin() {
+  local names=( $(env | grep '^PROMPT_ENV__.[A-Z0-9_]\+=[a-zA-Z0-9_]\+:X:x' | sed -n -e 's/^PROMPT_ENV__\(.[A-Z0-9_]\+\)=.*$/\1/p') )
+  for name in "${names[@]}"
+  do
+    pin "$name"
+  done
+}
+
 alias fresh="source ~/.bash_profile && tmux source-file ~/.tmux.conf"
 alias rr='ranger'
 alias tmux='systemd-run --scope --user tmux'

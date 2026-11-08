@@ -251,6 +251,7 @@ bar {
     focused_workspace  #353535  #222222  #a0a080
     active_workspace   #707070  #181818  #000000
     inactive_workspace #202020  #1c1c1c  #505860
+    urgent_workspace   #504020  #403020  #505860
   }
 
   tray_padding 0

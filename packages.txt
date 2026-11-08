@@ -13,6 +13,7 @@ automake
 avahi
 b43-fwcutter
 baobab
+base-devel
 bc
 bind
 bison
@@ -22,6 +23,7 @@ btrfsmaintenance
 btrfs-progs
 bzip2
 calf
+clang
 cloudflared
 coreutils
 cpupower
@@ -211,6 +213,7 @@ pavucontrol
 perl
 pipewire-jack
 pkgconf
+podman
 polkit-gnome
 postgresql-libs
 powertop
